@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joe Ross — Executive Product Leader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --cream: #f9f6f0;
+    --accent: #c8522a;
+    --navy: #1f3a5f;
+    --muted: #6b6460;
+    --rule: #d8d0c8;
+    --card: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(249,246,240,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+    padding: 0 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 120px 48px 80px;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .hero-inner { max-width: 780px; }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block; width: 40px; height: 1px; background: var(--accent);
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(48px, 7vw, 88px);
+    line-height: 1.05; color: var(--navy);
+    margin-bottom: 32px;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    font-size: 18px; color: var(--muted);
+    max-width: 560px; margin-bottom: 48px; line-height: 1.8;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: var(--navy); color: white;
+    padding: 14px 28px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .hero-cta:hover { background: var(--accent); transform: translateY(-1px); }
+  .hero-cta-ghost {
+    display: inline-flex; align-items: center; gap: 12px;
+    border: 1px solid var(--navy); color: var(--navy);
+    padding: 14px 28px; margin-left: 16px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .hero-cta-ghost:hover { background: var(--navy); color: white; }
+
+  /* PROOF POINTS */
+  .proof {
+    background: var(--navy); color: white;
+    padding: 80px 48px;
+  }
+  .proof-inner { max-width: 1100px; margin: 0 auto; }
+  .proof-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4); margin-bottom: 48px;
+  }
+  .proof-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 48px;
+  }
+  .proof-stat .number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px; color: white; line-height: 1;
+    margin-bottom: 8px;
+  }
+  .proof-stat .number span { color: var(--accent); }
+  .proof-stat .desc {
+    font-size: 13px; color: rgba(255,255,255,0.55);
+    letter-spacing: 0.02em; line-height: 1.6;
+  }
+  .proof-divider {
+    width: 1px; background: rgba(255,255,255,0.12); align-self: stretch;
+  }
+
+  /* SECTIONS */
+  section { padding: 100px 48px; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 48px); color: var(--navy);
+    margin-bottom: 48px; line-height: 1.2;
+  }
+
+  /* PILLARS */
+  .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2px; }
+  .pillar {
+    background: white; padding: 40px 36px;
+    border-top: 3px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .pillar:hover { border-color: var(--accent); }
+  .pillar-tag {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .pillar-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: var(--navy); margin-bottom: 12px;
+  }
+  .pillar-text { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+  /* CAREER */
+  .career-list { display: flex; flex-direction: column; gap: 0; }
+  .career-item {
+    display: grid; grid-template-columns: 160px 1fr;
+    gap: 48px; padding: 40px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .career-item:first-child { border-top: 1px solid var(--rule); }
+  .career-dates {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: 0.08em; padding-top: 4px;
+  }
+  .career-co {
+    font-family: 'DM Serif Display', serif; font-size: 22px;
+    color: var(--navy); margin-bottom: 4px;
+  }
+  .career-role {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px;
+  }
+  .career-desc { font-size: 14px; color: var(--muted); line-height: 1.8; max-width: 620px; }
+  .career-tag {
+    display: inline-block; margin-top: 12px;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    border: 1px solid var(--rule); color: var(--muted);
+    padding: 4px 10px;
+  }
+  .career-tag.highlight {
+    border-color: rgba(200,82,42,0.4); color: var(--accent);
+    background: rgba(200,82,42,0.04);
+  }
+
+  /* PRESS */
+  .press-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .press-card {
+    background: white; padding: 32px;
+    border-left: 3px solid var(--rule);
+    transition: border-color 0.2s;
+  }
+  .press-card:hover { border-color: var(--accent); }
+  .press-date {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px;
+    border: 1px solid rgba(200,82,42,0.3);
+    display: inline-block; padding: 4px 10px;
+  }
+  .press-title {
+    font-family: 'DM Serif Display', serif; font-size: 18px;
+    color: var(--navy); margin-bottom: 10px;
+  }
+  .press-text { font-size: 13px; color: var(--muted); line-height: 1.75; margin-bottom: 12px; }
+  .press-link {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); text-decoration: none;
+    display: inline-block; margin-top: 4px;
+  }
+
+  /* VIDEO */
+  .video-wrap {
+    position: relative; padding-bottom: 56.25%;
+    height: 0; overflow: hidden;
+    background: var(--navy);
+  }
+  .video-wrap iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    border: 0;
+  }
+
+  /* CTA STRIP */
+  .cta-strip {
+    background: var(--accent); padding: 80px 48px; text-align: center;
+  }
+  .cta-strip h2 { color: white; margin-bottom: 16px; }
+  .cta-strip p { color: rgba(255,255,255,0.75); font-size: 16px; margin-bottom: 36px; }
+  .cta-strip a {
+    background: white; color: var(--accent);
+    padding: 16px 36px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none; display: inline-block;
+    transition: opacity 0.2s;
+  }
+  .cta-strip a:hover { opacity: 0.88; }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink); color: rgba(255,255,255,0.4);
+    padding: 40px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+  footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 24px; }
+    .hero { padding: 100px 24px 60px; }
+    section { padding: 60px 24px; }
+    .proof { padding: 60px 24px; }
+    .career-item { grid-template-columns: 1fr; gap: 8px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .hero-cta-ghost { margin-left: 0; margin-top: 12px; }
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-inner > * {
+    animation: fadeUp 0.7s ease both;
+  }
+  .hero-inner > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-inner > *:nth-child(2) { animation-delay: 0.2s; }
+  .hero-inner > *:nth-child(3) { animation-delay: 0.3s; }
+  .hero-inner > *:nth-child(4) { animation-delay: 0.4s; }
+  .hero-inner > *:nth-child(5) { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">ProductDetroit.com</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#career">Career</a>
+    <a href="#press">Press</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Executive Product Leader</div>
+    <h1>Building products<br>that <em>scale</em> businesses.</h1>
+    <p class="hero-sub">
+      30+ years leading product at PE-backed SaaS companies, a Fortune 5 enterprise, and founder-led businesses — from $68M to $150M ARR at WorkForce Software (acquired by ADP for $1.2B), to $43M → $93.5M at BS&A Software.
+    </p>
+    <div>
+      <a class="hero-cta" href="https://calendly.com/productdetroit" target="_blank">Schedule a Call →</a>
+      <a class="hero-cta-ghost" href="#career">View Career</a>
+    </div>
+  </div>
+</div>
+
+<!-- PROOF POINTS -->
+<div class="proof">
+  <div class="proof-inner">
+    <div class="proof-label">Career in numbers</div>
+    <div class="proof-grid">
+      <div class="proof-stat">
+        <div class="number">$1.2<span>B</span></div>
+        <div class="desc">WorkForce Software acquired by ADP · Oct 2024</div>
+      </div>
+      <div class="proof-stat">
+        <div class="number">$68<span>→</span>$150<span>M</span></div>
+        <div class="desc">ARR doubled at WorkForce Software · 2016–2023</div>
+      </div>
+      <div class="proof-stat">
+        <div class="number">$43<span>→</span>$93<span>M</span></div>
+        <div class="desc">Revenue at BS&A Software · 2024–2026</div>
+      </div>
+      <div class="proof-stat">
+        <div class="number">+49<span>%</span></div>
+        <div class="desc">Engineering velocity via AI adoption · BS&A 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-label">About</div>
+    <h2>A different kind of CPO.</h2>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-tag">World-Class Teams</div>
+        <div class="pillar-title">Teams that win awards.</div>
+        <p class="pillar-text">Built product organizations recognized among the world's finest — including a Comparably #1 Product & Design Department ranking alongside Microsoft and Amazon. Great teams make great products.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-tag">Revenue Impact</div>
+        <div class="pillar-title">Product as a growth engine.</div>
+        <p class="pillar-text">Every product investment decision I've made has been anchored in revenue impact. I've doubled ARR, tripled EBITDA, and built the product foundation for a $1.2B acquisition.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-tag">AI Leadership</div>
+        <div class="pillar-title">AI built into the core.</div>
+        <p class="pillar-text">Not just AI features — AI operating models. Designed BS&A's first AI strategy, shipped Invoice AI and Conversational Reporting, and drove 49% engineering velocity gains through AI-DLC adoption.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-tag">Board Partnership</div>
+        <div class="pillar-title">Executive presence at the table.</div>
+        <p class="pillar-text">Comfortable in board rooms and investor meetings. Co-authored $201.9M 5-year strategic plans, led M&A due diligence with ADP, and served as Interim CRO during leadership transitions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section style="padding-top: 0; background: var(--cream);">
+  <div class="section-inner">
+    <div class="section-label">Introduction</div>
+    <h2>Hear from Joe directly.</h2>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/ausaOPHSpNU" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- CAREER -->
+<section id="career" style="background: white;">
+  <div class="section-inner">
+    <div class="section-label">Career</div>
+    <h2>Where I've built.</h2>
+    <div class="career-list">
+
+      <div class="career-item">
+        <div class="career-dates">2024 — 2026</div>
+        <div>
+          <div class="career-co">BS&A Software</div>
+          <div class="career-role">Chief Product Officer · Interim CRO (H1 2025)</div>
+          <p class="career-desc">Joined as founding CPO at a 36-year-old, founder-led municipal ERP company following Serent Capital's largest-ever PE investment. Built the product function from scratch — team, governance, tooling, and PM playbook. Scaled revenue from $43M to $93.5M, grew Cloud SaaS ARR 74% YoY, and shipped BS&A's first AI products. Co-authored a $201.9M 5-year strategic plan and implied $2.18B enterprise value at Strategy Day.</p>
+          <span class="career-tag highlight">Serent Capital PE-Backed · GovTech · Municipal ERP</span>
+        </div>
+      </div>
+
+      <div class="career-item">
+        <div class="career-dates">2016 — 2023</div>
+        <div>
+          <div class="career-co">WorkForce Software</div>
+          <div class="career-role">Chief Product Officer</div>
+          <p class="career-desc">Led global product strategy for a 85+ country enterprise SaaS platform, doubling ARR from $68M to $150M with 1,100 enterprise customers and 6.3M active users. Built a 30-person product organization recognized as one of the world's best. Partnered with CEO and investment bankers on funding and strategic exit — product investments contributed directly to WorkForce Software's acquisition by ADP in October 2024 for <strong>$1.2 billion in cash</strong>. Participated in investor roadshows, ADP executive meetings, and due diligence leading to the transaction.</p>
+          <span class="career-tag highlight">PE-Backed · Enterprise WFM SaaS · Acquired by ADP $1.2B</span>
+        </div>
+      </div>
+
+      <div class="career-item">
+        <div class="career-dates">2006 — 2016</div>
+        <div>
+          <div class="career-co">McKesson Corporation</div>
+          <div class="career-role">Director, Product Management & Innovation</div>
+          <p class="career-desc">Led $56M P&L across pharmacy systems, POS, mobile, and payment processing at a Fortune 5 healthcare enterprise. Doubled revenue, tripled EBITDA, and captured ~25% retail pharmacy market share. Sunset a 35-year-old product while retaining 70% of the customer base.</p>
+          <span class="career-tag">Fortune 5 · Healthcare Technology</span>
+        </div>
+      </div>
+
+      <div class="career-item">
+        <div class="career-dates">2001 — 2006</div>
+        <div>
+          <div class="career-co">LDMI / Talk America</div>
+          <div class="career-role">Product Manager</div>
+          <p class="career-desc">Created and launched the Talk America commercial data product portfolio targeting SMBs. Directed business development and contract negotiations for wholesale/resale service offerings through multiple successful exits.</p>
+          <span class="career-tag">Start-up · Telecom · Successful Exits</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PRESS -->
+<section id="press">
+  <div class="section-inner">
+    <div class="section-label">Press & Recognition</div>
+    <h2>In the market.</h2>
+    <div class="press-grid">
+
+      <div class="press-card">
+        <div class="press-date">October 2024</div>
+        <div class="press-title">ADP Acquires WorkForce Software for $1.2B</div>
+        <p class="press-text">The company Joe led as CPO from 2016–2023 was acquired by ADP for approximately $1.2 billion in cash — one of the largest enterprise HCM acquisitions of the year. Joe participated directly in the due diligence and executive meetings that led to the transaction.</p>
+        <a class="press-link" href="https://workforcesoftware.com/press-release/adp-acquires-workforce-software/" target="_blank">Read Press Release →</a>
+      </div>
+
+      <div class="press-card">
+        <div class="press-date">GovTech 100 · 2025 & 2026</div>
+        <div class="press-title">BS&A Software — Back-to-Back GovTech 100</div>
+        <p class="press-text">BS&A Software earned GovTech 100 recognition in both 2025 and 2026 under Joe's product leadership — the industry's premier recognition for companies most likely to have a significant impact on the government technology market.</p>
+      </div>
+
+      <div class="press-card">
+        <div class="press-date">January 2026</div>
+        <div class="press-title">BS&A Launches AI Assistant</div>
+        <p class="press-text">BS&A Software publicly launched its AI strategy at the Engage 2025 user conference, including Invoice Entry AI and Conversational Reporting — the culmination of Joe's AI product strategy and monetization framework built during his tenure.</p>
+      </div>
+
+      <div class="press-card">
+        <div class="press-date">April 2025</div>
+        <div class="press-title">Boyce Systems Acquisition Integration</div>
+        <p class="press-text">BS&A acquired Boyce Systems and its Keystone software. Joe led the product integration, delivering MVP feature parity on time and the IT integration under budget.</p>
+      </div>
+
+      <div class="press-card">
+        <div class="press-date">LinkedIn · February 2025</div>
+        <div class="press-title">#TwoLeadersOneVision</div>
+        <p class="press-text">Joe and CTO Greg Heil publicly shared their product & technology leadership philosophy — reflecting the tight CPO/CTO partnership that drove BS&A's engineering velocity, AI transformation, and product execution.</p>
+        <a class="press-link" href="https://www.linkedin.com/posts/josephrross_twoleadersonevision-activity-7297675998651658240-q9e3" target="_blank">View on LinkedIn →</a>
+      </div>
+
+      <div class="press-card">
+        <div class="press-date">Comparably · 2022</div>
+        <div class="press-title">#1 Product & Design Department</div>
+        <p class="press-text">WorkForce Software's product and design department — built and led by Joe — was ranked among the world's best by Comparably, alongside Microsoft and Amazon.</p>
+        <a class="press-link" href="https://www.comparably.com/articles/best-product-design-departments-2022/" target="_blank">Read Recognition →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-strip" id="contact">
+  <h2 style="color:white; margin-bottom:12px;">Let's talk.</h2>
+  <p>Exploring CPO and VP Product roles at PE-backed SaaS companies in the $50M–$300M ARR range.</p>
+  <a href="https://calendly.com/productdetroit" target="_blank">Schedule 20 Minutes →</a>
+  <div style="margin-top:24px; font-family:'DM Mono',monospace; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">
+    joe@productdetroit.com &nbsp;·&nbsp; 248.285.2821 &nbsp;·&nbsp; linkedin.com/in/josephrross
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 Joe Ross · ProductDetroit.com</span>
+  <div style="display:flex; gap:24px;">
+    <a href="mailto:joe@productdetroit.com">Email</a>
+    <a href="https://linkedin.com/in/josephrross" target="_blank">LinkedIn</a>
+    <a href="https://adplist.org/mentors/joe-ross" target="_blank">ADPList</a>
+    <a href="https://calendly.com/productdetroit" target="_blank">Calendly</a>
+  </div>
+</footer>
+
+</body>
+</html>
