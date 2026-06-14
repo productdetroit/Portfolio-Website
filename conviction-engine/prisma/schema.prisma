@@ -1,0 +1,116 @@
+// Conviction Engine — data layer
+//
+// MVP scope (spec §6): "build for the org, ship for one team."
+// The org-wide cascade (Organization -> Team -> Strategy -> ...) is modeled
+// here so the data layer generalizes and can be sold later. The MVP UI is
+// scoped to a single seeded Team (see src/lib/team.ts).
+//
+// Build order (CLAUDE.md): this file currently covers STEP 1 (Cascade setup)
+// only: Strategy -> BusinessOutcome -> CustomerOutcome + leading proxy.
+// Opportunity, Persona, ValidationRecord, Bet, and Spec are intentionally NOT
+// modeled yet — they belong to their own build steps and we do not scaffold
+// ahead.
+//
+// NOTE ON ENUMS: SQLite does not support Prisma `enum`. Fields that are
+// conceptually enums (metricType, proxyDirection, objectiveValidationStatus)
+// are stored as String and validated in the app layer against the allowed
+// values declared in src/lib/enums.ts.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Org-wide scaffolding (modeled now, not surfaced in the single-team MVP UI)
+// ──────────────────────────────────────────────────────────────────────────
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  teams     Team[]
+  createdAt DateTime @default(now())
+}
+
+model Team {
+  id         String       @id @default(cuid())
+  orgId      String
+  org        Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name       String
+  strategies Strategy[]
+  createdAt  DateTime     @default(now())
+
+  @@index([orgId])
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// The spine — Step 1: Strategy -> BusinessOutcome -> CustomerOutcome (+ proxy)
+// ──────────────────────────────────────────────────────────────────────────
+
+model Strategy {
+  id               String            @id @default(cuid())
+  teamId           String
+  team             Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  title            String
+  description      String?
+  businessOutcomes BusinessOutcome[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([teamId])
+}
+
+model BusinessOutcome {
+  id           String            @id @default(cuid())
+  strategyId   String
+  strategy     Strategy          @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  okrStatement String
+  targetValue  Float?
+  currentValue Float?
+  unit         String?
+  // metricType: "lagging" | "leading" — OKRs default to lagging (spec §3)
+  metricType   String            @default("lagging")
+  timeframe    String?
+  customerOutcomes CustomerOutcome[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([strategyId])
+}
+
+model CustomerOutcome {
+  id                String          @id @default(cuid())
+  // The "earns" edge: a customer outcome EARNS a business outcome — it is the
+  // engine, not a sibling. Required so nothing floats free of the cascade.
+  businessOutcomeId String
+  businessOutcome   BusinessOutcome @relation(fields: [businessOutcomeId], references: [id], onDelete: Cascade)
+  title             String
+  description       String?
+
+  // Leading proxy — every lagging OKR needs a leading proxy the team can steer
+  // on weekly (spec §2). Metric name and direction are REQUIRED so "outcome
+  // focus" cannot decay into vibes. Current/target numbers may be unknown.
+  proxyMetricName   String
+  proxyCurrent      Float?
+  proxyTarget       Float?
+  proxyUnit         String?
+  // proxyDirection: "increase" | "decrease"
+  proxyDirection    String          @default("increase")
+
+  // How this customer outcome converts into the business outcome.
+  earnsNarrative    String?
+
+  // Is this genuinely the customer's OKR, or our projection onto them?
+  // "assumption" | "validated" | "invalidated". Promotion to "validated" is a
+  // structurally-enforced gate built in Step 3 — it starts as an assumption.
+  objectiveValidationStatus String   @default("assumption")
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([businessOutcomeId])
+}
