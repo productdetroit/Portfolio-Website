@@ -1,15 +1,25 @@
 {
   "capturedAt": "2026-07-28T15:10:00.000Z",
   "daysBuilding": 33,
+  "backlogItems": 168,
   "featuresLive": 69,
-  "cycleTime": { "value": 11, "unit": "hours" },
-  "specToShipped": { "value": 6, "unit": "days" },
+  "cycleTime": {
+    "value": 11,
+    "unit": "hours"
+  },
+  "specToShipped": {
+    "value": 6,
+    "unit": "days"
+  },
   "specsWritten": 18,
-  "epics": { "done": 6, "total": 23 },
+  "epics": {
+    "done": 6,
+    "total": 23
+  },
   "pullRequests": 93,
   "productionDeploys": 109,
   "lastShipped": {
-    "subject": "Merge pull request #93 from productdetroit/feat/kan-115-capability-controls",
+    "subject": "Feature gating",
     "at": "2026-07-28T02:03:51.955Z"
   }
 }

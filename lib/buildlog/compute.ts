@@ -17,12 +17,23 @@ export function toDuration(ms: number): Duration {
   return { value: Math.round(hours / 24), unit: "days" };
 }
 
-/** Spec 6.2: commit subject, first line only, `KAN-nnn` prefix stripped. */
+/** Spec 6.2: commit subject, first line only, `KAN-nnn` prefix stripped.
+ *  GitHub merge commits ("Merge pull request #94 from owner/feat/kan-117-x")
+ *  are humanized from the branch name so the register reads like a log
+ *  entry, not like git plumbing. */
 export function cleanCommitSubject(message: string): string {
   const firstLine = message.split("\n", 1)[0];
-  return firstLine
-    .replace(/^KAN-\d+\s*[:\-–—]?\s*/i, "")
-    .trim();
+  const merge = firstLine.match(/^Merge pull request #\d+ from \S+?\/(.+)$/i);
+  if (merge) {
+    const leaf = merge[1].split("/").pop() ?? merge[1];
+    const words = leaf
+      .replace(/^(feat|fix|chore|docs|refactor|perf|test)[-_]?/i, "")
+      .replace(/^kan[-_]?\d+[-_]?/i, "")
+      .replace(/[-_]+/g, " ")
+      .trim();
+    if (words) return words.charAt(0).toUpperCase() + words.slice(1);
+  }
+  return firstLine.replace(/^KAN-\d+\s*[:\-–—]?\s*/i, "").trim();
 }
 
 /** Whole days between two instants, floored at zero. */

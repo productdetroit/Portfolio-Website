@@ -95,6 +95,7 @@ export async function getJiraMetrics(): Promise<JiraMetrics> {
   }
 
   return {
+    backlogItems: issues.length,
     featuresLive,
     cycleTime: toDuration(cycleMedian),
     specToShipped: toDuration(epicMedian),

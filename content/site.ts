@@ -21,11 +21,13 @@ export const site = {
   },
 } as const;
 
+/** Root-relative so they work from /building as well as the home page. */
 export const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#career", label: "Career" },
-  { href: "#press", label: "Press" },
-  { href: "#contact", label: "Contact" },
+  { href: "/building", label: "Building" },
+  { href: "/#about", label: "About" },
+  { href: "/#career", label: "Career" },
+  { href: "/#press", label: "Press" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 /** `numberHtml` contains inline <span> units and is rendered as authored HTML. */

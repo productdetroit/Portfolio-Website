@@ -10,6 +10,7 @@ const PROVIDER_TIMEOUT_MS = 3000;
 type Snapshot = {
   capturedAt: string;
   daysBuilding: number;
+  backlogItems: number;
   featuresLive: number;
   cycleTime: Duration;
   specToShipped: Duration;
@@ -121,6 +122,7 @@ export async function aggregate(
     asOf: allFailed ? snapshot.capturedAt : now.toISOString(),
     stale,
     daysBuilding: daysBuilding(now),
+    backlogItems: jira?.backlogItems ?? snapshot.backlogItems,
     featuresLive: jira?.featuresLive ?? snapshot.featuresLive,
     cycleTime: jira?.cycleTime ?? snapshot.cycleTime,
     specToShipped: jira?.specToShipped ?? snapshot.specToShipped,

@@ -6,6 +6,8 @@ export type BuildLog = {
   asOf: string; // ISO 8601
   stale: boolean; // true when any provider fell back
   daysBuilding: number;
+  /** Total KAN issues — feeds the operating-model prose ("168 backlog items"). */
+  backlogItems: number;
   featuresLive: number;
   cycleTime: Duration;
   specToShipped: Duration;
@@ -20,8 +22,9 @@ export type BuildLog = {
   } | null;
 };
 
-/** What lib/buildlog/jira.ts returns — four metrics from one result set. */
+/** What lib/buildlog/jira.ts returns — five values from one result set. */
 export type JiraMetrics = {
+  backlogItems: number;
   featuresLive: number;
   cycleTime: Duration;
   specToShipped: Duration;

@@ -54,10 +54,22 @@ describe("cleanCommitSubject", () => {
       "capability controls",
     );
   });
-  it("passes through subjects without a prefix", () => {
+  it("humanizes merge commits from the branch name", () => {
     expect(
-      cleanCommitSubject("Merge pull request #93 from productdetroit/x"),
-    ).toBe("Merge pull request #93 from productdetroit/x");
+      cleanCommitSubject(
+        "Merge pull request #94 from productdetroit/feat/kan-117-feature-gating",
+      ),
+    ).toBe("Feature gating");
+    expect(
+      cleanCommitSubject(
+        "Merge pull request #93 from productdetroit/feat/kan-115-capability-controls",
+      ),
+    ).toBe("Capability controls");
+  });
+  it("passes through ordinary subjects without a prefix", () => {
+    expect(cleanCommitSubject("Ship the maple engine")).toBe(
+      "Ship the maple engine",
+    );
   });
 });
 
