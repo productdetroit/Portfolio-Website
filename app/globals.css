@@ -106,8 +106,14 @@ h1 em { font-style: italic; color: var(--accent); }
   color: rgba(255,255,255,0.4); margin-bottom: 48px;
 }
 .proof-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 48px;
+}
+@media (max-width: 1024px) {
+  .proof-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .proof-grid { grid-template-columns: 1fr; }
 }
 .proof-stat .number {
   font-family: var(--font-dm-serif), serif;
@@ -115,12 +121,26 @@ h1 em { font-style: italic; color: var(--accent); }
   margin-bottom: 8px;
 }
 .proof-stat .number span { color: var(--accent); }
+/* Long text stats ("2x Founding CPO", "2x Rev · 4x EBITDA") sit in a slot
+   sized for short numerals — smaller type for those two tiles only, so
+   $1.2B and $68→$150M keep their weight (update-spec §6.2). */
+.proof-stat .number.small { font-size: 32px; line-height: 1.2; }
 .proof-stat .desc {
-  font-size: 13px; color: rgba(255,255,255,0.55);
+  font-size: 13px; color: rgba(255,255,255,0.65);
   letter-spacing: 0.02em; line-height: 1.6;
 }
-.proof-divider {
-  width: 1px; background: rgba(255,255,255,0.12); align-self: stretch;
+
+/* Video date label (update-spec §7.2, option 2) */
+.video-date {
+  font-family: var(--font-dm-mono), monospace; font-size: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px;
+}
+
+/* Early-career line under the McKesson entry (update-spec §6.3) */
+.career-earlier {
+  margin-top: 48px; font-size: 14px; line-height: 1.7;
+  color: var(--muted); max-width: 720px;
 }
 
 /* SECTIONS */
@@ -258,13 +278,13 @@ h2 {
 
 /* FOOTER */
 footer {
-  background: var(--ink); color: rgba(255,255,255,0.4);
+  background: var(--ink); color: rgba(255,255,255,0.6);
   padding: 40px 48px;
   display: flex; justify-content: space-between; align-items: center;
   font-family: var(--font-dm-mono), monospace; font-size: 10px;
   letter-spacing: 0.12em;
 }
-footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
 footer a:hover { color: var(--accent); }
 
 @media (max-width: 640px) {
@@ -297,6 +317,9 @@ footer a:hover { color: var(--accent); }
 .hero-inner > *:nth-child(3) { animation-delay: 0.3s; }
 .hero-inner > *:nth-child(4) { animation-delay: 0.4s; }
 .hero-inner > *:nth-child(5) { animation-delay: 0.5s; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-inner > * { animation: none; }
+}
 
 /* LEGAL PAGES */
 .legal { max-width: 720px; }
@@ -340,6 +363,12 @@ footer a:hover { color: var(--accent); }
   color: var(--ink); margin-bottom: 0;
 }
 .reg-asof { font-family: var(--font-dm-mono), monospace; font-size: 10.5px; letter-spacing: 0.1em; color: var(--muted); }
+.reg-source {
+  font-family: var(--font-dm-mono), monospace; font-size: 10.5px;
+  letter-spacing: 0.1em; color: var(--accent-text); text-decoration: none;
+  border-bottom: 1px solid rgba(200, 82, 42, 0.4); padding-bottom: 2px;
+}
+.reg-source:hover { color: var(--accent); }
 .reg-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-left: 1px solid var(--rule); margin: 0; }
 .reg-tile { border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 28px 24px 26px; }
 .reg-tile-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
@@ -456,6 +485,14 @@ footer a:hover { color: var(--accent); }
   display: inline-block; background: #fff; color: var(--accent-text);
   padding: 16px 34px; font-family: var(--font-dm-mono), monospace;
   font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none;
+}
+.bl-contact-ctas {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+}
+.bl-contact a.bl-contact-email {
+  background: transparent; color: rgba(255, 255, 255, 0.92);
+  padding: 0; margin-top: 26px; text-transform: none; letter-spacing: 0.06em;
+  font-size: 13px; border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 /* Home teaser (PDW-8) */

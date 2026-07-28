@@ -1,13 +1,33 @@
 import type { Metadata } from "next";
 import Scoreboard from "@/components/Scoreboard";
+import ResumeLink from "@/components/ResumeLink";
 import { getBuildLog } from "@/lib/buildlog";
+import { shippingPhrase } from "@/lib/buildlog/format";
+import { site } from "@/content/site";
 
 export const revalidate = 3600;
 
+const TITLE = "Building — Joe Ross, Product Detroit";
+const DESCRIPTION =
+  "Thirty years shipping product. A live log of what I'm building now, straight from Jira, GitHub and Vercel.";
+
+/** Explicit per-route OG/Twitter tags — without these the root layout's
+ *  homepage values leak through (update-spec §5.1). */
 export const metadata: Metadata = {
-  title: "Building — Joe Ross, Product Detroit",
-  description:
-    "Thirty years shipping product. A live log of what I'm building now, straight from Jira, GitHub and Vercel.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: `${site.url}/building`,
+    siteName: site.name,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 const GATES = [
@@ -52,7 +72,7 @@ export default async function BuildingPage() {
         <h1>
           Thirty years shipping product.
           <br />
-          <em>Four weeks shipping code.</em>
+          <em>{shippingPhrase(log.daysBuilding)}.</em>
         </h1>
       </header>
 
@@ -165,7 +185,7 @@ export default async function BuildingPage() {
           </h2>
           <p className="bl-tophand-meta">
             tophand.ag · in active development · first customer: GoatLife Farm,
-            Detroit
+            Michigan
           </p>
           <div className="bl-prose">
             <p>
@@ -181,15 +201,22 @@ export default async function BuildingPage() {
               The wedge is money, not time. Cutting hay in the right window is
               worth <span className="bl-mono">$70&ndash;100</span> per ton in
               grade spread; every day of delay past peak costs roughly{" "}
-              <span className="bl-mono">$9</span> per acre in quality loss. A
-              tool that saves one cutting pays for itself for years.
+              <span className="bl-mono">$9</span>{" "}
+              per acre in quality loss. A tool that saves one cutting pays for
+              itself for years.
               That&rsquo;s a different sales conversation than &ldquo;keep
               better records.&rdquo;
             </p>
             <p>
-              I run a working dairy-goat farm in Detroit. It&rsquo;s the first
-              tenant, the demo environment, and the reason I know which
-              problems are real.
+              My family runs a working dairy-goat farm in Michigan. It&rsquo;s
+              the first tenant, the demo environment, and the reason I know
+              which problems are real.
+            </p>
+            <p>
+              TopHand exists to prove the operating model, not to raise
+              capital. It&rsquo;s a live product with real users because
+              that&rsquo;s the only honest way to test whether the method
+              works.
             </p>
           </div>
           <a
@@ -207,7 +234,19 @@ export default async function BuildingPage() {
       <section className="bl-contact" aria-label="Contact">
         <h2>Open to senior product roles in B2B enterprise SaaS.</h2>
         <p>Thirty years of judgment, now with no queue in front of it.</p>
-        <a href="mailto:joe@productdetroit.com">joe@productdetroit.com</a>
+        <div className="bl-contact-ctas">
+          <a
+            href={site.links.calendly}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Schedule 20 Minutes →
+          </a>
+          <ResumeLink>Download Résumé ↓</ResumeLink>
+        </div>
+        <a className="bl-contact-email" href={`mailto:${site.email}`}>
+          {site.email}
+        </a>
       </section>
     </div>
   );

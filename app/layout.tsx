@@ -27,7 +27,7 @@ const lato = Lato({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: site.title,
+  title: site.metaTitle,
   description: site.heroSub,
   openGraph: {
     title: site.title,
@@ -35,6 +35,11 @@ export const metadata: Metadata = {
     url: site.url,
     siteName: site.name,
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.title,
+    description: site.heroSub,
   },
 };
 

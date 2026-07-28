@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { asOfLine, isQuiet, shippedStamp } from "./format";
+import {
+  STALE_AFTER_DAYS,
+  asOfLine,
+  isQuiet,
+  isStaleView,
+  shippedStamp,
+  shippingPhrase,
+  staleSummary,
+} from "./format";
 
 describe("shippedStamp", () => {
   it("renders same-day deploys with an ET time (spec 6.2)", () => {
@@ -24,6 +32,51 @@ describe("isQuiet", () => {
     expect(isQuiet({ subject: "x", at: "", daysAgo: 21 })).toBe(false);
     expect(isQuiet({ subject: "x", at: "", daysAgo: 22 })).toBe(true);
     expect(isQuiet(null)).toBe(false);
+  });
+});
+
+describe("isStaleView", () => {
+  it("flips at the named threshold (update-spec §4.1)", () => {
+    expect(
+      isStaleView({ subject: "x", at: "", daysAgo: STALE_AFTER_DAYS - 1 }),
+    ).toBe(false);
+    expect(
+      isStaleView({ subject: "x", at: "", daysAgo: STALE_AFTER_DAYS }),
+    ).toBe(true);
+  });
+  it("treats a missing lastShipped as stale", () => {
+    expect(isStaleView(null)).toBe(true);
+  });
+});
+
+describe("staleSummary", () => {
+  it("reframes elapsed days as a cumulative total (update-spec §4.1)", () => {
+    expect(
+      staleSummary({ daysBuilding: 123, featuresLive: 75, pullRequests: 94 }),
+    ).toBe(
+      "Built over four months: 75 features, 94 pull requests, every one reviewed.",
+    );
+  });
+  it("never renders zero months", () => {
+    expect(
+      staleSummary({ daysBuilding: 12, featuresLive: 5, pullRequests: 8 }),
+    ).toContain("Built over one month:");
+  });
+});
+
+describe("shippingPhrase", () => {
+  it("derives the week count from the day counter (update-spec §4.2)", () => {
+    expect(shippingPhrase(28)).toBe("Four weeks shipping code");
+    expect(shippingPhrase(33)).toBe("Five weeks shipping code");
+  });
+  it("handles the singular first week", () => {
+    expect(shippingPhrase(5)).toBe("One week shipping code");
+  });
+  it("switches to months once weeks stop reading naturally", () => {
+    expect(shippingPhrase(120)).toBe("Four months shipping code");
+  });
+  it("switches to years after two years", () => {
+    expect(shippingPhrase(800)).toBe("Two years shipping code");
   });
 });
 
