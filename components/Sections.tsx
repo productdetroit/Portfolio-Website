@@ -154,6 +154,13 @@ export function CTA() {
           Download Résumé ↓
         </a>
       </div>
+      <div className="cta-contact">
+        <a href={`mailto:${site.email}`}>{site.email}</a> &nbsp;·&nbsp;{" "}
+        <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a> &nbsp;·&nbsp;{" "}
+        <a href={site.links.linkedin} target="_blank" rel="noopener noreferrer">
+          linkedin.com/in/josephrross
+        </a>
+      </div>
     </div>
   );
 }

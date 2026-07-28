@@ -9,6 +9,7 @@ export const site = {
   url: "https://productdetroit.com",
   email: "joe@productdetroit.com",
   phone: "+12482852821",
+  phoneDisplay: "248.285.2821",
   gaId: "G-0YHENY8VWK",
   videoEmbed: "https://www.youtube.com/embed/ausaOPHSpNU",
   links: {
