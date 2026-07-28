@@ -23,10 +23,10 @@ export const site = {
 
 /** Root-relative so they work from /building as well as the home page. */
 export const navLinks = [
-  { href: "/building", label: "Building" },
   { href: "/#about", label: "About" },
   { href: "/#career", label: "Career" },
   { href: "/#press", label: "Press" },
+  { href: "/building", label: "Building" },
   { href: "/#contact", label: "Contact" },
 ];
 
