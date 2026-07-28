@@ -1,9 +1,6 @@
 :root {
-  /* Font families. To self-host via next/font, delete these three lines and
-     supply the same variable names from the loader in app/layout.tsx. */
-  --font-dm-serif: 'DM Serif Display';
-  --font-dm-mono: 'DM Mono';
-  --font-lato: 'Lato';
+  /* Fonts are self-hosted via next/font in app/layout.tsx, which supplies
+     --font-dm-serif, --font-dm-mono, and --font-lato. */
   --ink: #1a1a1a;
   --cream: #f9f6f0;
   --accent: #c8522a;

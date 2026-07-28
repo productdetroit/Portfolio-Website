@@ -1,9 +1,29 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { DM_Serif_Display, DM_Mono, Lato } from "next/font/google";
 import { site } from "@/content/site";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import "./globals.css";
+
+const dmSerif = DM_Serif_Display({
+  weight: "400",
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-dm-serif",
+});
+
+const dmMono = DM_Mono({
+  weight: ["400", "500"],
+  subsets: ["latin"],
+  variable: "--font-dm-mono",
+});
+
+const lato = Lato({
+  weight: ["300", "400", "700"],
+  subsets: ["latin"],
+  variable: "--font-lato",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -24,22 +44,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="en"
+      className={`${dmSerif.variable} ${dmMono.variable} ${lato.variable}`}
+    >
       <body>
         <Nav />
-        {children}
+        <main>{children}</main>
         <Footer />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`}

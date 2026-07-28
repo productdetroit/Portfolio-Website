@@ -67,6 +67,7 @@ export function Video() {
           <iframe
             src={site.videoEmbed}
             title="Introduction from Joe Ross"
+            loading="lazy"
             allowFullScreen
           />
         </div>
