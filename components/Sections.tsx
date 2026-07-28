@@ -1,4 +1,12 @@
-import { career, pillars, press, proofStats, site } from "@/content/site";
+import {
+  career,
+  careerEarlier,
+  pillars,
+  press,
+  proofStats,
+  site,
+} from "@/content/site";
+import ResumeLink from "@/components/ResumeLink";
 
 export function Hero() {
   return (
@@ -25,7 +33,7 @@ export function Proof() {
           {proofStats.map((s) => (
             <div className="proof-stat" key={s.desc}>
               <div
-                className="number"
+                className={s.small ? "number small" : "number"}
                 dangerouslySetInnerHTML={{ __html: s.numberHtml }}
               />
               <div className="desc">{s.desc}</div>
@@ -63,6 +71,7 @@ export function Video() {
       <div className="section-inner">
         <div className="section-label">Introduction</div>
         <h2>Hear from Joe directly.</h2>
+        <div className="video-date">Recorded 2023</div>
         <div className="video-wrap">
           <iframe
             src={site.videoEmbed}
@@ -102,6 +111,9 @@ export function Career() {
             </div>
           ))}
         </div>
+        <p className="career-earlier">
+          <em>{careerEarlier}</em>
+        </p>
       </div>
     </section>
   );
@@ -151,9 +163,7 @@ export function CTA() {
         <a href={site.links.calendly} target="_blank" rel="noopener noreferrer">
           Schedule 20 Minutes →
         </a>
-        <a href={site.links.resume} target="_blank" rel="noopener noreferrer">
-          Download Résumé ↓
-        </a>
+        <ResumeLink>Download Résumé ↓</ResumeLink>
       </div>
       <div className="cta-contact">
         <a href={`mailto:${site.email}`}>{site.email}</a> &nbsp;·&nbsp;{" "}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CountUp from "@/components/CountUp";
+import { shippingPhrase } from "@/lib/buildlog/format";
 import type { BuildLog } from "@/lib/buildlog/types";
 
 /** Home-page teaser strip — three metrics and the link to /building
@@ -32,8 +33,9 @@ export default function ScoreboardTeaser({ log }: { log: BuildLog }) {
                 </div>
               ))}
             <div className="teaser-framing">
-              Thirty years shipping product. Four weeks shipping code — live
-              from my Jira, GitHub and Vercel.
+              Thirty years shipping product.{" "}
+              {shippingPhrase(log.daysBuilding)} — live from my Jira, GitHub
+              and Vercel.
             </div>
           </div>
           <Link className="teaser-link" href="/building">

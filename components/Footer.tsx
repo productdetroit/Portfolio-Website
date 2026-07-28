@@ -1,4 +1,5 @@
 import { site } from "@/content/site";
+import ResumeLink from "@/components/ResumeLink";
 
 export default function Footer() {
   return (
@@ -9,9 +10,7 @@ export default function Footer() {
         <a href={site.links.linkedin} target="_blank" rel="noopener noreferrer">
           LinkedIn
         </a>
-        <a href={site.links.resume} target="_blank" rel="noopener noreferrer">
-          Résumé
-        </a>
+        <ResumeLink>Résumé</ResumeLink>
         <a href={site.links.adplist} target="_blank" rel="noopener noreferrer">
           ADPList
         </a>

@@ -1,5 +1,11 @@
 import CountUp from "@/components/CountUp";
-import { asOfLine, isQuiet, shippedStamp } from "@/lib/buildlog/format";
+import {
+  asOfLine,
+  isQuiet,
+  isStaleView,
+  shippedStamp,
+  staleSummary,
+} from "@/lib/buildlog/format";
 import type { BuildLog, Duration } from "@/lib/buildlog/types";
 
 /** The drafting register (spec §6, PDW-6 design). Server component —
@@ -14,15 +20,19 @@ type Tile = {
   denominator?: number;
 };
 
-function tiles(log: BuildLog): Tile[] {
+function tiles(log: BuildLog, stale: boolean): Tile[] {
   const dur = (d: Duration) => d.unit;
   const all: (Tile | null)[] = [
-    {
-      label: "Days building",
-      title: "Whole days since 25 June 2026, America/Detroit.",
-      note: "Since 25 June 2026, the first commit.",
-      value: log.daysBuilding,
-    },
+    // Stale view (update-spec §4.1): the elapsed-days framing is replaced by
+    // the cumulative summary line, so the tile is dropped and the grid reflows.
+    stale
+      ? null
+      : {
+          label: "Days building",
+          title: "Whole days since 25 June 2026, America/Detroit.",
+          note: "Since 25 June 2026, the first commit.",
+          value: log.daysBuilding,
+        },
     {
       label: "Features live",
       title: "Jira KAN issues of type Story with status Done.",
@@ -65,7 +75,8 @@ function tiles(log: BuildLog): Tile[] {
 }
 
 export default function Scoreboard({ log }: { log: BuildLog }) {
-  const primary = tiles(log);
+  const stale = isStaleView(log.lastShipped);
+  const primary = tiles(log, stale);
   const quiet = isQuiet(log.lastShipped);
 
   return (
@@ -74,7 +85,15 @@ export default function Scoreboard({ log }: { log: BuildLog }) {
         <h2 id="reg-h" className="reg-title">
           Register · Live
         </h2>
-        <p className="reg-asof">{asOfLine(log)}</p>
+        <p className="reg-asof">{stale ? staleSummary(log) : asOfLine(log)}</p>
+        <a
+          className="reg-source"
+          href="https://github.com/productdetroit"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          github.com/productdetroit <span aria-hidden="true">↗</span>
+        </a>
       </div>
 
       <dl className="reg-grid">
@@ -131,7 +150,7 @@ export default function Scoreboard({ log }: { log: BuildLog }) {
         </div>
       </dl>
 
-      {log.lastShipped ? (
+      {log.lastShipped && !stale ? (
         <dl
           className="reg-shipped"
           title={

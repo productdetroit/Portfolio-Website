@@ -3,6 +3,8 @@
 export const site = {
   name: "ProductDetroit.com",
   title: "Joe Ross — Executive Product Leader",
+  /** <title> tag only — OG tags keep `title` (spec §5.3). */
+  metaTitle: "Joe Ross — Chief Product Officer | PE-Backed SaaS, AI, Payments",
   heroSub:
     "30+ years leading product at PE-backed SaaS companies, a Fortune 5 enterprise, and founder-led businesses — as founding CPO at both WorkForce Software ($68M→$150M ARR, acquired by ADP for $1.2B) and BS&A Software, building the product function from scratch at each and scaling the cloud SaaS business.",
   ctaSub: "Exploring CPO and VP Product roles at PE-backed SaaS companies in the $50M–$300M ARR range.",
@@ -14,8 +16,7 @@ export const site = {
   videoEmbed: "https://www.youtube.com/embed/ausaOPHSpNU",
   links: {
     linkedin: "https://linkedin.com/in/josephrross",
-    resume:
-      "https://drive.google.com/file/d/1nP0J5hYf1e-OZ79xGfOG2ITAE25IxAEP/view",
+    resume: "https://productdetroit.com/joe-ross-resume.pdf",
     adplist: "https://adplist.org/mentors/joe-ross",
     calendly: "https://calendly.com/productdetroit",
   },
@@ -30,8 +31,10 @@ export const navLinks = [
   { href: "/#contact", label: "Contact" },
 ];
 
-/** `numberHtml` contains inline <span> units and is rendered as authored HTML. */
-export type ProofStat = { numberHtml: string; desc: string };
+/** `numberHtml` contains inline <span> units and is rendered as authored HTML.
+ *  `small` renders the number at reduced size — for long text stats that would
+ *  otherwise wrap awkwardly in the display slot (update-spec §6.2). */
+export type ProofStat = { numberHtml: string; desc: string; small?: boolean };
 
 export const proofStats: ProofStat[] = [
   {
@@ -45,22 +48,12 @@ export const proofStats: ProofStat[] = [
   {
     numberHtml: "2x Founding <span>CPO</span>",
     desc: "Built the product function from scratch at both WorkForce Software and BS&A",
+    small: true,
   },
   {
     numberHtml: "2x Rev · 4x <span>EBITDA</span>",
     desc: "Scaled BS&A revenue 2x+ and EBITDA ~4x as founding CPO",
-  },
-  {
-    numberHtml: "4x <span>Cloud Base</span>",
-    desc: "Grew the live cloud customer base ~4x by scaling adoption",
-  },
-  {
-    numberHtml: "First <span>AI</span>",
-    desc: "Shipped BS&A's first AI-powered features",
-  },
-  {
-    numberHtml: "Native <span>Payments</span>",
-    desc: "Co-led launch & scaling of BS&A's first integrated payments product",
+    small: true,
   },
 ];
 
@@ -83,7 +76,7 @@ export const pillars: Pillar[] = [
     tag: "Revenue Impact",
     title: "Product as a growth engine.",
     text:
-      "Every product investment decision I've made has been anchored in revenue impact. I've doubled ARR, tripled EBITDA, and built the product foundation for a $1.2B acquisition.",
+      "Every product investment decision I've made has been anchored in revenue impact — doubling ARR at WorkForce Software, quadrupling EBITDA at BS&A, and contributing directly to a $1.2B exit.",
   },
   {
     tag: "AI Leadership",
@@ -95,7 +88,7 @@ export const pillars: Pillar[] = [
     tag: "M&A & Integration",
     title: "A repeatable acquisition playbook.",
     text:
-      "Four acquisitions across three companies — Per-Se at McKesson, Workplace and FoKo Retail at WorkForce, and Boyce Systems at BS&A — each integrated into the product portfolio and, where it mattered, migrated onto cloud. Comfortable in the room for diligence and investor meetings, including WorkForce's $1.2B exit to ADP, and stepped in as Interim CRO through a leadership transition.",
+      "Four acquisitions across three companies — Per-Se at McKesson, Workplace and FoKo Retail at WorkForce, and Boyce Systems at BS&A — each integrated into the product portfolio and, where it mattered, migrated onto cloud. Comfortable in the room for diligence and investor meetings, including WorkForce's $1.2B exit to ADP.",
   },
   {
     tag: "Cloud Scale",
@@ -123,16 +116,16 @@ export const career: CareerEntry[] = [
     company: "BS&A Software",
     role: "Chief Product Officer · Interim CRO (H1 2025)",
     descriptionHtml:
-      "Joined as founding CPO at a founder-led municipal ERP company following a major private-equity investment by Serent Capital. Built the product function from scratch — team, governance, tooling, and PM playbook. Helped more than double company revenue while nearly quadrupling EBITDA — turning the core software business from loss-making to profitable through on-premise to cloud migration, new products, and implementation-margin work. Shipped BS&A's first AI products and co-led, with our Head of Payments and CTO, the launch of the company's first native integrated payments product — now a core growth engine — while partnering with the CTO to drive an AI-first cultural shift, transforming the SDLC (AI-DLC) to accelerate ideation to deployment and aligning product investments to support the company's five-year growth strategy.",
+      "Joined as founding CPO at a founder-led municipal ERP company following a major private-equity investment by Serent Capital. Built the product function from scratch — team, governance, tooling, and PM playbook. Helped more than double company revenue while nearly quadrupling EBITDA — driven by on-premise to cloud migration, new products, and implementation-margin work. Shipped BS&A's first AI products and co-led, with our Head of Payments and CTO, the launch of the company's first native integrated payments product — now a core growth engine — while partnering with the CTO to drive an AI-first cultural shift, transforming the SDLC (AI-DLC) to accelerate ideation to deployment and aligning product investments to support the company's five-year growth strategy.",
     tag: "Serent Capital PE-Backed · GovTech · Municipal ERP",
     highlight: true,
   },
   {
     dates: "2016 — 2023",
     company: "WorkForce Software",
-    role: "Founding Chief Product Officer",
+    role: "VP, Global Product Management → Chief Product Officer (2021)",
     descriptionHtml:
-      "Brought in by the new CEO following Insight Partners' investment to create and lead the company's first product management practice as the founder exited. Led global product strategy for a 85+ country enterprise SaaS platform, doubling ARR from $68M to $150M with 1,100 enterprise customers and 6.3M active users. Built a 30-person product organization recognized as one of the world's best. Expanded the portfolio through M&A — integrating Workplace (UK) and leading the build/buy/partner evaluation behind acquiring FoKo Retail (Canada) to add an employee-experience capability. Partnered with CEO and investment bankers on funding and strategic exit — product investments contributed directly to WorkForce Software's acquisition by ADP in October 2024 for <strong>$1.2 billion in cash</strong>. Participated in investor roadshows, ADP executive meetings, and due diligence leading to the transaction.",
+      "Brought in by the new CEO following Insight Partners' investment to create and lead the company's first product management practice as the founder exited; promoted to Chief Product Officer in January 2021. Led global product strategy for an enterprise SaaS platform spanning 85+ countries, doubling ARR from $68M to $150M with 1,100 enterprise customers and 6.3M active users. Built a 30-person product organization recognized as one of the world's best. Expanded the portfolio through M&A — integrating Workplace (UK) and leading the build/buy/partner evaluation behind acquiring FoKo Retail (Canada) to add an employee-experience capability. Partnered with CEO and investment bankers on funding and strategic exit — product investments contributed directly to WorkForce Software's acquisition by ADP in October 2024 for <strong>$1.2 billion in cash</strong>. Participated in investor roadshows, ADP executive meetings, and due diligence leading to the transaction.",
     tag: "PE-Backed · Enterprise WFM SaaS · Acquired by ADP $1.2B",
     highlight: true,
   },
@@ -146,6 +139,10 @@ export const career: CareerEntry[] = [
     highlight: false,
   },
 ];
+
+/** Accounts for 1994–2006 without a fourth career card (spec §6.3). */
+export const careerEarlier =
+  "Earlier: 1994–2006 — employee #4 at Ideal Technology Solutions through its roll-up into LDMI and Talk America, building a $10M application-services business and shifting it from 80% project revenue to 80% recurring.";
 
 export type PressItem = { date: string; title: string; text: string; href: string; cta: string };
 
