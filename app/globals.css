@@ -631,6 +631,15 @@ nav.nav-dark {
 .reg-shipped-label, .reg-shipped-when { color: #e8a58c; }
 .reg-shipped-value { color: var(--cream); }
 
+/* Portfolio section: same headed-section rhythm as the operating model —
+   hairline top rule, kicker, h2 — so product cards read as a register
+   that grows (per Joe, more products coming). */
+.bl-tophand-section {
+  border-top: 1px solid rgba(249, 246, 240, 0.18);
+  margin-top: 88px;
+  padding-top: 84px;
+}
+
 /* TopHand card on dark */
 .bl-tophand {
   background: rgba(249, 246, 240, 0.05);

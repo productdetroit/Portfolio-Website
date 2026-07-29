@@ -182,10 +182,15 @@ export default async function BuildingPage() {
         </div>
       </section>
 
-      {/* 3 — The proof point */}
-      <section aria-labelledby="th-h" className="bl-tophand-section">
+      {/* 3 — The proof point. Section-level header frames this as the start
+          of a product portfolio (per Joe) — more product cards land here. */}
+      <section aria-labelledby="portfolio-h" className="bl-tophand-section">
+        <div className="section-label">Portfolio</div>
+        <h2 id="portfolio-h" className="bl-h2">
+          Products I&rsquo;m building.
+        </h2>
         <div className="bl-tophand">
-          <div className="section-label">The product</div>
+          <div className="section-label">Product 01</div>
           <h2 id="th-h" className="bl-h2 bl-tophand-h">
             TopHand &mdash; the farm&rsquo;s most knowledgeable hand.
           </h2>
