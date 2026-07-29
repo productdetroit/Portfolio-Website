@@ -6,11 +6,18 @@ import { navLinks, site } from "@/content/site";
 
 export default function Nav() {
   const pathname = usePathname();
+  /* /building is the site's single dark route (change-spec §4) — the nav
+     goes near-black there and swaps in the reversed lockup. */
+  const dark = pathname === "/building" || pathname.startsWith("/building/");
   return (
-    <nav>
+    <nav className={dark ? "nav-dark" : undefined}>
       <Link className="nav-logo" href="/" aria-label={`${site.name} — home`}>
         <img
-          src="/brand/product-detroit-logo-primary.svg"
+          src={
+            dark
+              ? "/brand/product-detroit-logo-primary-reversed.svg"
+              : "/brand/product-detroit-logo-primary.svg"
+          }
           alt="Product Detroit"
           width={386}
           height={92}

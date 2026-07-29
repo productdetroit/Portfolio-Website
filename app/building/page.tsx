@@ -9,7 +9,7 @@ export const revalidate = 3600;
 
 const TITLE = "Building — Joe Ross, Product Detroit";
 const DESCRIPTION =
-  "Thirty years shipping product. A live log of what I'm building now, straight from Jira, GitHub and Vercel.";
+  "One operating model at two scales: the AI-native SDLC designed at BS&A, run solo end to end. A live build log straight from Jira, GitHub and Vercel.";
 
 /** Explicit per-route OG/Twitter tags — without these the root layout's
  *  homepage values leak through (update-spec §5.1). */
@@ -58,12 +58,15 @@ const GATES = [
   },
 ];
 
+/** Page spine per change-spec §4: the claim (one model, two scales) → the
+ *  model itself → the proof point (TopHand) → the receipts (register) → the
+ *  so-what for a hiring company. Dark route treatment — see globals.css. */
 export default async function BuildingPage() {
   const log = await getBuildLog();
 
   return (
     <div className="building">
-      {/* Block 1 — Claim */}
+      {/* 1 — The claim */}
       <header className="bl-header">
         <div className="bl-eyebrow">
           <span className="bl-eyebrow-rule" aria-hidden="true" />
@@ -76,26 +79,28 @@ export default async function BuildingPage() {
         </h1>
       </header>
 
-      {/* Block 2 — Scoreboard */}
-      <Scoreboard log={log} />
-
-      {/* Block 3 — Lede */}
       <section className="bl-lede" aria-label="Introduction">
         <p className="bl-lede-lead">
+          One operating model, run at two scales. At BS&amp;A I designed an
+          AI-native software development lifecycle in partnership with my CTO
+          and took AI tool adoption across seven engineering teams from 19% to
+          58% in three months &mdash; a 49% velocity gain on a large, aging
+          brownfield codebase. This page is the same model at the other scale:
+          one person, end to end, alone &mdash; to find out whether it holds
+          when there&rsquo;s no organization behind it.
+        </p>
+        <p>
           I&rsquo;ve spent thirty years in B2B enterprise SaaS building
           products and shipping features &mdash; hundreds of products,
           thousands of features, always in partnership with engineering, and
           always bounded by engineering capacity, velocity, and priorities.
-        </p>
-        <p>
-          I&rsquo;m not a trained engineer. For three decades that meant every
-          idea I had went into a queue and waited for someone else&rsquo;s
-          calendar.
+          The constraint was never judgment. It was capacity &mdash; and that
+          has been true of every product leader alive.
         </p>
         <p>
           That constraint is gone. I can find a market problem, design the
           solution, build it, put it in front of real users, and iterate
-          &mdash; in days. The numbers above come from my actual Jira,
+          &mdash; in days. The numbers below come from my actual Jira,
           Confluence, GitHub and Vercel accounts, updated automatically.
         </p>
         <p className="bl-lede-close">
@@ -103,11 +108,11 @@ export default async function BuildingPage() {
         </p>
       </section>
 
-      {/* Block 4 — Operating model */}
+      {/* 2 — The model itself */}
       <section aria-labelledby="sdlc-h" className="bl-sdlc">
         <div className="section-label">Operating model</div>
         <h2 id="sdlc-h" className="bl-h2">
-          An enterprise SDLC, run by one person.
+          An AI-native SDLC, run by one person.
         </h2>
 
         <div className="bl-gates">
@@ -145,7 +150,7 @@ export default async function BuildingPage() {
 
         <div className="bl-prose">
           <p>
-            Same stack a 200-person product org runs. Same gates.{" "}
+            Same stack an enterprise product org runs. Same gates.{" "}
             <span className="bl-ink">
               {log.specsWritten} specs, {log.backlogItems} backlog items,{" "}
               {log.pullRequests} pull requests
@@ -161,13 +166,6 @@ export default async function BuildingPage() {
             lands as a branch and a pull request. Nothing skips the spec, and
             nothing merges without review.
           </p>
-          <p>
-            When I found that my data model had quietly assumed hay was the
-            only crop a farm grows, that became a Confluence spec, a nine-story
-            epic, and a shipped migration &mdash; seven days from problem to
-            production, with the whole thread traceable from the decision to
-            the commit.
-          </p>
           <p className="bl-ink">
             Those are product decisions. They&rsquo;re the same ones I&rsquo;ve
             been making for thirty years. What changed is that I no longer wait
@@ -176,7 +174,7 @@ export default async function BuildingPage() {
         </div>
       </section>
 
-      {/* Block 5 — TopHand card */}
+      {/* 3 — The proof point */}
       <section aria-labelledby="th-h" className="bl-tophand-section">
         <div className="bl-tophand">
           <div className="section-label">The product</div>
@@ -208,6 +206,13 @@ export default async function BuildingPage() {
               better records.&rdquo;
             </p>
             <p>
+              When I found that my data model had quietly assumed hay was the
+              only crop a farm grows, that became a Confluence spec, a
+              nine-story epic, and a shipped migration &mdash; seven days from
+              problem to production, with the whole thread traceable from the
+              decision to the commit.
+            </p>
+            <p>
               My family runs a working dairy-goat farm in Michigan. It&rsquo;s
               the first tenant, the demo environment, and the reason I know
               which problems are real.
@@ -230,7 +235,43 @@ export default async function BuildingPage() {
         </div>
       </section>
 
-      {/* Block 6 — Contact */}
+      {/* 4 — The receipts */}
+      <section className="bl-register-section" aria-label="The receipts">
+        <Scoreboard log={log} />
+      </section>
+
+      {/* 5 — The so-what */}
+      <section aria-labelledby="sowhat-h" className="bl-sowhat">
+        <div className="section-label">Why it matters</div>
+        <h2 id="sowhat-h" className="bl-h2">
+          What this buys a hiring company.
+        </h2>
+        <div className="bl-prose">
+          <p>
+            For a PE-backed SaaS company, this experiment is diligence you can
+            hire:
+          </p>
+          <p>
+            I can assess vendor and internal AI delivery claims against a model
+            I&rsquo;ve run myself, at both scales &mdash; I know what the demos
+            leave out and what the pilot numbers actually mean.
+          </p>
+          <p>
+            When I propose an AI operating model to an engineering
+            organization, it isn&rsquo;t theory. I&rsquo;ve driven adoption
+            across seven teams with a CTO partner and run the whole lifecycle
+            alone &mdash; credibility with engineering that a mandate
+            can&rsquo;t buy.
+          </p>
+          <p className="bl-ink">
+            And I know where it breaks: which gates have to stay human, where a
+            thin spec turns into rework, and what review has to catch that
+            automation never will.
+          </p>
+        </div>
+      </section>
+
+      {/* 6 — Contact */}
       <section className="bl-contact" aria-label="Contact">
         <h2>Open to senior product roles in B2B enterprise SaaS.</h2>
         <p>Thirty years of judgment, now with no queue in front of it.</p>

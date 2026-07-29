@@ -500,11 +500,45 @@ footer a:hover { color: var(--accent); }
   font-size: 13px; border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-/* Home teaser (PDW-8) */
+/* BUILDER BAND (change-spec §1) — cream, standard content treatment; the
+   full-bleed navy and terracotta bands keep their reserved meanings. */
+.builder-band { padding-top: 0; padding-bottom: 40px; }
+.builder-head {
+  border-bottom: 1px solid var(--navy);
+  padding-bottom: 14px; margin-bottom: 36px;
+}
+.builder-head h2 { margin-bottom: 0; }
+.builder-prose p {
+  font-size: 16.5px; color: var(--muted); line-height: 1.85;
+  margin-bottom: 22px; max-width: 720px;
+}
+.builder-prose a {
+  color: var(--accent-text); text-decoration: none;
+  border-bottom: 1px solid rgba(200, 82, 42, 0.4); padding-bottom: 1px;
+  transition: color 0.2s;
+}
+.builder-prose a:hover { color: var(--accent); }
+/* Bridge line (§2.3): separates the commercial proof above from the
+   capability proof below. A whisper, not a heading. */
+.builder-bridge { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.builder-band .section-inner { animation: fadeUp 0.7s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .builder-band .section-inner { animation: none; }
+}
+
+/* Home teaser (PDW-8; kicker + subject per change-spec §2) */
 .teaser-section { padding: 0 48px 20px; }
+.teaser-kicker {
+  font-family: var(--font-dm-mono), monospace; font-size: 10px;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--accent-text);
+  border-bottom: 1px solid var(--navy);
+  padding-bottom: 10px; margin-bottom: 24px;
+}
 .teaser-strip {
-  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
-  padding: 26px 0; display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  /* Top rule moved to .teaser-kicker so the head sits on the navy rule. */
+  border-bottom: 1px solid var(--ink);
+  padding: 0 0 26px; display: grid; grid-template-columns: minmax(0, 1fr) auto;
   gap: 32px; align-items: center;
 }
 .teaser-metrics { display: flex; gap: 56px; flex-wrap: wrap; align-items: flex-start; }
@@ -521,6 +555,102 @@ footer a:hover { color: var(--accent); }
   border-bottom: 1px solid rgba(200, 82, 42, 0.4); padding-bottom: 4px; text-decoration: none;
 }
 .teaser-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---- /building dark treatment (change-spec §4) ----
+   Single-route exception: near-black (brand Ink), not navy — navy stays
+   reserved for the statistics band. Small accent text uses Clay light
+   #E8A58C per brand guide v1.1 ("on navy or ink, swap terracotta for Clay
+   light"); terracotta is kept for large display, rules and hovers only
+   (verified ≈3.9:1 on ink — passes AA large-text, fails body). */
+body:has(.building) { background: var(--ink); }
+.building { background: var(--ink); }
+
+nav.nav-dark {
+  background: rgba(26, 26, 26, 0.95);
+  border-bottom-color: rgba(249, 246, 240, 0.18);
+}
+.nav-dark .nav-links a { color: rgba(249, 246, 240, 0.65); }
+.nav-dark .nav-links a:hover { color: #e8a58c; }
+.nav-dark .nav-links a[aria-current="page"] {
+  color: #e8a58c; border-bottom-color: var(--accent);
+}
+
+.building h1, .building h2 { color: var(--cream); }
+.building .section-label { color: #e8a58c; }
+.bl-eyebrow { color: #e8a58c; }
+.bl-lede p, .bl-prose p { color: rgba(249, 246, 240, 0.78); }
+.bl-lede .bl-lede-lead, .bl-prose .bl-ink, .bl-mono { color: var(--cream); }
+.bl-lede .bl-lede-close { color: #e8a58c; }
+.bl-pullquote { color: var(--accent); }
+.bl-sdlc { border-top-color: rgba(249, 246, 240, 0.18); }
+
+.bl-gates {
+  background: rgba(249, 246, 240, 0.18);
+  border-color: rgba(249, 246, 240, 0.18);
+}
+.bl-gate { background: var(--ink); }
+.bl-gate-index { color: rgba(249, 246, 240, 0.55); }
+.bl-gate-name { color: var(--cream); }
+.bl-gate-desc { color: rgba(249, 246, 240, 0.7); }
+.bl-gate-kind {
+  color: rgba(249, 246, 240, 0.6);
+  border-top-color: rgba(249, 246, 240, 0.18);
+}
+.bl-gate-kind.human {
+  color: #e8a58c; border-top-color: rgba(232, 165, 140, 0.35);
+}
+
+/* Register on dark */
+.reg-head { border-bottom-color: rgba(249, 246, 240, 0.5); }
+.reg-title { color: var(--cream); }
+.reg-asof { color: rgba(249, 246, 240, 0.65); }
+.reg-source {
+  color: #e8a58c; border-bottom-color: rgba(232, 165, 140, 0.4);
+}
+.reg-source:hover { color: var(--cream); }
+.reg-grid, .reg-tile, .reg-secondary {
+  border-color: rgba(249, 246, 240, 0.18);
+}
+.reg-label, .reg-unit, .reg-denominator, .reg-note,
+.reg-sec-item dt { color: rgba(249, 246, 240, 0.65); }
+.reg-index { color: rgba(249, 246, 240, 0.5); }
+.reg-slash { color: rgba(249, 246, 240, 0.45); }
+.reg-number, .reg-sec-item dd { color: var(--cream); }
+.reg-shipped {
+  background: rgba(200, 82, 42, 0.12);
+  border-bottom-color: rgba(249, 246, 240, 0.5);
+  border-left-color: rgba(249, 246, 240, 0.18);
+  border-right-color: rgba(249, 246, 240, 0.18);
+}
+.reg-shipped-label, .reg-shipped-when { color: #e8a58c; }
+.reg-shipped-value { color: var(--cream); }
+
+/* TopHand card on dark */
+.bl-tophand {
+  background: rgba(249, 246, 240, 0.05);
+  border-color: rgba(249, 246, 240, 0.18);
+}
+.bl-tophand-meta {
+  color: rgba(249, 246, 240, 0.65);
+  border-bottom-color: rgba(249, 246, 240, 0.18);
+}
+.bl-tophand-cta { border: 1px solid rgba(249, 246, 240, 0.25); }
+
+/* Contact band: brand terracotta #C8522A tops out at ~4.5:1 with pure
+   white, so small text can't clear AA on it. The darker terracotta token
+   (--accent-text, minted for AA on cream) keeps the CTA-band meaning and
+   passes for the 13–16px lines (change-spec §4 contrast requirement). */
+.bl-contact { background: var(--accent-text); }
+.bl-contact p { color: rgba(255, 255, 255, 0.95); }
+.bl-contact a.bl-contact-email { color: rgba(255, 255, 255, 0.95); }
+
+/* Spine sections 4 & 5 */
+.bl-register-section { padding-top: 88px; }
+.bl-sowhat {
+  padding: 84px 0 0;
+  border-top: 1px solid rgba(249, 246, 240, 0.18);
+  margin-top: 88px;
+}
 
 @media (max-width: 720px) {
   .building { padding: 0 24px; }
