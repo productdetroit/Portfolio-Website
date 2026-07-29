@@ -1,5 +1,9 @@
 # productdetroit.com
 
+**© 2026 Joe Ross / Product Detroit LLC. All rights reserved.** This repository
+is public so the build process it documents can be verified — not for reuse. No
+license is granted to copy, modify, or redistribute the code or content.
+
 Next.js 16 (App Router, TypeScript) portfolio site for Joe Ross / Product Detroit LLC.
 Ported from the original static `index.html` with **no content or visual changes**.
 
