@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 /** Builder band (change-spec §1) — the argument the build metrics ribbon
  *  supports. A band between About and the ribbon, not a seventh About tile:
  *  the pillars are past-tense and organizational; this claim is present-tense
@@ -36,13 +38,10 @@ export default function BuilderBand() {
             when there&rsquo;s no organization behind it.
           </p>
           <p>
-            <a
-              href="https://tophand.ag"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              TopHand.ag
-            </a>{" "}
+            {/* Routes to /building, not tophand.ag (per Joe, 28 Jul 2026):
+                /building is the single gateway to products; external product
+                links live only there. Supersedes change-spec §2.2a. */}
+            <Link href="/building">TopHand</Link>{" "}
             is where I&rsquo;m testing that. It&rsquo;s a real product, not a
             demo &mdash; built for two reasons: to leverage AI assisted
             design, agentic coding and deployment tools firsthand to fuel my
