@@ -29,13 +29,14 @@ nav {
   border-bottom: 1px solid var(--rule);
   padding: 0 48px;
   display: flex; align-items: center; justify-content: space-between;
-  height: 60px;
+  /* 72px: fits the 36px lockup plus its clear space (half the seal
+     diameter = 18px above and below, per brand guide v1.1). */
+  height: 72px;
 }
-.nav-logo {
-  font-family: var(--font-dm-mono), monospace;
-  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--accent-text); text-decoration: none;
-}
+.nav-logo { display: flex; align-items: center; }
+/* 36px tall = ~151px wide: the lockup's 150px minimum. Below that the
+   brand guide calls for the small mark, not a shrunken lockup. */
+.nav-logo img { display: block; height: 36px; width: auto; }
 .nav-links { display: flex; gap: 36px; }
 .nav-links a {
   font-family: var(--font-dm-mono), monospace; font-size: 11px;
@@ -286,6 +287,10 @@ footer {
 }
 footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
 footer a:hover { color: var(--accent); }
+/* Reversed mark on ink: 32px keeps it above the 28px floor for the full
+   mark; 16px gap = its clear space (half the seal diameter). */
+.footer-brand { display: flex; align-items: center; gap: 16px; }
+.footer-brand img { display: block; height: 32px; width: auto; }
 
 @media (max-width: 640px) {
   nav {
@@ -519,7 +524,9 @@ footer a:hover { color: var(--accent); }
 
 @media (max-width: 720px) {
   .building { padding: 0 24px; }
-  .bl-header { padding-top: 130px; }
+  /* Mobile nav stacks logo above wrapped links (~135px tall) — keep the
+     header clear of it. */
+  .bl-header { padding-top: 170px; }
   .reg-grid { grid-template-columns: 1fr 1fr; }
   .bl-gates { grid-template-columns: 1fr; }
   .bl-contact { margin-left: -24px; margin-right: -24px; padding: 60px 24px; }
