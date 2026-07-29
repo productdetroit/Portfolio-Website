@@ -82,7 +82,7 @@ export const pillars: Pillar[] = [
     tag: "AI Leadership",
     title: "AI built into the core.",
     text:
-      "Not just AI features — an AI operating model. In a tight partnership with the CTO, I designed BS&A's first AI strategy, shipped its first AI-powered customer features, and led an AI-first cultural shift — reshaped the SDLC into an AI-driven lifecycle (AI-DLC) and drove AI tooling adoption across every engineering team.",
+      "Not just AI features — an AI operating model. In a tight partnership with the CTO, I designed BS&A's first AI strategy, shipped its first AI-powered customer features, and led an AI-first cultural shift — reshaped the software development lifecycle into an AI-native SDLC and drove AI tooling adoption across every engineering team.",
   },
   {
     tag: "M&A & Integration",
@@ -116,7 +116,7 @@ export const career: CareerEntry[] = [
     company: "BS&A Software",
     role: "Chief Product Officer · Interim CRO (H1 2025)",
     descriptionHtml:
-      "Joined as founding CPO at a founder-led municipal ERP company following a major private-equity investment by Serent Capital. Built the product function from scratch — team, governance, tooling, and PM playbook. Helped more than double company revenue while nearly quadrupling EBITDA — driven by on-premise to cloud migration, new products, and implementation-margin work. Shipped BS&A's first AI products and co-led, with our Head of Payments and CTO, the launch of the company's first native integrated payments product — now a core growth engine — while partnering with the CTO to drive an AI-first cultural shift, transforming the SDLC (AI-DLC) to accelerate ideation to deployment and aligning product investments to support the company's five-year growth strategy.",
+      "Joined as founding CPO at a founder-led municipal ERP company following a major private-equity investment by Serent Capital. Built the product function from scratch — team, governance, tooling, and PM playbook. Helped more than double company revenue while nearly quadrupling EBITDA — driven by on-premise to cloud migration, new products, and implementation-margin work. Shipped BS&A's first AI products and co-led, with our Head of Payments and CTO, the launch of the company's first native integrated payments product — now a core growth engine — while partnering with the CTO to drive an AI-first cultural shift — transforming the SDLC into an AI-native SDLC to accelerate ideation to deployment — and aligning product investments to support the company's five-year growth strategy.",
     tag: "Serent Capital PE-Backed · GovTech · Municipal ERP",
     highlight: true,
   },

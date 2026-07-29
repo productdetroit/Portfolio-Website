@@ -8,17 +8,28 @@ import type { BuildLog } from "@/lib/buildlog/types";
 export default function ScoreboardTeaser({ log }: { log: BuildLog }) {
   const metrics: Array<{ label: string; value: number; unit?: string } | null> = [
     { label: "Days building", value: log.daysBuilding },
-    { label: "Features live", value: log.featuresLive },
+    // "in TopHand" gives the metrics a subject (change-spec §2.2).
+    { label: "Features live in TopHand", value: log.featuresLive },
     {
       label: "Median idea → live",
       value: log.cycleTime.value,
       unit: log.cycleTime.unit === "hours" ? "h" : "d",
     },
+    // D6 (change-spec §6): reserved outcome-shaped slot. Once TopHand has
+    // real usage, replace with e.g. { label: "…", value: log.<outcome> } —
+    // null entries and zero values are filtered out below, so the slot ships
+    // dormant by design.
+    null,
   ];
 
   return (
     <section className="teaser-section" aria-label="Build log summary">
       <div className="section-inner">
+        {/* Mono kicker on the navy rule (change-spec §2.1) — names the proof
+            type so velocity metrics don't read as commercial claims. */}
+        <div className="teaser-kicker">
+          Proof · One person, one AI-native SDLC
+        </div>
         <div className="teaser-strip">
           <div className="teaser-metrics">
             {metrics
