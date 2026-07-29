@@ -4,7 +4,15 @@ import ResumeLink from "@/components/ResumeLink";
 export default function Footer() {
   return (
     <footer>
-      <span>© 2026 Joe Ross · {site.name}</span>
+      <div className="footer-brand">
+        <img
+          src="/brand/product-detroit-mark-reversed.svg"
+          alt=""
+          width={120}
+          height={120}
+        />
+        <span>© 2026 Joe Ross · {site.name}</span>
+      </div>
       <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
         <a href={`mailto:${site.email}`}>Email</a>
         <a href={site.links.linkedin} target="_blank" rel="noopener noreferrer">

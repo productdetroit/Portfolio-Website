@@ -8,8 +8,13 @@ export default function Nav() {
   const pathname = usePathname();
   return (
     <nav>
-      <Link className="nav-logo" href="/">
-        {site.name}
+      <Link className="nav-logo" href="/" aria-label={`${site.name} — home`}>
+        <img
+          src="/brand/product-detroit-logo-primary.svg"
+          alt="Product Detroit"
+          width={386}
+          height={92}
+        />
       </Link>
       <div className="nav-links">
         {navLinks.map((l) => (
