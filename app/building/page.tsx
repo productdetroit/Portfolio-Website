@@ -7,7 +7,10 @@ import { site } from "@/content/site";
 
 export const revalidate = 3600;
 
-const TITLE = "Building — Joe Ross, Product Detroit";
+/** Short name only — the root layout's title template appends the site suffix.
+ *  OG/Twitter don't inherit the template, so they use FULL_TITLE. */
+const TITLE = "Building";
+const FULL_TITLE = "Building — Joe Ross, Product Detroit";
 const DESCRIPTION =
   "One operating model at two scales: the AI-native SDLC designed at BS&A, run solo end to end. A live build log straight from Jira, GitHub and Vercel.";
 
@@ -17,7 +20,7 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   openGraph: {
-    title: TITLE,
+    title: FULL_TITLE,
     description: DESCRIPTION,
     url: `${site.url}/building`,
     siteName: site.name,
@@ -25,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: TITLE,
+    title: FULL_TITLE,
     description: DESCRIPTION,
   },
 };

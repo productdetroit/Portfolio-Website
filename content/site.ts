@@ -5,6 +5,9 @@ export const site = {
   title: "Joe Ross — Executive Product Leader",
   /** <title> tag only — OG tags keep `title` (spec §5.3). */
   metaTitle: "Joe Ross — Chief Product Officer | PE-Backed SaaS, AI, Payments",
+  /** Suffix applied to every non-homepage <title> via the root layout's
+   *  title template. Pages declare only their short name (e.g. "Building"). */
+  titleTemplate: "%s — Joe Ross, Product Detroit",
   heroSub:
     "30+ years leading product at PE-backed SaaS companies, a Fortune 5 enterprise, and founder-led businesses — as founding CPO at both WorkForce Software ($68M→$150M ARR, acquired by ADP for $1.2B) and BS&A Software, building the product function from scratch at each and scaling the cloud SaaS business.",
   ctaSub: "Exploring CPO and VP Product roles at PE-backed SaaS companies in the $50M–$300M ARR range.",

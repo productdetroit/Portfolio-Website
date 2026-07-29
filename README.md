@@ -39,6 +39,21 @@ lib/                      reserved for the build log providers (PDW-4)
 **All copy lives in `content/site.ts`.** Edit text there, not in components. The
 components are presentational only.
 
+## Page titles
+
+One convention, defined once and applied by the root layout's title template:
+
+- **Homepage** — `site.metaTitle` verbatim (the `<title>`-only variant; OG/Twitter
+  tags use `site.title`, per update-spec §5.3)
+- **Every other page** — declares only its short name (`title: "Building"`); the
+  template in `site.titleTemplate` appends `— Joe Ross, Product Detroit`
+- Next.js does **not** apply the template to OG/Twitter tags, so per-route
+  metadata spells out the full title for those (see `app/building/page.tsx`)
+
+Don't rename titles casually: GA4's "Page title" dimension creates a new row for
+every distinct historical title, permanently splitting that page's data. Analyze
+by "Page path and screen class" instead.
+
 ## Deploying
 
 The Vercel project already exists: `portfolio-website`

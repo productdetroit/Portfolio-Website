@@ -27,7 +27,10 @@ const lato = Lato({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: site.metaTitle,
+  title: {
+    default: site.metaTitle,
+    template: site.titleTemplate,
+  },
   description: site.heroSub,
   openGraph: {
     title: site.title,
