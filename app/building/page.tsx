@@ -47,8 +47,8 @@ const GATES = [
     gate: "Shared",
   },
   {
-    name: "Build",
-    desc: "Claude Code. Stories in parallel, each on its own branch.",
+    name: "Build / Test",
+    desc: "Claude Code. Stories in parallel; tests written and run with every branch.",
     gate: "Automated",
   },
   {
