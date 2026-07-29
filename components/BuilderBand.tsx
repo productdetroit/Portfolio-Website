@@ -12,8 +12,13 @@ export default function BuilderBand() {
     <section className="builder-band" aria-labelledby="builder-h">
       <div className="section-inner">
         <div className="builder-head">
-          {/* True right arrow U+2192, display serif, no mono kicker (§1). */}
-          <h2 id="builder-h">Product Manager → Product Builder</h2>
+          {/* True right arrow U+2192, display serif, no mono kicker (§1).
+              "Product Builder" in terracotta per Joe — large text, so the
+              accent clears AA (~4.2:1 on cream). */}
+          <h2 id="builder-h">
+            Product Manager →{" "}
+            <span className="builder-accent">Product Builder</span>
+          </h2>
         </div>
         <div className="builder-prose">
           <p>
