@@ -37,13 +37,18 @@ const GATES = [
     gate: "Human gate",
   },
   {
+    name: "Prototype",
+    desc: "Claude Design. High-fidelity, cheap, in front of users before code.",
+    gate: "Human gate",
+  },
+  {
     name: "Backlog",
     desc: "Jira epic and linked stories, written by both of us.",
     gate: "Shared",
   },
   {
     name: "Build",
-    desc: "Claude Code works one story on one branch.",
+    desc: "Claude Code. Stories in parallel, each on its own branch.",
     gate: "Automated",
   },
   {
@@ -140,9 +145,12 @@ export default async function BuildingPage() {
           <p>
             Every feature starts as a spec in Confluence &mdash; the problem,
             the data model, the architecture decision and why it&rsquo;s
-            reversible. The spec becomes an epic and linked stories in Jira.
-            Claude Code works a story on a branch. Merge triggers a build and
-            deploys to production through Vercel.
+            reversible. The spec becomes a high-fidelity Claude Design
+            prototype &mdash; quick and cheap enough to put in front of real
+            users and validate before any code is written &mdash; then an epic
+            and linked stories in Jira. Claude Code works stories in parallel,
+            each on its own branch. Merges trigger builds and deploy to
+            production through Vercel, continuously.
           </p>
         </div>
 
