@@ -3,7 +3,7 @@ import { aggregate, daysBuilding, snapshot, type Providers } from "./aggregate";
 import type { JiraMetrics, VercelMetrics } from "./types";
 
 const jiraLive: JiraMetrics = {
-  backlogItems: 170,
+  backlogItems: 168,
   featuresLive: 72,
   cycleTime: { value: 12, unit: "hours" },
   specToShipped: { value: 6, unit: "days" },
