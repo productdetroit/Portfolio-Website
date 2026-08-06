@@ -17,7 +17,10 @@
     "total": 23
   },
   "pullRequests": 93,
-  "productionDeploys": 109,
+  "deploysBaseline": {
+    "count": 128,
+    "capturedAt": "2026-08-06T00:00:00.000Z"
+  },
   "lastShipped": {
     "subject": "Feature gating",
     "at": "2026-07-28T02:03:51.955Z"

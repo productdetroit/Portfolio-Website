@@ -3,6 +3,7 @@ import { aggregate, daysBuilding, snapshot, type Providers } from "./aggregate";
 import type { JiraMetrics, VercelMetrics } from "./types";
 
 const jiraLive: JiraMetrics = {
+  backlogItems: 170,
   featuresLive: 72,
   cycleTime: { value: 12, unit: "hours" },
   specToShipped: { value: 6, unit: "days" },
@@ -69,7 +70,7 @@ describe("aggregate", () => {
     expect(log.featuresLive).toBe(snapshot.featuresLive);
     expect(log.specsWritten).toBe(snapshot.specsWritten);
     expect(log.pullRequests).toBe(snapshot.pullRequests);
-    expect(log.productionDeploys).toBe(snapshot.productionDeploys);
+    expect(log.productionDeploys).toBe(snapshot.deploysBaseline.count);
     expect(log.lastShipped?.subject).toBe(snapshot.lastShipped?.subject);
     spy.mockRestore();
   });

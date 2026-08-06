@@ -17,7 +17,9 @@ type Snapshot = {
   specsWritten: number;
   epics: { done: number; total: number };
   pullRequests: number;
-  productionDeploys: number;
+  /** Cumulative READY production deploys as of capturedAt — the floor the
+   *  live count builds on (vercel.ts) and the fallback when Vercel is down. */
+  deploysBaseline: { count: number; capturedAt: string };
   lastShipped: { subject: string; at: string } | null;
 };
 
@@ -129,7 +131,7 @@ export async function aggregate(
     specsWritten: confluence ?? snapshot.specsWritten,
     epics: jira?.epics ?? snapshot.epics,
     pullRequests: github ?? snapshot.pullRequests,
-    productionDeploys: vercel?.productionDeploys ?? snapshot.productionDeploys,
+    productionDeploys: vercel?.productionDeploys ?? snapshot.deploysBaseline.count,
     lastShipped,
   };
 }
