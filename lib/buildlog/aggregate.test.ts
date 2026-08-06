@@ -76,7 +76,7 @@ describe("aggregate", () => {
     expect(log.featuresLive).toBe(snapshot.featuresLive);
     expect(log.specsWritten).toBe(snapshot.specsWritten);
     expect(log.pullRequests).toBe(snapshot.pullRequests);
-    expect(log.productionDeploys).toBe(snapshot.productionDeploys);
+    expect(log.productionDeploys).toBe(snapshot.deploysBaseline.count);
     expect(log.lastShipped?.subject).toBe(snapshot.lastShipped?.subject);
     spy.mockRestore();
   });

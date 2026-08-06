@@ -1,3 +1,4 @@
+import snapshotJson from "./snapshot.json";
 import { fetchJson, requireEnv } from "./http";
 import { cleanCommitSubject } from "./compute";
 import type { VercelMetrics } from "./types";
@@ -6,7 +7,7 @@ import type { VercelMetrics } from "./types";
 const PROJECT_ID = "prj_BSzl67wnbyvpvORNXZLZvMTKxFO0";
 const TEAM_ID = "team_QPNvbUaSuTv0tNOvAo4Tt7Xg";
 
-type Deployment = {
+export type Deployment = {
   created?: number;
   createdAt?: number;
   state?: string;
@@ -19,6 +20,29 @@ type DeploymentsPage = {
   deployments?: Deployment[];
   pagination?: { next?: number | null };
 };
+
+/** Vercel prunes old deployments out of /v6/deployments, so the raw list
+ *  length decays (128 on Aug 5 → 122 on Aug 6 with nothing shipped in
+ *  between). The count rendered on /building is instead the committed
+ *  baseline plus deploys created after it — see countProductionDeploys.
+ *  To refresh the baseline: set `count` in snapshot.json to the number
+ *  currently rendered on /building and `capturedAt` to now. Do this every
+ *  month or two, before pruning reaches deploys newer than `capturedAt`. */
+export const deploysBaseline = snapshotJson.deploysBaseline;
+
+/** Baseline count plus READY production deploys created strictly after the
+ *  baseline capture. Never returns less than the baseline, so pruning can
+ *  empty the fetched list entirely without the count decaying. */
+export function countProductionDeploys(
+  production: Deployment[],
+  baseline: { count: number; capturedAt: string } = deploysBaseline,
+): number {
+  const since = Date.parse(baseline.capturedAt);
+  const newer = production.filter(
+    (d) => (d.created ?? d.createdAt ?? 0) > since,
+  ).length;
+  return baseline.count + newer;
+}
 
 /** Spec 6.2: production deploy count plus the newest deploy's commit subject.
  *  Filters on target/state client-side in case v6 ignores the params. */
@@ -50,7 +74,7 @@ export async function getVercelMetrics(): Promise<VercelMetrics> {
   }, null);
 
   return {
-    productionDeploys: production.length,
+    productionDeploys: countProductionDeploys(production),
     lastShipped: newest
       ? {
           subject: cleanCommitSubject(
