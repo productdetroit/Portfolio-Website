@@ -50,6 +50,19 @@ export function daysBuilding(now: Date): number {
   );
 }
 
+/** Whole calendar days between two instants, America/Detroit — "yesterday"
+ *  is the previous Detroit calendar day, not 24 elapsed hours. A 10:19 AM
+ *  ship must read "yesterday" the next morning, not "today · 10:19 AM". */
+export function calendarDaysAgo(at: string, now: Date): number {
+  return Math.max(
+    0,
+    Math.round(
+      (detroitCalendarDayUtcMs(now) - detroitCalendarDayUtcMs(new Date(at))) /
+        86_400_000,
+    ),
+  );
+}
+
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(
@@ -109,12 +122,7 @@ export async function aggregate(
     ? {
         subject: lastShippedSource.subject,
         at: lastShippedSource.at,
-        daysAgo: Math.max(
-          0,
-          Math.floor(
-            (now.getTime() - Date.parse(lastShippedSource.at)) / 86_400_000,
-          ),
-        ),
+        daysAgo: calendarDaysAgo(lastShippedSource.at, now),
       }
     : null;
 
