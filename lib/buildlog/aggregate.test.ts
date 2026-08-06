@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { aggregate, daysBuilding, snapshot, type Providers } from "./aggregate";
+import {
+  aggregate,
+  calendarDaysAgo,
+  daysBuilding,
+  snapshot,
+  type Providers,
+} from "./aggregate";
 import type { JiraMetrics, VercelMetrics } from "./types";
 
 const jiraLive: JiraMetrics = {
@@ -89,6 +95,38 @@ describe("aggregate", () => {
     expect(log.featuresLive).toBe(snapshot.featuresLive);
     expect(log.pullRequests).toBe(93);
     spy.mockRestore();
+  });
+});
+
+describe("calendarDaysAgo", () => {
+  it("counts Detroit calendar days, so a yesterday-morning ship is not 'today'", () => {
+    // Shipped Wed Aug 5, 10:19 AM ET; viewed Thu Aug 6, 8:21 AM ET. Only
+    // ~22h elapsed, but it's the previous calendar day — daysAgo must be 1
+    // (the old elapsed/24h floor said 0 and rendered "today · 10:19 AM ET",
+    // a time in the viewer's future).
+    expect(
+      calendarDaysAgo("2026-08-05T14:19:50.420Z", new Date("2026-08-06T12:21:00Z")),
+    ).toBe(1);
+  });
+
+  it("stays 0 for the whole Detroit day of the ship", () => {
+    expect(
+      calendarDaysAgo("2026-08-05T14:19:50.420Z", new Date("2026-08-05T23:00:00Z")),
+    ).toBe(0);
+  });
+
+  it("ticks at Detroit midnight, not UTC midnight", () => {
+    // 03:30 UTC Jul 28 is still 11:30 PM Jul 27 in Detroit (UTC-4), so by
+    // Jul 28 noon Detroit the ship is one calendar day old.
+    expect(
+      calendarDaysAgo("2026-07-28T03:30:00Z", new Date("2026-07-28T16:00:00Z")),
+    ).toBe(1);
+  });
+
+  it("never goes negative on clock skew", () => {
+    expect(
+      calendarDaysAgo("2026-08-07T00:00:00Z", new Date("2026-08-06T12:00:00Z")),
+    ).toBe(0);
   });
 });
 
