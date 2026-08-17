@@ -1,20 +1,18 @@
 import Link from "next/link";
 import CountUp from "@/components/CountUp";
 import { shippingPhrase } from "@/lib/buildlog/format";
-import type { BuildLog } from "@/lib/buildlog/types";
+import type { PortfolioBuildLog } from "@/lib/buildlog/types";
 
 /** Home-page teaser strip — three metrics and the link to /building
  *  (spec §4, PDW-8). Proof without a click; the full page one click deeper. */
-export default function ScoreboardTeaser({ log }: { log: BuildLog }) {
+export default function ScoreboardTeaser({ log }: { log: PortfolioBuildLog }) {
   const metrics: Array<{ label: string; value: number; unit?: string } | null> = [
     { label: "Days building", value: log.daysBuilding },
-    // "in TopHand" gives the metrics a subject (change-spec §2.2).
-    { label: "Features live in TopHand", value: log.featuresLive },
-    {
-      label: "Median idea → live",
-      value: log.cycleTime.value,
-      unit: log.cycleTime.unit === "hours" ? "h" : "d",
-    },
+    // Portfolio totals — additive only. The median that used to sit here is
+    // gone deliberately: with two products there is no honest way to pool one,
+    // and each product's register carries its own where it means something.
+    { label: "Work items delivered", value: log.totals.featuresLive },
+    { label: "Pull requests merged", value: log.totals.pullRequests },
     // D6 (change-spec §6): reserved outcome-shaped slot. Once TopHand has
     // real usage, replace with e.g. { label: "…", value: log.<outcome> } —
     // null entries and zero values are filtered out below, so the slot ships

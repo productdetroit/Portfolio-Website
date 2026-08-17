@@ -1,14 +1,24 @@
 import { fetchJson, requireEnv } from "./http";
 import { ProviderError } from "./types";
+import type { ProductConfig } from "./products";
 
-/** Spec 6.2: merged PRs in productdetroit/app.tophand.ag only. The repo is
- *  private — a token without repo read scope makes total_count silently 0,
- *  so 0 is treated as an error rather than a value (spec: never render 0). */
-export async function getPullRequestsMerged(): Promise<number> {
+/** Spec 6.2: merged PRs across every repository the product ships from.
+ *
+ *  TopHand ships from two. A single-repo query under-reports it — which is not
+ *  hypothetical: KAN-123 shipped to production in tophand_website on 27 July
+ *  and went unnoticed for three weeks precisely because the tooling only read
+ *  the app repo.
+ *
+ *  The repos are private, and a token without repo read scope makes
+ *  total_count silently 0, so 0 is treated as an error rather than a value
+ *  (spec: never render 0). */
+export async function getPullRequestsMerged(
+  product: ProductConfig,
+): Promise<number> {
   const token = requireEnv("github", "GITHUB_TOKEN");
-  const query = encodeURIComponent(
-    "repo:productdetroit/app.tophand.ag is:pr is:merged",
-  );
+  const repoQualifier = product.githubRepos.map((r) => `repo:${r}`).join(" ");
+  const query = encodeURIComponent(`${repoQualifier} is:pr is:merged`);
+
   const data = await fetchJson<{ total_count?: number }>(
     "github",
     `https://api.github.com/search/issues?q=${query}&per_page=1`,
@@ -24,7 +34,7 @@ export async function getPullRequestsMerged(): Promise<number> {
   if (count === 0) {
     throw new ProviderError(
       "github",
-      "total_count is 0 — likely a token without repo read scope on the private repo",
+      `total_count is 0 for ${product.githubRepos.join(", ")} — likely a token without repo read scope`,
     );
   }
   return count;

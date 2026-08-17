@@ -1,6 +1,7 @@
 import { fetchJson, requireEnv } from "./http";
 import { medianMs, toDuration } from "./compute";
 import { ProviderError, type JiraMetrics } from "./types";
+import { ATLASSIAN_HOST, type ProductConfig } from "./products";
 
 const HOST = "https://productdetroit.atlassian.net";
 
@@ -25,16 +26,18 @@ function authHeader(): string {
   return `Basic ${Buffer.from(`${email}:${token}`).toString("base64")}`;
 }
 
-/** One paginated search over project KAN supplies all four Jira metrics
- *  (spec 6.1 rows 2-4 and 6; PDW-4). */
-export async function getJiraMetrics(): Promise<JiraMetrics> {
+/** One paginated search over the product's Jira project supplies all its Jira
+ *  metrics (spec 6.1 rows 2-4 and 6; PDW-4). */
+export async function getJiraMetrics(
+  product: ProductConfig,
+): Promise<JiraMetrics> {
   const auth = authHeader();
   const issues: JiraIssue[] = [];
   let nextPageToken: string | undefined;
 
   for (let page = 0; page < 10; page++) {
     const body: Record<string, unknown> = {
-      jql: "project = KAN",
+      jql: `project = ${product.jiraProject}`,
       fields: ["issuetype", "status", "created", "resolutiondate"],
       maxResults: 100,
     };
@@ -42,7 +45,7 @@ export async function getJiraMetrics(): Promise<JiraMetrics> {
 
     const data = await fetchJson<SearchPage>(
       "jira",
-      `${HOST}/rest/api/3/search/jql`,
+      `${ATLASSIAN_HOST}/rest/api/3/search/jql`,
       {
         method: "POST",
         headers: {
@@ -60,7 +63,10 @@ export async function getJiraMetrics(): Promise<JiraMetrics> {
   }
 
   if (issues.length === 0) {
-    throw new ProviderError("jira", "search returned no issues for KAN");
+    throw new ProviderError(
+      "jira",
+      `search returned no issues for ${product.jiraProject}`,
+    );
   }
 
   const isDone = (i: JiraIssue) =>
@@ -74,8 +80,13 @@ export async function getJiraMetrics(): Promise<JiraMetrics> {
     return Number.isFinite(delta) && delta >= 0 ? delta : null;
   };
 
+  /** Spec §8.2: work items delivered — Story OR Task, Done, excluding Epic and
+   *  Bug. The old definition counted Stories only, which silently discarded
+   *  ~16 TopHand Tasks that were always delivered work. Broader is more
+   *  accurate here, not more flattering: an epic is a container and a bug is a
+   *  correction, so neither is a delivered work item. */
   const featuresLive = issues.filter(
-    (i) => type(i) === "Story" && isDone(i),
+    (i) => ["Story", "Task"].includes(type(i)) && isDone(i),
   ).length;
 
   const cycleSamples = issues

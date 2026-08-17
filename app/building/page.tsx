@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Scoreboard from "@/components/Scoreboard";
+import PortfolioTotals from "@/components/PortfolioTotals";
 import ResumeLink from "@/components/ResumeLink";
 import { getBuildLog } from "@/lib/buildlog";
 import { shippingPhrase } from "@/lib/buildlog/format";
@@ -71,6 +72,8 @@ const GATES = [
  *  so-what for a hiring company. Dark route treatment — see globals.css. */
 export default async function BuildingPage() {
   const log = await getBuildLog();
+  const tophand = log.products.find((p) => p.productId === "tophand");
+  const motoradvisor = log.products.find((p) => p.productId === "motoradvisor");
 
   return (
     <div className="building">
@@ -163,8 +166,8 @@ export default async function BuildingPage() {
           <p>
             Same stack an enterprise product org runs. Same gates.{" "}
             <span className="bl-ink">
-              {log.specsWritten} specs, {log.backlogItems} backlog items,{" "}
-              {log.pullRequests} pull requests
+              {log.totals.specsWritten} specs, {log.totals.backlogItems}{" "}
+              backlog items, {log.totals.pullRequests} pull requests
             </span>{" "}
             &mdash; every one of them reviewed by me.
           </p>
@@ -248,12 +251,76 @@ export default async function BuildingPage() {
           >
             Visit tophand.ag <span aria-hidden="true">↗</span>
           </a>
+
+          {/* Spec §8.3: the register sits under the product it describes.
+              Two registers side by side ARE the "one operating model, two
+              scales" claim; one merged register erases it. */}
+          {tophand ? (
+            <div className="bl-product-register">
+              <Scoreboard log={tophand} />
+            </div>
+          ) : null}
+        </div>
+
+        <div className="bl-tophand">
+          <div className="section-label">Product 02</div>
+          <h2 id="ma-h" className="bl-h2 bl-tophand-h">
+            MotorAdvisor &mdash; the question becomes a repair order.
+          </h2>
+          <p className="bl-tophand-meta">
+            motoradvisor.app · in active development · independent repair shops
+          </p>
+          <div className="bl-prose">
+            <p>
+              A service writer standing at a counter has one question &mdash;{" "}
+              <em>what&rsquo;s wrong with this car, what will it cost, and
+              should we even do the work?</em> &mdash; and answering it today
+              means crossing four systems and a phone call. MotorAdvisor turns
+              that question into a{" "}
+              <span className="bl-ink">
+                priced, bookable, payable repair order
+              </span>
+              , in the conversation where it was asked.
+            </p>
+            <p>
+              The bet isn&rsquo;t that shops want another database. It&rsquo;s
+              that the repair decision is a{" "}
+              <span className="bl-ink">single continuous act</span> &mdash;
+              diagnose, price, decide, approve, pay &mdash; and that every
+              product in this market breaks it into pieces and hands the seams
+              to the shop.
+            </p>
+            <p>
+              The part nobody does: it gates the repair against the car.
+              A vehicle valuation sits alongside the estimate, so a{" "}
+              <span className="bl-mono">$3,400</span> repair on a car worth{" "}
+              <span className="bl-mono">$2,900</span> is a conversation the
+              system starts rather than one the writer has to remember to have.
+              That verdict is advisor-facing by default &mdash; telling a
+              customer their car isn&rsquo;t worth fixing is the shop&rsquo;s
+              call to make, in the shop&rsquo;s voice.
+            </p>
+            <p>
+              Same operating model as TopHand, at a different scale: specs
+              first, epics and stories, one story per pull request, every merge
+              reviewed. Where it differs is the shape of the risk &mdash; two
+              licensed upstream data providers that must stay strictly separate
+              in the code, enforced as build rules with negative controls
+              rather than as conventions anyone has to remember.
+            </p>
+          </div>
+
+          {motoradvisor ? (
+            <div className="bl-product-register">
+              <Scoreboard log={motoradvisor} />
+            </div>
+          ) : null}
         </div>
       </section>
 
-      {/* 4 — The receipts */}
+      {/* 4 — The receipts, across the portfolio */}
       <section className="bl-register-section" aria-label="The receipts">
-        <Scoreboard log={log} />
+        <PortfolioTotals log={log} />
       </section>
 
       {/* 5 — The so-what */}

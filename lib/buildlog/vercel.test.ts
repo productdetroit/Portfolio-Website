@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  countProductionDeploys,
-  deploysBaseline,
-  type Deployment,
-} from "./vercel";
+import { baselineFor, countProductionDeploys, type Deployment } from "./vercel";
+import { productById } from "./products";
 
 const baseline = { count: 128, capturedAt: "2026-08-06T00:00:00.000Z" };
 const T0 = Date.parse(baseline.capturedAt);
@@ -42,9 +39,17 @@ describe("countProductionDeploys", () => {
     expect(countProductionDeploys(production, baseline)).toBe(129);
   });
 
-  it("defaults to the committed snapshot baseline", () => {
-    expect(countProductionDeploys([])).toBe(deploysBaseline.count);
-    expect(countProductionDeploys([deploy(Date.parse(deploysBaseline.capturedAt) + DAY)]))
-      .toBe(deploysBaseline.count + 1);
+  it("reads each product's own committed baseline", () => {
+    // The baseline is per product now: TopHand's floor was captured while
+    // MotorAdvisor did not yet exist, so one shared number would be wrong for
+    // both products.
+    for (const id of ["tophand", "motoradvisor"] as const) {
+      const b = baselineFor(productById(id));
+      expect(b.count).toBeGreaterThan(0);
+      expect(countProductionDeploys([], b)).toBe(b.count);
+      expect(
+        countProductionDeploys([deploy(Date.parse(b.capturedAt) + DAY)], b),
+      ).toBe(b.count + 1);
+    }
   });
 });

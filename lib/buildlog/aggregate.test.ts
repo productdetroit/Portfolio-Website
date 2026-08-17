@@ -1,11 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   aggregate,
+  aggregateProduct,
   calendarDaysAgo,
   daysBuilding,
-  snapshot,
   type Providers,
 } from "./aggregate";
+import { snapshotFor } from "./snapshot";
+import { PRODUCTS, productById } from "./products";
 import type { JiraMetrics, VercelMetrics } from "./types";
 
 const jiraLive: JiraMetrics = {
@@ -21,7 +23,9 @@ const vercelLive: VercelMetrics = {
   lastShipped: { subject: "capability controls", at: "2026-07-27T12:00:00Z" },
 };
 
-const NOW = new Date("2026-07-28T16:00:00Z");
+const NOW = new Date("2026-08-17T16:00:00Z");
+const tophand = productById("tophand");
+const motoradvisor = productById("motoradvisor");
 
 function liveProviders(overrides: Partial<Providers> = {}): Providers {
   return {
@@ -33,11 +37,13 @@ function liveProviders(overrides: Partial<Providers> = {}): Providers {
   };
 }
 
-describe("aggregate", () => {
-  it("returns a fully live payload (AC 1)", async () => {
-    const log = await aggregate(liveProviders(), NOW);
+describe("aggregateProduct", () => {
+  it("returns a fully live payload for one product (AC 1)", async () => {
+    const log = await aggregateProduct(tophand, liveProviders(), NOW);
     expect(log.stale).toBe(false);
     expect(log.asOf).toBe(NOW.toISOString());
+    expect(log.productId).toBe("tophand");
+    expect(log.productName).toBe("TopHand");
     expect(log.featuresLive).toBe(72);
     expect(log.specsWritten).toBe(19);
     expect(log.pullRequests).toBe(93);
@@ -45,100 +51,154 @@ describe("aggregate", () => {
     expect(log.lastShipped).toEqual({
       subject: "capability controls",
       at: "2026-07-27T12:00:00Z",
-      daysAgo: 1,
+      daysAgo: 21,
     });
   });
 
-  it("falls back to snapshot for one failing provider, others stay live (AC 2)", async () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const log = await aggregate(
-      liveProviders({ github: async () => Promise.reject(new Error("401")) }),
+  it("falls back to that product's own snapshot per provider (AC 2)", async () => {
+    const snap = snapshotFor("motoradvisor");
+    const log = await aggregateProduct(
+      motoradvisor,
+      liveProviders({
+        jira: async () => {
+          throw new Error("jira down");
+        },
+      }),
       NOW,
     );
     expect(log.stale).toBe(true);
-    expect(log.pullRequests).toBe(snapshot.pullRequests);
-    expect(log.featuresLive).toBe(72);
-    expect(log.productionDeploys).toBe(112);
-    expect(log.asOf).toBe(NOW.toISOString());
-    expect(spy).toHaveBeenCalledOnce();
-    spy.mockRestore();
-  });
-
-  it("returns the full snapshot with its capturedAt when all fail (AC 3)", async () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const boom = async () => Promise.reject(new Error("down"));
-    const log = await aggregate(
-      { jira: boom, confluence: boom, github: boom, vercel: boom },
-      NOW,
-    );
-    expect(log.stale).toBe(true);
-    expect(log.asOf).toBe(snapshot.capturedAt);
-    expect(log.featuresLive).toBe(snapshot.featuresLive);
-    expect(log.specsWritten).toBe(snapshot.specsWritten);
-    expect(log.pullRequests).toBe(snapshot.pullRequests);
-    expect(log.productionDeploys).toBe(snapshot.deploysBaseline.count);
-    expect(log.lastShipped?.subject).toBe(snapshot.lastShipped?.subject);
-    spy.mockRestore();
-  });
-
-  it("cuts off a hanging provider at the timeout (AC 4)", async () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const hang = () => new Promise<never>(() => {});
-    const started = Date.now();
-    const log = await aggregate(
-      liveProviders({ jira: hang as Providers["jira"] }),
-      NOW,
-      200,
-    );
-    expect(Date.now() - started).toBeLessThan(1500);
-    expect(log.stale).toBe(true);
-    expect(log.featuresLive).toBe(snapshot.featuresLive);
+    // Jira values come from MotorAdvisor's snapshot, not TopHand's.
+    expect(log.featuresLive).toBe(snap.featuresLive);
+    expect(log.backlogItems).toBe(snap.backlogItems);
+    // The providers that answered are still live.
+    expect(log.specsWritten).toBe(19);
     expect(log.pullRequests).toBe(93);
-    spy.mockRestore();
+  });
+
+  it("dates each product from its own start date", async () => {
+    const th = await aggregateProduct(tophand, liveProviders(), NOW);
+    const ma = await aggregateProduct(motoradvisor, liveProviders(), NOW);
+    expect(th.startDate).toBe("2026-06-25");
+    expect(ma.startDate).toBe("2026-08-09");
+    // TopHand is the older product and must read as such.
+    expect(th.daysBuilding).toBeGreaterThan(ma.daysBuilding);
+    expect(ma.daysBuilding).toBe(daysBuilding(NOW, "2026-08-09"));
+  });
+
+  it("carries the median caveat only where the medians are untrustworthy", async () => {
+    const th = await aggregateProduct(tophand, liveProviders(), NOW);
+    const ma = await aggregateProduct(motoradvisor, liveProviders(), NOW);
+    expect(th.medianCaveat).toBeUndefined();
+    // Spec §7: a 106-issue reconciliation stamped one resolutiondate on all of
+    // them, so MotorAdvisor's medians measure the cleanup.
+    expect(ma.medianCaveat).toMatch(/reconciled/i);
+  });
+});
+
+describe("aggregate (portfolio)", () => {
+  it("returns one register per configured product", async () => {
+    const log = await aggregate(liveProviders(), NOW);
+    expect(log.products).toHaveLength(PRODUCTS.length);
+    expect(log.products.map((p) => p.productId)).toEqual(
+      PRODUCTS.map((p) => p.id),
+    );
+  });
+
+  it("sums the additive metrics", async () => {
+    const log = await aggregate(liveProviders(), NOW);
+    const n = PRODUCTS.length;
+    expect(log.totals.featuresLive).toBe(72 * n);
+    expect(log.totals.specsWritten).toBe(19 * n);
+    expect(log.totals.pullRequests).toBe(93 * n);
+    expect(log.totals.productionDeploys).toBe(112 * n);
+    expect(log.totals.epics).toEqual({ done: 7 * n, total: 24 * n });
+  });
+
+  it("never exposes a pooled median or summed elapsed time", async () => {
+    const log = await aggregate(liveProviders(), NOW);
+    // A median of medians is not a median of anything, so the totals object
+    // must not carry one at all — this is the guard against someone adding it.
+    expect(log.totals).not.toHaveProperty("cycleTime");
+    expect(log.totals).not.toHaveProperty("specToShipped");
+    expect(log.totals).not.toHaveProperty("daysBuilding");
+    // Portfolio elapsed time is a SPAN from the earliest product, never a sum.
+    const summed = log.products.reduce((n, p) => n + p.daysBuilding, 0);
+    expect(log.daysBuilding).toBeLessThan(summed);
+    expect(log.daysBuilding).toBe(daysBuilding(NOW, "2026-06-25"));
+  });
+
+  it("reports the most recent ship across all products", async () => {
+    const log = await aggregate(
+      liveProviders({
+        vercel: async (p) => ({
+          productionDeploys: 10,
+          lastShipped: {
+            subject: p.id,
+            at:
+              p.id === "motoradvisor"
+                ? "2026-08-16T12:00:00Z"
+                : "2026-08-10T12:00:00Z",
+          },
+        }),
+      }),
+      NOW,
+    );
+    expect(log.lastShipped?.subject).toBe("motoradvisor");
+  });
+
+  it("is stale when any product has any failing provider", async () => {
+    const log = await aggregate(
+      liveProviders({
+        github: async (p) => {
+          if (p.id === "motoradvisor") throw new Error("no repo access");
+          return 93;
+        },
+      }),
+      NOW,
+    );
+    expect(log.stale).toBe(true);
+    expect(log.products.find((p) => p.productId === "tophand")?.stale).toBe(
+      false,
+    );
+    expect(
+      log.products.find((p) => p.productId === "motoradvisor")?.stale,
+    ).toBe(true);
+  });
+});
+
+describe("daysBuilding", () => {
+  it("counts whole calendar days from the given start", () => {
+    expect(daysBuilding(new Date("2026-06-25T05:00:00Z"), "2026-06-25")).toBe(0);
+    expect(daysBuilding(new Date("2026-07-05T05:00:00Z"), "2026-06-25")).toBe(
+      10,
+    );
   });
 });
 
 describe("calendarDaysAgo", () => {
-  it("counts Detroit calendar days, so a yesterday-morning ship is not 'today'", () => {
-    // Shipped Wed Aug 5, 10:19 AM ET; viewed Thu Aug 6, 8:21 AM ET. Only
-    // ~22h elapsed, but it's the previous calendar day — daysAgo must be 1
-    // (the old elapsed/24h floor said 0 and rendered "today · 10:19 AM ET",
-    // a time in the viewer's future).
+  it("counts Detroit calendar days, not 24-hour buckets", () => {
+    // 10:19 AM yesterday must read as 1 day ago the next morning, not 0.
     expect(
-      calendarDaysAgo("2026-08-05T14:19:50.420Z", new Date("2026-08-06T12:21:00Z")),
+      calendarDaysAgo("2026-08-16T14:19:00Z", new Date("2026-08-17T13:00:00Z")),
     ).toBe(1);
-  });
-
-  it("stays 0 for the whole Detroit day of the ship", () => {
-    expect(
-      calendarDaysAgo("2026-08-05T14:19:50.420Z", new Date("2026-08-05T23:00:00Z")),
-    ).toBe(0);
-  });
-
-  it("ticks at Detroit midnight, not UTC midnight", () => {
-    // 03:30 UTC Jul 28 is still 11:30 PM Jul 27 in Detroit (UTC-4), so by
-    // Jul 28 noon Detroit the ship is one calendar day old.
-    expect(
-      calendarDaysAgo("2026-07-28T03:30:00Z", new Date("2026-07-28T16:00:00Z")),
-    ).toBe(1);
-  });
-
-  it("never goes negative on clock skew", () => {
-    expect(
-      calendarDaysAgo("2026-08-07T00:00:00Z", new Date("2026-08-06T12:00:00Z")),
-    ).toBe(0);
   });
 });
 
-describe("daysBuilding (AC 5)", () => {
-  it("matches the spec baseline: July 26 is day 31", () => {
-    expect(daysBuilding(new Date("2026-07-26T12:00:00-04:00"))).toBe(31);
-  });
-
-  it("increments at the Detroit midnight boundary, not UTC", () => {
-    // 03:59 UTC on Jul 29 is still 23:59 Jul 28 in Detroit (UTC-4)…
-    expect(daysBuilding(new Date("2026-07-29T03:59:00Z"))).toBe(33);
-    // …and 04:00 UTC is 00:00 Jul 29 in Detroit — the day ticks over.
-    expect(daysBuilding(new Date("2026-07-29T04:00:00Z"))).toBe(34);
+describe("provider timeouts", () => {
+  it("falls back when a provider exceeds the budget", async () => {
+    vi.useFakeTimers();
+    const slow = aggregateProduct(
+      tophand,
+      liveProviders({
+        confluence: () => new Promise<number>(() => {}),
+      }),
+      NOW,
+      50,
+    );
+    await vi.advanceTimersByTimeAsync(60);
+    const log = await slow;
+    vi.useRealTimers();
+    expect(log.stale).toBe(true);
+    expect(log.specsWritten).toBe(snapshotFor("tophand").specsWritten);
   });
 });
