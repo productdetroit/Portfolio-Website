@@ -67,6 +67,95 @@ const GATES = [
   },
 ];
 
+/** Technical highlights per product card. The commercial narrative says what
+ *  each product is worth; these say what it took to build — the objective is
+ *  to make the engineering legible, not to list every dependency.
+ *
+ *  Per §10 the two licensed upstream data providers are named by category
+ *  only. Everything else here is an owned stack choice, so it is named. */
+const TOPHAND_HIGHLIGHTS: Array<[string, string]> = [
+  [
+    "Installable PWA",
+    "Next.js, React, TypeScript and Tailwind, with a Serwist service worker so it keeps working in a field with no signal.",
+  ],
+  [
+    "Multi-tenant from the ground up",
+    "Account → farm scoping on every query, Postgres row-level security behind it as defence in depth, and a registry that fails the build if a new table doesn’t declare its tenancy.",
+  ],
+  [
+    "Plans, add-ons and feature gating",
+    "A capability-key registry resolving entitlements per account.",
+  ],
+  [
+    "Satellite field mapping",
+    "Mapbox GL with draw tools, Turf for automatic acreage, and field boundaries parsed straight from deed text by AI.",
+  ],
+  [
+    "AI enrichment the farmer confirms",
+    "Anthropic’s Claude API fills in researchable values as editable suggestions — never auto-committed, because a wrong estimate silently accepted is worse than a blank field.",
+  ],
+  [
+    "Condition-gated timing engine",
+    "Weather and crop state reconciled into a cutting-window recommendation — the difference between recording the past and acting on the present.",
+  ],
+  [
+    "Notifications that land somewhere",
+    "Twilio SMS (consent-gated, toll-free verified) and Resend transactional email, each deep-linked to the record that triggered it.",
+  ],
+  [
+    "Hands-free in the field",
+    "ElevenLabs text-to-speech reads recommendations aloud for a farmer whose hands are full.",
+  ],
+  [
+    "Serverless Postgres on Neon",
+    "With photo storage on Vercel Blob.",
+  ],
+  ["1,078 tests", "Across 89 files, run on every branch."],
+];
+
+const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
+  [
+    "Responsive web app",
+    "Next.js, React and TypeScript end to end — no second language anywhere in the stack.",
+  ],
+  [
+    "Conversational AI layer",
+    "Anthropic’s Claude API running an agentic tool loop over task-shaped tools, so the model asks a question rather than walking a catalogue.",
+  ],
+  [
+    "Custom remote MCP server",
+    "Stateless streamable HTTP with OAuth 2.1, PKCE and dynamic client registration — an external agent gets the same tools the app uses.",
+  ],
+  [
+    "Two licensed data-as-a-service integrations",
+    "Repair data and vehicle valuation, HMAC-signed, and deliberately blind to each other in code so one vendor’s failure modes never reach the other.",
+  ],
+  [
+    "Multi-tenant by shop",
+    "Each shop carries its own labor, tax and supplies rates, its own branding, and its own connected payment account.",
+  ],
+  [
+    "Integrated payments",
+    "Stripe Connect: the shop is merchant of record, a platform fee rides each invoice, and the customer pays on a shop-branded page via Stripe Elements.",
+  ],
+  [
+    "Editorial Studio",
+    "A third deployed surface that extracts PDFs into structured records with per-field provenance.",
+  ],
+  [
+    "Documents that leave the building",
+    "Printable and emailable PDF quotes, and QR-coded pay links.",
+  ],
+  [
+    "Architecture enforced by the build",
+    "Six framework-free packages whose module boundaries are policed by dependency-cruiser with negative controls — a rule that isn’t proven to fail when violated isn’t a rule.",
+  ],
+  [
+    "916 tests, offline fixture replay",
+    "The whole suite runs with no network at all.",
+  ],
+];
+
 /** Page spine per change-spec §4: the claim (one model, two scales) → the
  *  model itself → the proof point (TopHand) → the receipts (register) → the
  *  so-what for a hiring company. Dark route treatment — see globals.css. */
@@ -252,6 +341,17 @@ export default async function BuildingPage() {
             Visit tophand.ag <span aria-hidden="true">↗</span>
           </a>
 
+          <div className="bl-highlights">
+            <div className="section-label">Technical highlights</div>
+            <ul>
+              {TOPHAND_HIGHLIGHTS.map(([name, detail]) => (
+                <li key={name}>
+                  <strong>{name}</strong> {detail}
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Spec §8.3: the register sits under the product it describes.
               Two registers side by side ARE the "one operating model, two
               scales" claim; one merged register erases it. */}
@@ -294,8 +394,9 @@ export default async function BuildingPage() {
               The part nobody does: it gates the repair against the car.
               A vehicle valuation sits alongside the estimate, so a{" "}
               <span className="bl-mono">$3,400</span> repair on a car worth{" "}
-              <span className="bl-mono">$2,900</span> is a conversation the
-              system starts rather than one the writer has to remember to have.
+              <span className="bl-mono">$2,900</span>{" "}
+              is a conversation the system starts rather than one the writer
+              has to remember to have.
               That verdict is advisor-facing by default &mdash; telling a
               customer their car isn&rsquo;t worth fixing is the shop&rsquo;s
               call to make, in the shop&rsquo;s voice.
@@ -308,6 +409,26 @@ export default async function BuildingPage() {
               in the code, enforced as build rules with negative controls
               rather than as conventions anyone has to remember.
             </p>
+          </div>
+
+          <a
+            className="bl-tophand-cta"
+            href="https://motoradvisor.app/login"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Visit motoradvisor.app <span aria-hidden="true">↗</span>
+          </a>
+
+          <div className="bl-highlights">
+            <div className="section-label">Technical highlights</div>
+            <ul>
+              {MOTORADVISOR_HIGHLIGHTS.map(([name, detail]) => (
+                <li key={name}>
+                  <strong>{name}</strong> {detail}
+                </li>
+              ))}
+            </ul>
           </div>
 
           {motoradvisor ? (
