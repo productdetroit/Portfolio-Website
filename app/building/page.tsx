@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Scoreboard from "@/components/Scoreboard";
+import BrandMark from "@/components/BrandMark";
 import PortfolioTotals from "@/components/PortfolioTotals";
 import ResumeLink from "@/components/ResumeLink";
 import { getBuildLog } from "@/lib/buildlog";
@@ -286,6 +287,9 @@ export default async function BuildingPage() {
         </h2>
         <div className="bl-tophand">
           <div className="section-label">Product 01</div>
+          <div className="bl-product-logo" aria-hidden="true">
+            <BrandMark size={52} bg="dark" />
+          </div>
           <h2 id="th-h" className="bl-h2 bl-tophand-h">
             TopHand &mdash; the farm&rsquo;s most knowledgeable hand.
           </h2>
@@ -364,6 +368,17 @@ export default async function BuildingPage() {
 
         <div className="bl-tophand">
           <div className="section-label">Product 02</div>
+          <div className="bl-product-logo">
+            {/* Portfolio variant: the "powered by" attribution is removed and
+                the wordmark reversed for the dark route — see
+                public/brand/motoradvisor-logo-reversed.svg */}
+            <img
+              src="/brand/motoradvisor-logo-reversed.svg"
+              alt="MotorAdvisor"
+              width={320}
+              height={46}
+            />
+          </div>
           <h2 id="ma-h" className="bl-h2 bl-tophand-h">
             MotorAdvisor &mdash; the question becomes a repair order.
           </h2>

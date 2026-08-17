@@ -772,3 +772,7 @@ nav.nav-dark {
 }
 .building .bl-highlights li { color: rgba(249, 246, 240, 0.7); }
 .building .bl-highlights li strong { color: var(--cream); }
+
+/* Product logo above each card's headline. */
+.bl-product-logo { margin: 14px 0 22px; }
+.bl-product-logo img { display: block; height: 46px; width: auto; }
