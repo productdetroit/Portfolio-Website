@@ -6,7 +6,7 @@ import {
   shippedStamp,
   staleSummary,
 } from "@/lib/buildlog/format";
-import type { BuildLog, Duration } from "@/lib/buildlog/types";
+import type { Duration, ProductBuildLog } from "@/lib/buildlog/types";
 
 /** The drafting register (spec §6, PDW-6 design). Server component —
  *  values arrive rendered; CountUp animates them once after hydration. */
@@ -18,9 +18,22 @@ type Tile = {
   value: number;
   unit?: string;
   denominator?: number;
+  /** Median tiles carry the product's caveat when its medians can't be
+   *  trusted — see ProductConfig.medianCaveat. */
+  caveated?: boolean;
 };
 
-function tiles(log: BuildLog, stale: boolean): Tile[] {
+/** "2026-06-25" → "25 June 2026". */
+function humanDate(iso: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${iso}T00:00:00Z`));
+}
+
+function tiles(log: ProductBuildLog, stale: boolean): Tile[] {
   const dur = (d: Duration) => d.unit;
   const all: (Tile | null)[] = [
     // Stale view (update-spec §4.1): the elapsed-days framing is replaced by
@@ -29,14 +42,15 @@ function tiles(log: BuildLog, stale: boolean): Tile[] {
       ? null
       : {
           label: "Days building",
-          title: "Whole days since 25 June 2026, America/Detroit.",
-          note: "Since 25 June 2026, the first commit.",
+          title: `Whole days since ${humanDate(log.startDate)}, America/Detroit.`,
+          note: `Since ${humanDate(log.startDate)}, day one for ${log.productName}.`,
           value: log.daysBuilding,
         },
     {
-      label: "Features live",
-      title: "Jira KAN issues of type Story with status Done.",
-      note: "Stories closed Done in Jira, in production.",
+      label: "Work items delivered",
+      title:
+        "Jira issues of type Story or Task with status Done. An epic is a container and a bug is a correction, so neither counts.",
+      note: "Stories and tasks closed Done in Jira, in production.",
       value: log.featuresLive,
     },
     {
@@ -46,6 +60,7 @@ function tiles(log: BuildLog, stale: boolean): Tile[] {
       note: "Median created → resolved, all issue types.",
       value: log.cycleTime.value,
       unit: dur(log.cycleTime),
+      caveated: true,
     },
     {
       label: "Spec → shipped",
@@ -53,10 +68,11 @@ function tiles(log: BuildLog, stale: boolean): Tile[] {
       note: "Median epic lifetime: Confluence spec to production.",
       value: log.specToShipped.value,
       unit: dur(log.specToShipped),
+      caveated: true,
     },
     {
       label: "Specs written",
-      title: "Confluence pages in space MFS, excluding templates.",
+      title: "Confluence pages in this product’s space, excluding templates.",
       note: "Problem, data model, architecture decision — before code.",
       value: log.specsWritten,
     },
@@ -74,7 +90,7 @@ function tiles(log: BuildLog, stale: boolean): Tile[] {
   return all.filter((t): t is Tile => t !== null && t.value > 0);
 }
 
-export default function Scoreboard({ log }: { log: BuildLog }) {
+export default function Scoreboard({ log }: { log: ProductBuildLog }) {
   const stale = isStaleView(log.lastShipped);
   const primary = tiles(log, stale);
   const quiet = isQuiet(log.lastShipped);
@@ -83,7 +99,7 @@ export default function Scoreboard({ log }: { log: BuildLog }) {
     <section aria-labelledby="reg-h" className="reg-section">
       <div className="reg-head">
         <h2 id="reg-h" className="reg-title">
-          Register · Live
+          Register · {log.productName}
         </h2>
         <p className="reg-asof">{stale ? staleSummary(log) : asOfLine(log)}</p>
         <a
@@ -122,11 +138,21 @@ export default function Scoreboard({ log }: { log: BuildLog }) {
         ))}
       </dl>
 
+      {/* Spec §7: MotorAdvisor's medians measure the day its backlog was
+          reconciled, not cycle time. Shown with the caveat rather than hidden
+          — a suppressed tile invites the reader to assume the number is bad,
+          when what is actually true is that it is measuring something else. */}
+      {log.medianCaveat && primary.some((t) => t.caveated) ? (
+        <p className="reg-caveat">
+          <strong>On the medians:</strong> {log.medianCaveat}
+        </p>
+      ) : null}
+
       <dl className="reg-secondary">
         {log.pullRequests > 0 ? (
           <div
             className="reg-sec-item"
-            title="GitHub: repo productdetroit/app.tophand.ag only — merged pull requests. Portfolio repos are not counted."
+            title={`Merged pull requests across every repository ${log.productName} ships from. Portfolio repos are not counted.`}
           >
             <dt>Pull requests merged</dt>
             <dd>{log.pullRequests}</dd>
@@ -135,7 +161,7 @@ export default function Scoreboard({ log }: { log: BuildLog }) {
         {log.productionDeploys > 0 ? (
           <div
             className="reg-sec-item"
-            title="Vercel production deployments in state READY for the TopHand project."
+            title={`Vercel production deployments in state READY across every ${log.productName} project.`}
           >
             <dt>Production deploys</dt>
             <dd>{log.productionDeploys}</dd>

@@ -1,35 +1,25 @@
-import snapshotJson from "./snapshot.json";
-import type { BuildLog, Duration, JiraMetrics, VercelMetrics } from "./types";
+import { snapshotFor } from "./snapshot";
+import { PRODUCTS, portfolioStartDate, type ProductConfig } from "./products";
+import type {
+  BuildLog,
+  JiraMetrics,
+  PortfolioBuildLog,
+  ProductBuildLog,
+  VercelMetrics,
+} from "./types";
 
-/** Day one of the build log (spec 6.1 metric 1). */
-export const START_DATE = "2026-06-25";
 const DETROIT_TZ = "America/Detroit";
 /** Spec 7.4: 3-second budget per provider before snapshot fallback. */
 const PROVIDER_TIMEOUT_MS = 3000;
 
-type Snapshot = {
-  capturedAt: string;
-  daysBuilding: number;
-  backlogItems: number;
-  featuresLive: number;
-  cycleTime: Duration;
-  specToShipped: Duration;
-  specsWritten: number;
-  epics: { done: number; total: number };
-  pullRequests: number;
-  /** Cumulative READY production deploys as of capturedAt — the floor the
-   *  live count builds on (vercel.ts) and the fallback when Vercel is down. */
-  deploysBaseline: { count: number; capturedAt: string };
-  lastShipped: { subject: string; at: string } | null;
-};
-
-export const snapshot = snapshotJson as Snapshot;
+/** Day one of the portfolio — the earliest product's start (spec 6.1 metric 1). */
+export const START_DATE = portfolioStartDate();
 
 export type Providers = {
-  jira: () => Promise<JiraMetrics>;
-  confluence: () => Promise<number>;
-  github: () => Promise<number>;
-  vercel: () => Promise<VercelMetrics>;
+  jira: (p: ProductConfig) => Promise<JiraMetrics>;
+  confluence: (p: ProductConfig) => Promise<number>;
+  github: (p: ProductConfig) => Promise<number>;
+  vercel: (p: ProductConfig) => Promise<VercelMetrics>;
 };
 
 /** Calendar date (Y-M-D) of an instant in the Detroit timezone. */
@@ -43,9 +33,9 @@ function detroitCalendarDayUtcMs(now: Date): number {
   return Date.parse(`${ymd}T00:00:00Z`);
 }
 
-/** Whole calendar days from START_DATE to `now`, America/Detroit (AC 5). */
-export function daysBuilding(now: Date): number {
-  const start = Date.parse(`${START_DATE}T00:00:00Z`);
+/** Whole calendar days from a start date to `now`, America/Detroit (AC 5). */
+export function daysBuilding(now: Date, startDate: string = START_DATE): number {
+  const start = Date.parse(`${startDate}T00:00:00Z`);
   return Math.max(
     0,
     Math.round((detroitCalendarDayUtcMs(now) - start) / 86_400_000),
@@ -101,19 +91,26 @@ async function attempt<T>(
   }
 }
 
-/** Compose the four providers into the BuildLog payload, falling back to the
- *  committed snapshot per provider (spec 7.4, PDW-5). Pure given its inputs —
- *  caching is layered on in index.ts. */
-export async function aggregate(
+/** One product's register. Falls back to that product's committed snapshot
+ *  per provider (spec 7.4, PDW-5). Pure given its inputs — caching is layered
+ *  on in index.ts. */
+export async function aggregateProduct(
+  product: ProductConfig,
   providers: Providers,
   now: Date = new Date(),
   timeoutMs: number = PROVIDER_TIMEOUT_MS,
-): Promise<BuildLog> {
+): Promise<ProductBuildLog> {
+  const snapshot = snapshotFor(product.id);
+
   const [jira, confluence, github, vercel] = await Promise.all([
-    attempt("jira", providers.jira, timeoutMs),
-    attempt("confluence", providers.confluence, timeoutMs),
-    attempt("github", providers.github, timeoutMs),
-    attempt("vercel", providers.vercel, timeoutMs),
+    attempt(`${product.id}/jira`, () => providers.jira(product), timeoutMs),
+    attempt(
+      `${product.id}/confluence`,
+      () => providers.confluence(product),
+      timeoutMs,
+    ),
+    attempt(`${product.id}/github`, () => providers.github(product), timeoutMs),
+    attempt(`${product.id}/vercel`, () => providers.vercel(product), timeoutMs),
   ]);
 
   const allFailed = !jira && confluence === null && github === null && !vercel;
@@ -129,9 +126,13 @@ export async function aggregate(
     : null;
 
   return {
+    productId: product.id,
+    productName: product.name,
+    medianCaveat: product.medianCaveat,
     asOf: allFailed ? snapshot.capturedAt : now.toISOString(),
     stale,
-    daysBuilding: daysBuilding(now),
+    daysBuilding: daysBuilding(now, product.startDate),
+    startDate: product.startDate,
     backlogItems: jira?.backlogItems ?? snapshot.backlogItems,
     featuresLive: jira?.featuresLive ?? snapshot.featuresLive,
     cycleTime: jira?.cycleTime ?? snapshot.cycleTime,
@@ -139,7 +140,54 @@ export async function aggregate(
     specsWritten: confluence ?? snapshot.specsWritten,
     epics: jira?.epics ?? snapshot.epics,
     pullRequests: github ?? snapshot.pullRequests,
-    productionDeploys: vercel?.productionDeploys ?? snapshot.deploysBaseline.count,
+    productionDeploys:
+      vercel?.productionDeploys ?? snapshot.deploysBaseline.count,
     lastShipped,
   };
 }
+
+/** Every product, plus a portfolio total.
+ *
+ *  The total carries ONLY additive metrics. Medians are never pooled — a
+ *  median of two medians is not a median of anything — and elapsed days are
+ *  never summed, because two concurrent products would claim more calendar
+ *  time than has passed. "Days building" for the portfolio is the span since
+ *  the earliest product started, which is a span rather than a sum. */
+export async function aggregate(
+  providers: Providers,
+  now: Date = new Date(),
+  timeoutMs: number = PROVIDER_TIMEOUT_MS,
+): Promise<PortfolioBuildLog> {
+  const products = await Promise.all(
+    PRODUCTS.map((p) => aggregateProduct(p, providers, now, timeoutMs)),
+  );
+
+  const sum = (pick: (p: ProductBuildLog) => number) =>
+    products.reduce((n, p) => n + pick(p), 0);
+
+  const shipped = products
+    .map((p) => p.lastShipped)
+    .filter((s): s is NonNullable<ProductBuildLog["lastShipped"]> => s !== null)
+    .sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
+
+  return {
+    asOf: now.toISOString(),
+    stale: products.some((p) => p.stale),
+    daysBuilding: daysBuilding(now, START_DATE),
+    products,
+    totals: {
+      specsWritten: sum((p) => p.specsWritten),
+      backlogItems: sum((p) => p.backlogItems),
+      featuresLive: sum((p) => p.featuresLive),
+      pullRequests: sum((p) => p.pullRequests),
+      productionDeploys: sum((p) => p.productionDeploys),
+      epics: {
+        done: sum((p) => p.epics.done),
+        total: sum((p) => p.epics.total),
+      },
+    },
+    lastShipped: shipped[0] ?? null,
+  };
+}
+
+export type { BuildLog };

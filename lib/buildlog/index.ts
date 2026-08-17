@@ -4,42 +4,62 @@ import { getJiraMetrics } from "./jira";
 import { getSpecsWritten } from "./confluence";
 import { getPullRequestsMerged } from "./github";
 import { getVercelMetrics } from "./vercel";
-import type { BuildLog } from "./types";
+import { PRODUCTS, type ProductConfig } from "./products";
+import type { PortfolioBuildLog } from "./types";
 
 const REVALIDATE_SECONDS = 3600;
 
-/** Each provider carries its own cache tag so one failure never invalidates
- *  the others (spec 7.4). Failures are not cached — unstable_cache only
- *  stores resolved values, so a fallback retries on the next request. */
+const PROVIDER_NAMES = ["jira", "confluence", "github", "vercel"] as const;
+type ProviderName = (typeof PROVIDER_NAMES)[number];
+
+/** Cache tag for one provider on one product.
+ *
+ *  Per product AND per provider (spec §8.1): Jira failing for MotorAdvisor
+ *  must never blank TopHand's register, and vice versa. One shared tag would
+ *  couple two independent products' liveness together. */
+export function cacheTag(product: ProductConfig["id"], p: ProviderName) {
+  return `buildlog-${product}-${p}`;
+}
+
+/** Wrap a provider so each (product, provider) pair caches independently.
+ *  Failures are not cached — unstable_cache only stores resolved values, so a
+ *  fallback retries on the next request. */
+function perProduct<T>(
+  name: ProviderName,
+  fn: (p: ProductConfig) => Promise<T>,
+): (p: ProductConfig) => Promise<T> {
+  const byProduct = new Map<string, () => Promise<T>>();
+  for (const product of PRODUCTS) {
+    const tag = cacheTag(product.id, name);
+    byProduct.set(
+      product.id,
+      unstable_cache(() => fn(product), [tag], {
+        tags: [tag],
+        revalidate: REVALIDATE_SECONDS,
+      }),
+    );
+  }
+  return (product: ProductConfig) => {
+    const cached = byProduct.get(product.id);
+    if (!cached) throw new Error(`no cached provider for ${product.id}`);
+    return cached();
+  };
+}
+
 const cachedProviders: Providers = {
-  jira: unstable_cache(getJiraMetrics, ["buildlog-jira"], {
-    tags: ["buildlog-jira"],
-    revalidate: REVALIDATE_SECONDS,
-  }),
-  confluence: unstable_cache(getSpecsWritten, ["buildlog-confluence"], {
-    tags: ["buildlog-confluence"],
-    revalidate: REVALIDATE_SECONDS,
-  }),
-  github: unstable_cache(getPullRequestsMerged, ["buildlog-github"], {
-    tags: ["buildlog-github"],
-    revalidate: REVALIDATE_SECONDS,
-  }),
-  vercel: unstable_cache(getVercelMetrics, ["buildlog-vercel"], {
-    tags: ["buildlog-vercel"],
-    revalidate: REVALIDATE_SECONDS,
-  }),
+  jira: perProduct("jira", getJiraMetrics),
+  confluence: perProduct("confluence", getSpecsWritten),
+  github: perProduct("github", getPullRequestsMerged),
+  vercel: perProduct("vercel", getVercelMetrics),
 };
 
-export const BUILDLOG_CACHE_TAGS = [
-  "buildlog-jira",
-  "buildlog-confluence",
-  "buildlog-github",
-  "buildlog-vercel",
-] as const;
+export const BUILDLOG_CACHE_TAGS = PRODUCTS.flatMap((product) =>
+  PROVIDER_NAMES.map((p) => cacheTag(product.id, p)),
+);
 
 /** The one entry point pages use (Server Components; spec 7.1). */
-export function getBuildLog(): Promise<BuildLog> {
+export function getBuildLog(): Promise<PortfolioBuildLog> {
   return aggregate(cachedProviders);
 }
 
-export type { BuildLog } from "./types";
+export type { BuildLog, PortfolioBuildLog, ProductBuildLog } from "./types";

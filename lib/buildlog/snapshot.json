@@ -1,28 +1,58 @@
 {
-  "capturedAt": "2026-07-28T15:10:00.000Z",
-  "daysBuilding": 33,
-  "backlogItems": 168,
-  "featuresLive": 69,
-  "cycleTime": {
-    "value": 11,
-    "unit": "hours"
+  "tophand": {
+    "capturedAt": "2026-08-17T22:15:00.000Z",
+    "daysBuilding": 53,
+    "backlogItems": 212,
+    "featuresLive": 107,
+    "cycleTime": {
+      "value": 17,
+      "unit": "hours"
+    },
+    "specToShipped": {
+      "value": 6,
+      "unit": "days"
+    },
+    "specsWritten": 23,
+    "epics": {
+      "done": 9,
+      "total": 26
+    },
+    "pullRequests": 125,
+    "deploysBaseline": {
+      "count": 140,
+      "capturedAt": "2026-08-06T00:00:00.000Z"
+    },
+    "lastShipped": {
+      "subject": "Adr trigger",
+      "at": "2026-08-17T21:47:16.421Z"
+    }
   },
-  "specToShipped": {
-    "value": 6,
-    "unit": "days"
-  },
-  "specsWritten": 18,
-  "epics": {
-    "done": 6,
-    "total": 23
-  },
-  "pullRequests": 93,
-  "deploysBaseline": {
-    "count": 128,
-    "capturedAt": "2026-08-06T00:00:00.000Z"
-  },
-  "lastShipped": {
-    "subject": "Feature gating",
-    "at": "2026-07-28T02:03:51.955Z"
+  "motoradvisor": {
+    "capturedAt": "2026-08-17T22:15:00.000Z",
+    "daysBuilding": 8,
+    "backlogItems": 174,
+    "featuresLive": 97,
+    "cycleTime": {
+      "value": 6,
+      "unit": "days"
+    },
+    "specToShipped": {
+      "value": 6,
+      "unit": "days"
+    },
+    "specsWritten": 30,
+    "epics": {
+      "done": 9,
+      "total": 20
+    },
+    "pullRequests": 12,
+    "deploysBaseline": {
+      "count": 192,
+      "capturedAt": "2026-08-17T22:15:00.000Z"
+    },
+    "lastShipped": {
+      "subject": "Drift detection",
+      "at": "2026-08-17T21:45:18.753Z"
+    }
   }
 }

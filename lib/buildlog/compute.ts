@@ -17,23 +17,32 @@ export function toDuration(ms: number): Duration {
   return { value: Math.round(hours / 24), unit: "days" };
 }
 
-/** Spec 6.2: commit subject, first line only, `KAN-nnn` prefix stripped.
- *  GitHub merge commits ("Merge pull request #94 from owner/feat/kan-117-x")
- *  are humanized from the branch name so the register reads like a log
- *  entry, not like git plumbing. */
-export function cleanCommitSubject(message: string): string {
+/** Spec 6.2: commit subject, first line only, the product's ticket prefix
+ *  stripped. GitHub merge commits ("Merge pull request #94 from
+ *  owner/feat/kan-117-x") are humanized from the branch name so the register
+ *  reads like a log entry, not like git plumbing.
+ *
+ *  The prefix is a parameter because the register now serves two projects:
+ *  `KAN-195: ...` and `MOT-142: ...` must both come out clean. */
+export function cleanCommitSubject(
+  message: string,
+  ticketPrefix = "KAN",
+): string {
+  const prefix = ticketPrefix.replace(/[^A-Za-z0-9]/g, "");
   const firstLine = message.split("\n", 1)[0];
   const merge = firstLine.match(/^Merge pull request #\d+ from \S+?\/(.+)$/i);
   if (merge) {
     const leaf = merge[1].split("/").pop() ?? merge[1];
     const words = leaf
-      .replace(/^(feat|fix|chore|docs|refactor|perf|test)[-_]?/i, "")
-      .replace(/^kan[-_]?\d+[-_]?/i, "")
+      .replace(/^(feat|fix|chore|docs|refactor|perf|test|build)[-_]?/i, "")
+      .replace(new RegExp(`^${prefix}[-_]?[0-9]+[-_]?`, "i"), "")
       .replace(/[-_]+/g, " ")
       .trim();
     if (words) return words.charAt(0).toUpperCase() + words.slice(1);
   }
-  return firstLine.replace(/^KAN-\d+\s*[:\-–—]?\s*/i, "").trim();
+  return firstLine
+    .replace(new RegExp(`^${prefix}-[0-9]+\\s*[:\\-–—]?\\s*`, "i"), "")
+    .trim();
 }
 
 /** Whole days between two instants, floored at zero. */
