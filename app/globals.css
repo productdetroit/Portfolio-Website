@@ -776,3 +776,17 @@ nav.nav-dark {
 /* Product logo above each card's headline. */
 .bl-product-logo { margin: 14px 0 22px; }
 .bl-product-logo img { display: block; height: 46px; width: auto; }
+
+/* Product screenshots. Captured from each product's seeded demo tenant — never
+   a live customer's data (TopHand's first tenant is a working farm). */
+.bl-shot { margin: 40px 0 0; }
+.bl-shot img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--rule); border-radius: 6px;
+}
+.bl-shot figcaption {
+  margin-top: 12px; font-size: 13px; line-height: 1.6; color: var(--muted);
+  max-width: 68ch;
+}
+.building .bl-shot img { border-color: rgba(249, 246, 240, 0.18); }
+.building .bl-shot figcaption { color: rgba(249, 246, 240, 0.65); }

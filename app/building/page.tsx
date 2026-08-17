@@ -356,6 +356,11 @@ export default async function BuildingPage() {
             </ul>
           </div>
 
+
+          <figure className="bl-shot">
+            <img src="/shots/tophand.png" alt="TopHand&rsquo;s Today screen: weather, a dry-window callout, and two fields flagged ready to cut" width={1440} height={820} loading="lazy" />
+            <figcaption>TopHand &mdash; the Today screen, from the seeded demo farm. The condition-gated callout is the product: two fields at target, and the rain-free window to act in.</figcaption>
+          </figure>
           {/* Spec §8.3: the register sits under the product it describes.
               Two registers side by side ARE the "one operating model, two
               scales" claim; one merged register erases it. */}
@@ -446,6 +451,11 @@ export default async function BuildingPage() {
             </ul>
           </div>
 
+
+          <figure className="bl-shot">
+            <img src="/shots/motoradvisor.png" alt="MotorAdvisor&rsquo;s jobs board: intake, quoting, in shop and billing columns with priced jobs" width={1440} height={748} loading="lazy" />
+            <figcaption>MotorAdvisor &mdash; the jobs board, from the seeded demo shop. Each vehicle keeps its own conversation and its place in the flow, from intake through billing.</figcaption>
+          </figure>
           {motoradvisor ? (
             <div className="bl-product-register">
               <Scoreboard log={motoradvisor} />
