@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Scoreboard from "@/components/Scoreboard";
+import BrandMark from "@/components/BrandMark";
 import PortfolioTotals from "@/components/PortfolioTotals";
 import ResumeLink from "@/components/ResumeLink";
 import { getBuildLog } from "@/lib/buildlog";
@@ -65,6 +66,95 @@ const GATES = [
     desc: "Merge triggers the build; Vercel deploys.",
     gate: "Automated",
   },
+];
+
+/** Technical highlights per product card. The commercial narrative says what
+ *  each product is worth; these say what it took to build — the objective is
+ *  to make the engineering legible, not to list every dependency.
+ *
+ *  Per §10 the two licensed upstream data providers are named by category
+ *  only. Everything else here is an owned stack choice, so it is named. */
+const TOPHAND_HIGHLIGHTS: Array<[string, string]> = [
+  [
+    "Installable PWA",
+    "Next.js, React, TypeScript and Tailwind, with a Serwist service worker so it keeps working in a field with no signal.",
+  ],
+  [
+    "Multi-tenant from the ground up",
+    "Account → farm scoping on every query, Postgres row-level security behind it as defence in depth, and a registry that fails the build if a new table doesn’t declare its tenancy.",
+  ],
+  [
+    "Plans, add-ons and feature gating",
+    "A capability-key registry resolving entitlements per account.",
+  ],
+  [
+    "Satellite field mapping",
+    "Mapbox GL with draw tools, Turf for automatic acreage, and field boundaries parsed straight from deed text by AI.",
+  ],
+  [
+    "AI enrichment the farmer confirms",
+    "Anthropic’s Claude API fills in researchable values as editable suggestions — never auto-committed, because a wrong estimate silently accepted is worse than a blank field.",
+  ],
+  [
+    "Condition-gated timing engine",
+    "Weather and crop state reconciled into a cutting-window recommendation — the difference between recording the past and acting on the present.",
+  ],
+  [
+    "Notifications that land somewhere",
+    "Twilio SMS (consent-gated, toll-free verified) and Resend transactional email, each deep-linked to the record that triggered it.",
+  ],
+  [
+    "Hands-free in the field",
+    "ElevenLabs text-to-speech reads recommendations aloud for a farmer whose hands are full.",
+  ],
+  [
+    "Serverless Postgres on Neon",
+    "With photo storage on Vercel Blob.",
+  ],
+  ["1,078 tests", "Across 89 files, run on every branch."],
+];
+
+const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
+  [
+    "Responsive web app",
+    "Next.js, React and TypeScript end to end — no second language anywhere in the stack.",
+  ],
+  [
+    "Conversational AI layer",
+    "Anthropic’s Claude API running an agentic tool loop over task-shaped tools, so the model asks a question rather than walking a catalogue.",
+  ],
+  [
+    "Custom remote MCP server",
+    "Stateless streamable HTTP with OAuth 2.1, PKCE and dynamic client registration — an external agent gets the same tools the app uses.",
+  ],
+  [
+    "Two licensed data-as-a-service integrations",
+    "Repair data and vehicle valuation, HMAC-signed, and deliberately blind to each other in code so one vendor’s failure modes never reach the other.",
+  ],
+  [
+    "Multi-tenant by shop",
+    "Each shop carries its own labor, tax and supplies rates, its own branding, and its own connected payment account.",
+  ],
+  [
+    "Integrated payments",
+    "Stripe Connect: the shop is merchant of record, a platform fee rides each invoice, and the customer pays on a shop-branded page via Stripe Elements.",
+  ],
+  [
+    "Editorial Studio",
+    "A third deployed surface that extracts PDFs into structured records with per-field provenance.",
+  ],
+  [
+    "Documents that leave the building",
+    "Printable and emailable PDF quotes, and QR-coded pay links.",
+  ],
+  [
+    "Architecture enforced by the build",
+    "Six framework-free packages whose module boundaries are policed by dependency-cruiser with negative controls — a rule that isn’t proven to fail when violated isn’t a rule.",
+  ],
+  [
+    "916 tests, offline fixture replay",
+    "The whole suite runs with no network at all.",
+  ],
 ];
 
 /** Page spine per change-spec §4: the claim (one model, two scales) → the
@@ -197,6 +287,9 @@ export default async function BuildingPage() {
         </h2>
         <div className="bl-tophand">
           <div className="section-label">Product 01</div>
+          <div className="bl-product-logo" aria-hidden="true">
+            <BrandMark size={52} bg="dark" />
+          </div>
           <h2 id="th-h" className="bl-h2 bl-tophand-h">
             TopHand &mdash; the farm&rsquo;s most knowledgeable hand.
           </h2>
@@ -252,6 +345,22 @@ export default async function BuildingPage() {
             Visit tophand.ag <span aria-hidden="true">↗</span>
           </a>
 
+          <div className="bl-highlights">
+            <div className="section-label">Technical highlights</div>
+            <ul>
+              {TOPHAND_HIGHLIGHTS.map(([name, detail]) => (
+                <li key={name}>
+                  <strong>{name}</strong> {detail}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+
+          <figure className="bl-shot">
+            <img src="/shots/tophand.png" alt="TopHand&rsquo;s cut recommendation: three gates, a quality target and the reasoning behind the call" width={1422} height={904} loading="lazy" />
+            <figcaption>TopHand &mdash; the call on a demo field. Three gates, a quality target in RFV, and the reasoning out loud: cut Thursday, or lose roughly four RFV points a day waiting.</figcaption>
+          </figure>
           {/* Spec §8.3: the register sits under the product it describes.
               Two registers side by side ARE the "one operating model, two
               scales" claim; one merged register erases it. */}
@@ -264,6 +373,17 @@ export default async function BuildingPage() {
 
         <div className="bl-tophand">
           <div className="section-label">Product 02</div>
+          <div className="bl-product-logo">
+            {/* Portfolio variant: the "powered by" attribution is removed and
+                the wordmark reversed for the dark route — see
+                public/brand/motoradvisor-logo-reversed.svg */}
+            <img
+              src="/brand/motoradvisor-logo-reversed.svg"
+              alt="MotorAdvisor"
+              width={320}
+              height={46}
+            />
+          </div>
           <h2 id="ma-h" className="bl-h2 bl-tophand-h">
             MotorAdvisor &mdash; the question becomes a repair order.
           </h2>
@@ -294,8 +414,9 @@ export default async function BuildingPage() {
               The part nobody does: it gates the repair against the car.
               A vehicle valuation sits alongside the estimate, so a{" "}
               <span className="bl-mono">$3,400</span> repair on a car worth{" "}
-              <span className="bl-mono">$2,900</span> is a conversation the
-              system starts rather than one the writer has to remember to have.
+              <span className="bl-mono">$2,900</span>{" "}
+              is a conversation the system starts rather than one the writer
+              has to remember to have.
               That verdict is advisor-facing by default &mdash; telling a
               customer their car isn&rsquo;t worth fixing is the shop&rsquo;s
               call to make, in the shop&rsquo;s voice.
@@ -310,6 +431,31 @@ export default async function BuildingPage() {
             </p>
           </div>
 
+          <a
+            className="bl-tophand-cta"
+            href="https://motoradvisor.app/login"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Visit motoradvisor.app <span aria-hidden="true">↗</span>
+          </a>
+
+          <div className="bl-highlights">
+            <div className="section-label">Technical highlights</div>
+            <ul>
+              {MOTORADVISOR_HIGHLIGHTS.map(([name, detail]) => (
+                <li key={name}>
+                  <strong>{name}</strong> {detail}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+
+          <figure className="bl-shot">
+            <img src="/shots/motoradvisor.png" alt="A MotorAdvisor work order: the conversation on the right, priced diagnostics and a repair-or-replace verdict on the left" width={1422} height={820} loading="lazy" />
+            <figcaption>MotorAdvisor &mdash; one work order in the demo shop. The question is asked on the right and lands as priced, approved diagnostics on the left &mdash; then the repair is weighed against what the car is actually worth.</figcaption>
+          </figure>
           {motoradvisor ? (
             <div className="bl-product-register">
               <Scoreboard log={motoradvisor} />
