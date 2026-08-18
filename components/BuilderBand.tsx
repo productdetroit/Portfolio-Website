@@ -3,8 +3,8 @@ import Link from "next/link";
 /** Builder band (change-spec §1) — the argument the build metrics ribbon
  *  supports. A band between About and the ribbon, not a seventh About tile:
  *  the pillars are past-tense and organizational; this claim is present-tense
- *  and personal. Copy is verbatim from the spec (third paragraph's "two
- *  reasons" clause revised per Joe, 28 Jul 2026) — edit there first.
+ *  and personal. Copy follows the spec except the third paragraph, revised
+ *  per Joe (28 Jul 2026, then 18 Aug 2026: generic, no product names).
  *  Ends with the §2.3 bridge line separating commercial proof (the career
  *  stats above) from capability proof (the ribbon below). */
 export default function BuilderBand() {
@@ -43,16 +43,18 @@ export default function BuilderBand() {
             when there&rsquo;s no organization behind it.
           </p>
           <p>
-            {/* Routes to /building, not tophand.ag (per Joe, 28 Jul 2026):
-                /building is the single gateway to products; external product
-                links live only there. Supersedes change-spec §2.2a. */}
-            <Link href="/building">TopHand</Link>{" "}
-            is where I&rsquo;m testing that. It&rsquo;s a real product, not a
-            demo &mdash; built for two reasons: to leverage AI assisted
+            {/* Routes to /building, the single gateway to products; external
+                product links live only there (per Joe, 28 Jul 2026). No
+                product names here (per Joe, 18 Aug 2026) — the portfolio
+                outgrew a single product, so /building carries the roster.
+                Supersedes change-spec §2.2a and its verbatim-copy rule. */}
+            <Link href="/building">What I&rsquo;m building</Link>{" "}
+            is where I&rsquo;m testing that. These are real products, not
+            demos &mdash; built for two reasons: to leverage AI assisted
             design, agentic coding and deployment tools firsthand to fuel my
             passion for the continuous improvement of the product management
-            discipline while applying those learnings to solving a problem in
-            a workflow I know well.
+            discipline while applying those learnings to solving problems in
+            workflows I know well.
           </p>
         </div>
         <p className="builder-bridge">
