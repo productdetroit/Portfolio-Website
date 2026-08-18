@@ -358,8 +358,8 @@ export default async function BuildingPage() {
 
 
           <figure className="bl-shot">
-            <img src="/shots/tophand.png" alt="TopHand&rsquo;s Today screen: weather, a dry-window callout, and two fields flagged ready to cut" width={1440} height={820} loading="lazy" />
-            <figcaption>TopHand &mdash; the Today screen, from the seeded demo farm. The condition-gated callout is the product: two fields at target, and the rain-free window to act in.</figcaption>
+            <img src="/shots/tophand.png" alt="TopHand&rsquo;s cut recommendation: three gates, a quality target and the reasoning behind the call" width={1422} height={904} loading="lazy" />
+            <figcaption>TopHand &mdash; the call on a demo field. Three gates, a quality target in RFV, and the reasoning out loud: cut Thursday, or lose roughly four RFV points a day waiting.</figcaption>
           </figure>
           {/* Spec §8.3: the register sits under the product it describes.
               Two registers side by side ARE the "one operating model, two
@@ -453,8 +453,8 @@ export default async function BuildingPage() {
 
 
           <figure className="bl-shot">
-            <img src="/shots/motoradvisor.png" alt="MotorAdvisor&rsquo;s jobs board: intake, quoting, in shop and billing columns with priced jobs" width={1440} height={748} loading="lazy" />
-            <figcaption>MotorAdvisor &mdash; the jobs board, from the seeded demo shop. Each vehicle keeps its own conversation and its place in the flow, from intake through billing.</figcaption>
+            <img src="/shots/motoradvisor.png" alt="A MotorAdvisor work order: conversation on the right, priced and approved labor on the left" width={1422} height={695} loading="lazy" />
+            <figcaption>MotorAdvisor &mdash; one work order in the demo shop. The question is asked on the right and lands as priced, bookable labor on the left, with the stage it has reached across the top.</figcaption>
           </figure>
           {motoradvisor ? (
             <div className="bl-product-register">

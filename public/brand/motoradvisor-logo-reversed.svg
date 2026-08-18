@@ -7,7 +7,12 @@
           upstream repair-data provider is named by category only in anything
           published; the product's own name keeps its MOTOR, the attribution
           does not travel.
-       2. The wordmark is cream rather than #021F36, which would be invisible
+       2. Both words carry textLength/lengthAdjust. The product asset positions
+          "Advisor" at a fixed x tuned for Roboto; on a machine without it,
+          "MOTOR" renders ~14px wider and the two words collide. Pinning the
+          advance width makes the lockup render identically whatever font
+          resolves.
+       3. The wordmark is cream rather than #021F36, which would be invisible
           on this page, and the mark is shifted up to centre against a single
           line of type instead of two. -->
   <g transform="translate(4 -8)">
@@ -15,6 +20,6 @@
     <path d="M22 44 L33 20 L44 44" stroke="#009CDC" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M34 44 L45 20 L56 44" stroke="#F4B860" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
-  <text x="84" y="32" font-family="Roboto, Helvetica, Arial, sans-serif" font-size="30" font-weight="300" letter-spacing="3" fill="#F9F6F0">MOTOR</text>
-  <text x="196" y="32" font-family="Roboto, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#4FBEEA">Advisor</text>
+  <text x="84" y="32" textLength="104" lengthAdjust="spacingAndGlyphs" font-family="Roboto, Helvetica, Arial, sans-serif" font-size="30" font-weight="300" letter-spacing="3" fill="#F9F6F0">MOTOR</text>
+  <text x="198" y="32" textLength="108" lengthAdjust="spacingAndGlyphs" font-family="Roboto, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#4FBEEA">Advisor</text>
 </svg>
