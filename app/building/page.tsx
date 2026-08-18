@@ -453,8 +453,8 @@ export default async function BuildingPage() {
 
 
           <figure className="bl-shot">
-            <img src="/shots/motoradvisor.png" alt="A MotorAdvisor work order: conversation on the right, priced and approved labor on the left" width={1422} height={695} loading="lazy" />
-            <figcaption>MotorAdvisor &mdash; one work order in the demo shop. The question is asked on the right and lands as priced, bookable labor on the left, with the stage it has reached across the top.</figcaption>
+            <img src="/shots/motoradvisor.png" alt="A MotorAdvisor work order: the conversation on the right, priced diagnostics and a repair-or-replace verdict on the left" width={1422} height={820} loading="lazy" />
+            <figcaption>MotorAdvisor &mdash; one work order in the demo shop. The question is asked on the right and lands as priced, approved diagnostics on the left &mdash; then the repair is weighed against what the car is actually worth.</figcaption>
           </figure>
           {motoradvisor ? (
             <div className="bl-product-register">
