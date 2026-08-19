@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Scoreboard from "@/components/Scoreboard";
 import BrandMark from "@/components/BrandMark";
 import PortfolioTotals from "@/components/PortfolioTotals";
+import Learnings from "@/components/Learnings";
 import ResumeLink from "@/components/ResumeLink";
 import { getBuildLog } from "@/lib/buildlog";
 import { shippingPhrase } from "@/lib/buildlog/format";
@@ -345,8 +346,14 @@ export default async function BuildingPage() {
             Visit tophand.ag <span aria-hidden="true">↗</span>
           </a>
 
-          <div className="bl-highlights">
-            <div className="section-label">Technical highlights</div>
+          {/* Collapsed by default (per Joe): the narrative, screenshot and
+              register stay on the surface; the dense engineering list is one
+              click away. Content still server-renders for crawlers. */}
+          <details className="bl-highlights">
+            <summary>
+              <span className="section-label">Technical highlights</span>
+              <span className="hl-toggle" aria-hidden="true" />
+            </summary>
             <ul>
               {TOPHAND_HIGHLIGHTS.map(([name, detail]) => (
                 <li key={name}>
@@ -354,7 +361,7 @@ export default async function BuildingPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </details>
 
 
           <figure className="bl-shot">
@@ -440,8 +447,11 @@ export default async function BuildingPage() {
             Visit motoradvisor.app <span aria-hidden="true">↗</span>
           </a>
 
-          <div className="bl-highlights">
-            <div className="section-label">Technical highlights</div>
+          <details className="bl-highlights">
+            <summary>
+              <span className="section-label">Technical highlights</span>
+              <span className="hl-toggle" aria-hidden="true" />
+            </summary>
             <ul>
               {MOTORADVISOR_HIGHLIGHTS.map(([name, detail]) => (
                 <li key={name}>
@@ -449,7 +459,7 @@ export default async function BuildingPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </details>
 
 
           <figure className="bl-shot">
@@ -469,7 +479,12 @@ export default async function BuildingPage() {
         <PortfolioTotals log={log} />
       </section>
 
-      {/* 5 — The so-what */}
+      {/* 5 — The evidence for the so-what: authored learnings, read
+          immediately before the claims they back. Content lives in
+          content/learnings.tsx; this is deliberately NOT register telemetry. */}
+      <Learnings />
+
+      {/* 6 — The so-what */}
       <section aria-labelledby="sowhat-h" className="bl-sowhat">
         <div className="section-label">Why it matters</div>
         <h2 id="sowhat-h" className="bl-h2">
@@ -500,7 +515,7 @@ export default async function BuildingPage() {
         </div>
       </section>
 
-      {/* 6 — Contact */}
+      {/* 7 — Contact */}
       <section className="bl-contact" aria-label="Contact">
         <h2>Open to senior product roles in B2B enterprise SaaS.</h2>
         <p>Thirty years of judgment, now with no queue in front of it.</p>
