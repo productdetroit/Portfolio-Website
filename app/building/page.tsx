@@ -125,8 +125,16 @@ const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
     "Anthropic’s Claude API running an agentic tool loop over task-shaped tools, so the model asks a question rather than walking a catalogue.",
   ],
   [
+    "AI model gateway",
+    "Every model call routes through a gateway that picks the cheapest model fit for the task and fails over automatically — cost, resilience and performance handled in one place instead of scattered across call sites.",
+  ],
+  [
     "Custom remote MCP server",
     "Stateless streamable HTTP with OAuth 2.1, PKCE and dynamic client registration — an external agent gets the same tools the app uses.",
+  ],
+  [
+    "Developer docs that stay current",
+    "motoradvisor.app/dev rebuilds automatically as the platform changes, so a builder wiring up the MCP server is always reading live documentation, not a stale wiki.",
   ],
   [
     "Two licensed data-as-a-service integrations",
