@@ -126,7 +126,7 @@ const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
   ],
   [
     "AI model gateway",
-    "Every model call routes through a gateway that picks the cheapest model fit for the task and fails over automatically — cost, resilience and performance handled in one place instead of scattered across call sites.",
+    "Model choice is deterministic app code — a tested router sends mechanical turns to a cheaper model — then the Vercel AI Gateway picks the best-cost provider serving that model, with automatic failover. The app decides what; the gateway decides who.",
   ],
   [
     "Custom remote MCP server",
