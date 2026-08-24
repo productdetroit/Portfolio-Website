@@ -19,6 +19,9 @@ export type Providers = {
   jira: (p: ProductConfig) => Promise<JiraMetrics>;
   confluence: (p: ProductConfig) => Promise<number>;
   github: (p: ProductConfig) => Promise<number>;
+  /** Separate slot from `github` (same host, different endpoint) so a slow
+   *  stats computation never drags the PR count down to snapshot with it. */
+  githubLoc: (p: ProductConfig) => Promise<number>;
   vercel: (p: ProductConfig) => Promise<VercelMetrics>;
 };
 
@@ -102,7 +105,7 @@ export async function aggregateProduct(
 ): Promise<ProductBuildLog> {
   const snapshot = snapshotFor(product.id);
 
-  const [jira, confluence, github, vercel] = await Promise.all([
+  const [jira, confluence, github, githubLoc, vercel] = await Promise.all([
     attempt(`${product.id}/jira`, () => providers.jira(product), timeoutMs),
     attempt(
       `${product.id}/confluence`,
@@ -110,11 +113,26 @@ export async function aggregateProduct(
       timeoutMs,
     ),
     attempt(`${product.id}/github`, () => providers.github(product), timeoutMs),
+    attempt(
+      `${product.id}/github-loc`,
+      () => providers.githubLoc(product),
+      timeoutMs,
+    ),
     attempt(`${product.id}/vercel`, () => providers.vercel(product), timeoutMs),
   ]);
 
-  const allFailed = !jira && confluence === null && github === null && !vercel;
-  const stale = !jira || confluence === null || github === null || !vercel;
+  const allFailed =
+    !jira &&
+    confluence === null &&
+    github === null &&
+    githubLoc === null &&
+    !vercel;
+  const stale =
+    !jira ||
+    confluence === null ||
+    github === null ||
+    githubLoc === null ||
+    !vercel;
 
   const lastShippedSource = vercel ? vercel.lastShipped : snapshot.lastShipped;
   const lastShipped = lastShippedSource
@@ -140,6 +158,7 @@ export async function aggregateProduct(
     specsWritten: confluence ?? snapshot.specsWritten,
     epics: jira?.epics ?? snapshot.epics,
     pullRequests: github ?? snapshot.pullRequests,
+    linesOfCode: githubLoc ?? snapshot.linesOfCode,
     productionDeploys:
       vercel?.productionDeploys ?? snapshot.deploysBaseline.count,
     lastShipped,
@@ -180,6 +199,7 @@ export async function aggregate(
       backlogItems: sum((p) => p.backlogItems),
       featuresLive: sum((p) => p.featuresLive),
       pullRequests: sum((p) => p.pullRequests),
+      linesOfCode: sum((p) => p.linesOfCode),
       productionDeploys: sum((p) => p.productionDeploys),
       epics: {
         done: sum((p) => p.epics.done),

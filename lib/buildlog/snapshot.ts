@@ -17,6 +17,8 @@ export type ProductSnapshot = {
   specsWritten: number;
   epics: { done: number; total: number };
   pullRequests: number;
+  /** Net lines (additions minus deletions) over the product's merged PRs. */
+  linesOfCode: number;
   /** Cumulative READY production deploys as of capturedAt. */
   deploysBaseline: { count: number; capturedAt: string };
   lastShipped: { subject: string; at: string } | null;

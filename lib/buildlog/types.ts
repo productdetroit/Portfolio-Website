@@ -18,6 +18,12 @@ export type BuildLog = {
   specsWritten: number;
   epics: { done: number; total: number };
   pullRequests: number;
+  /** Net lines merged across every repo the product ships from: additions
+   *  minus deletions over all merged pull requests. PR diffs, not repo-
+   *  lifetime stats, both because GitHub's stats endpoints compute lazily
+   *  (202s indefinitely) and because reviewed PRs are what the register
+   *  already claims to measure. */
+  linesOfCode: number;
   productionDeploys: number;
   lastShipped: {
     subject: string;
@@ -54,6 +60,7 @@ export type PortfolioBuildLog = {
     backlogItems: number;
     featuresLive: number;
     pullRequests: number;
+    linesOfCode: number;
     productionDeploys: number;
     epics: { done: number; total: number };
   };

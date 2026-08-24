@@ -2,14 +2,20 @@ import { unstable_cache } from "next/cache";
 import { aggregate, type Providers } from "./aggregate";
 import { getJiraMetrics } from "./jira";
 import { getSpecsWritten } from "./confluence";
-import { getPullRequestsMerged } from "./github";
+import { getLinesOfCode, getPullRequestsMerged } from "./github";
 import { getVercelMetrics } from "./vercel";
 import { PRODUCTS, type ProductConfig } from "./products";
 import type { PortfolioBuildLog } from "./types";
 
 const REVALIDATE_SECONDS = 3600;
 
-const PROVIDER_NAMES = ["jira", "confluence", "github", "vercel"] as const;
+const PROVIDER_NAMES = [
+  "jira",
+  "confluence",
+  "github",
+  "github-loc",
+  "vercel",
+] as const;
 type ProviderName = (typeof PROVIDER_NAMES)[number];
 
 /** Cache tag for one provider on one product.
@@ -50,6 +56,7 @@ const cachedProviders: Providers = {
   jira: perProduct("jira", getJiraMetrics),
   confluence: perProduct("confluence", getSpecsWritten),
   github: perProduct("github", getPullRequestsMerged),
+  githubLoc: perProduct("github-loc", getLinesOfCode),
   vercel: perProduct("vercel", getVercelMetrics),
 };
 

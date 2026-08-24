@@ -32,6 +32,7 @@ function liveProviders(overrides: Partial<Providers> = {}): Providers {
     jira: async () => jiraLive,
     confluence: async () => 19,
     github: async () => 93,
+    githubLoc: async () => 42_000,
     vercel: async () => vercelLive,
     ...overrides,
   };
@@ -47,6 +48,7 @@ describe("aggregateProduct", () => {
     expect(log.featuresLive).toBe(72);
     expect(log.specsWritten).toBe(19);
     expect(log.pullRequests).toBe(93);
+    expect(log.linesOfCode).toBe(42_000);
     expect(log.productionDeploys).toBe(112);
     expect(log.lastShipped).toEqual({
       subject: "capability controls",
@@ -73,6 +75,23 @@ describe("aggregateProduct", () => {
     // The providers that answered are still live.
     expect(log.specsWritten).toBe(19);
     expect(log.pullRequests).toBe(93);
+  });
+
+  it("keeps the PR count live when only the LOC stats endpoint fails", async () => {
+    // The two GitHub reads are separate provider slots precisely so a slow
+    // code_frequency computation can't drag the PR count down to snapshot.
+    const log = await aggregateProduct(
+      tophand,
+      liveProviders({
+        githubLoc: async () => {
+          throw new Error("stats still computing");
+        },
+      }),
+      NOW,
+    );
+    expect(log.stale).toBe(true);
+    expect(log.pullRequests).toBe(93);
+    expect(log.linesOfCode).toBe(snapshotFor("tophand").linesOfCode);
   });
 
   it("dates each product from its own start date", async () => {
@@ -110,6 +129,7 @@ describe("aggregate (portfolio)", () => {
     expect(log.totals.featuresLive).toBe(72 * n);
     expect(log.totals.specsWritten).toBe(19 * n);
     expect(log.totals.pullRequests).toBe(93 * n);
+    expect(log.totals.linesOfCode).toBe(42_000 * n);
     expect(log.totals.productionDeploys).toBe(112 * n);
     expect(log.totals.epics).toEqual({ done: 7 * n, total: 24 * n });
   });

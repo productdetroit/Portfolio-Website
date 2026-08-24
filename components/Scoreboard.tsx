@@ -167,6 +167,15 @@ export default function Scoreboard({ log }: { log: ProductBuildLog }) {
             <dd>{log.productionDeploys}</dd>
           </div>
         ) : null}
+        {log.linesOfCode > 0 ? (
+          <div
+            className="reg-sec-item"
+            title={`Net lines merged across every repository ${log.productName} ships from: additions minus deletions over all merged pull requests — code, config and lockfiles alike.`}
+          >
+            <dt>Lines of code</dt>
+            <dd>{log.linesOfCode.toLocaleString("en-US")}</dd>
+          </div>
+        ) : null}
         <div
           className="reg-sec-item"
           title="Every merged pull request on the TopHand repo was reviewed by Joe."
