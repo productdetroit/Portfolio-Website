@@ -25,7 +25,7 @@ export const masthead = {
     "I build the product function at software companies that have outgrown running product on instinct — and tie every product investment to a revenue or margin outcome the board can see.",
   /** Must match the CTA band's button word for word (spec §5.8). */
   ctaLabel: "Schedule 20 minutes",
-  sub: "Or email joe@productdetroit.com. No pitch deck, no pressure.",
+  sub: "Or email joe@productdetroit.com.",
 } as const;
 
 export type Symptom = { lead: string; text: string };
