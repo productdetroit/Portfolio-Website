@@ -20,7 +20,7 @@ export const masthead = {
   /** H1 renders as: headBefore <em>headEm</em> headAfter */
   headBefore: "Product leadership, for a fixed scope and a ",
   headEm: "defined",
-  headAfter: " end.",
+  headAfter: " outcome.",
   lede:
     "I build the product function at software companies that have outgrown running product on instinct — and tie every product investment to a revenue or margin outcome the board can see.",
   /** Must match the CTA band's button word for word (spec §5.8). */
