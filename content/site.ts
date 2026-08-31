@@ -10,7 +10,8 @@ export const site = {
   titleTemplate: "%s — Joe Ross, Product Detroit",
   heroSub:
     "30+ years leading product at PE-backed SaaS companies, a Fortune 5 enterprise, and founder-led businesses — as founding CPO at both WorkForce Software ($68M→$150M ARR, acquired by ADP for $1.2B) and BS&A Software, building the product function from scratch at each and scaling the cloud SaaS business.",
-  ctaSub: "Exploring CPO and VP Product roles at PE-backed SaaS companies in the $50M–$300M ARR range.",
+  /** Both contact routes converge on the same first step. */
+  ctaClose: "Either way, it starts with the same twenty minutes.",
   url: "https://productdetroit.com",
   email: "joe@productdetroit.com",
   phone: "+12482852821",
@@ -31,7 +32,35 @@ export const navLinks = [
   { href: "/#career", label: "Career" },
   { href: "/#press", label: "Press" },
   { href: "/building", label: "Building" },
+  { href: "/consulting", label: "Consulting" },
   { href: "/#contact", label: "Contact" },
+];
+
+/** Contact-section routing (consulting-spec §8): once Consulting is in the
+ *  nav, the section must serve both audiences — engagements to /consulting,
+ *  roles to the résumé — or the consulting page leaks its own traffic. */
+export type CtaRoute = {
+  label: string;
+  text: string;
+  cta: string;
+  /** Internal path, or omit when `resume` renders the ResumeLink instead. */
+  href?: string;
+  resume?: boolean;
+};
+
+export const ctaRoutes: CtaRoute[] = [
+  {
+    label: "Engagements",
+    text: "Product leadership for your company — fixed scope, fixed fee, defined outcome.",
+    href: "/consulting",
+    cta: "Explore Consulting →",
+  },
+  {
+    label: "Roles",
+    text: "Exploring CPO and VP Product roles at PE-backed SaaS companies in the $50M–$300M ARR range.",
+    resume: true,
+    cta: "Download Résumé ↓",
+  },
 ];
 
 /** `numberHtml` contains inline <span> units and is rendered as authored HTML.
