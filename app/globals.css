@@ -940,3 +940,166 @@ nav.nav-dark {
   .lrn-summary { padding-right: 32px; }
   .lrn-toggle { top: 32px; }
 }
+
+/* ---- /consulting (consulting-spec v1) ----
+   Light route on cream, brand tokens only. White cards on hairline rules —
+   never drop shadows. Terracotta discipline (spec §4): kickers, durations,
+   hovers, the H1 italic, and the CTA band; no navy statistics band here. */
+.consulting { font-size: 17px; line-height: 1.78; }
+.con-wrap { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+
+.consulting h1 {
+  font-size: clamp(42px, 5.5vw, 66px); line-height: 1.05;
+  letter-spacing: -0.01em; margin-bottom: 0; max-width: 15em;
+}
+.consulting h2 { font-size: clamp(28px, 3.4vw, 38px); line-height: 1.15; margin-bottom: 0; }
+.consulting h3 {
+  font-family: var(--font-dm-serif), serif; font-weight: 400;
+  font-size: 24px; line-height: 1.25; color: var(--navy);
+}
+.consulting h4 {
+  font-family: var(--font-dm-serif), serif; font-weight: 400;
+  font-size: 19px; line-height: 1.3; color: var(--navy); margin: 0;
+}
+.consulting p { margin: 0 0 1.1em; max-width: 34em; color: var(--muted); }
+.consulting strong { font-weight: 700; color: var(--ink); }
+.consulting a {
+  color: var(--navy); text-decoration: none;
+  border-bottom: 1px solid var(--rule); transition: color 0.2s, border-color 0.2s;
+}
+.consulting a:hover { color: var(--accent); border-color: var(--accent); }
+.consulting a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.con-kicker {
+  font-family: var(--font-dm-mono), monospace; font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--accent-text); margin-bottom: 14px;
+}
+
+/* Masthead — fixed nav is 72px tall; clear it like .bl-header does. */
+.con-masthead { padding: 148px 0 0; }
+.con-masthead .con-wrap { padding-bottom: 64px; border-bottom: 1px solid var(--rule); }
+.con-lede {
+  font-size: 21px; line-height: 1.6; color: var(--ink);
+  max-width: 31em; margin: 28px 0 1.1em;
+}
+.consulting .con-btn {
+  display: inline-block; margin-top: 12px;
+  background: var(--navy); color: #fff; border: none;
+  font-family: var(--font-dm-mono), monospace; font-size: 11.5px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 16px 30px; transition: background 0.2s;
+}
+.consulting .con-btn:hover { background: var(--accent); color: #fff; }
+.consulting .con-btn:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.con-sub {
+  font-family: var(--font-dm-mono), monospace; font-size: 11px;
+  letter-spacing: 0.05em; color: var(--muted); margin: 16px 0 0; max-width: none;
+}
+
+/* Sections: global `section` padding is overridden — rules span the 1100px
+   content column, so the border sits on the inner wrap. */
+.con-section { padding: 66px 0 0; }
+.con-section .con-wrap { padding-bottom: 66px; border-bottom: 1px solid var(--rule); }
+.con-section-last .con-wrap { border-bottom: none; }
+.con-sec-head { border-top: 1px solid var(--navy); padding-top: 16px; margin-bottom: 38px; }
+.con-sec-head .con-kicker { margin-bottom: 10px; }
+
+/* Symptoms — scannable rows, not cards (spec §5.2). */
+.con-rows { border-top: 1px solid var(--rule); }
+.con-row { border-bottom: 1px solid var(--rule); padding: 24px 0; }
+.con-row p { margin: 0; max-width: 54em; }
+
+/* Fit */
+.con-two { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+.con-two p { max-width: none; }
+.con-qual { background: var(--card); border: 1px solid var(--rule); padding: 34px 38px; }
+.con-qual ul { margin: 0; padding: 0; list-style: none; }
+.con-qual li {
+  padding: 11px 0; border-bottom: 1px solid var(--rule);
+  color: var(--muted); line-height: 1.7;
+}
+.con-qual li:last-child { border-bottom: none; }
+.con-fit-links { font-style: italic; }
+
+/* Engagement groups and cards — the page's one repeated structure (§6). */
+.con-group { margin-bottom: 46px; }
+.con-group:last-child { margin-bottom: 0; }
+.con-group h3 { margin-bottom: 6px; }
+.con-group .con-intro { margin-bottom: 22px; }
+.con-card { background: var(--card); border: 1px solid var(--rule); padding: 28px 32px; margin-bottom: 14px; }
+.con-card:last-child { margin-bottom: 0; }
+.con-card-top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 12px;
+}
+.con-dur {
+  font-family: var(--font-dm-mono), monospace; font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent-text); white-space: nowrap;
+}
+/* Card body may run wider than the page's 34em measure — cards are inset. */
+.con-card p { margin: 0 0 0.8em; max-width: 56em; }
+.con-card p:last-child { margin-bottom: 0; }
+.con-card .con-fit { color: var(--ink); }
+.con-proof {
+  border-left: 2px solid #e8a58c; padding-left: 16px; margin-top: 18px;
+  font-style: italic; font-size: 15.5px; max-width: 52em;
+}
+.con-card .con-proof { margin-top: 18px; }
+.con-ai-cards { margin-top: 32px; }
+
+/* Process — First / Then / Finally, hairline-divided columns (§5.6). */
+.con-steps { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--rule); }
+.con-step { padding: 26px 30px 0 0; border-right: 1px solid var(--rule); }
+.con-step:not(:first-child) { padding-left: 30px; }
+.con-step:last-child { border-right: none; padding-right: 0; }
+.con-step-label {
+  display: block; font-family: var(--font-dm-mono), monospace; font-size: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent-text); margin-bottom: 10px;
+}
+.con-step h4 { margin-bottom: 8px; }
+.con-step p { margin: 0; max-width: none; font-size: 16px; }
+
+/* Scope and method */
+.con-principle { border-top: 1px solid var(--rule); padding: 18px 0; }
+.con-principle p { margin: 0; max-width: 46em; }
+
+/* CTA band — full-bleed terracotta, the page's one color moment (§4). */
+.con-cta { background: var(--accent); }
+.con-cta .con-wrap { padding-top: 64px; padding-bottom: 64px; }
+.con-cta h2 { color: #fff; }
+.con-cta p { color: rgba(255, 255, 255, 0.92); max-width: 33em; margin-top: 16px; }
+.consulting .con-btn-cta { background: #fff; color: var(--accent-text); margin-top: 18px; }
+.consulting .con-btn-cta:hover { background: var(--navy); color: #fff; }
+.consulting .con-btn-cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.con-cta-contact { margin: 22px 0 0; }
+.con-cta-contact a {
+  color: #fff; border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+.con-cta-contact a:hover { color: #fff; border-color: #fff; }
+.con-cta-contact a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* The single entry animation — and the only motion on the page (spec §7). */
+.con-masthead .con-wrap { animation: fadeUp 0.7s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .con-masthead .con-wrap { animation: none; }
+}
+
+@media (max-width: 820px) {
+  .con-two { grid-template-columns: 1fr; gap: 32px; }
+  .con-steps { grid-template-columns: 1fr; }
+  .con-step {
+    border-right: none; border-bottom: 1px solid var(--rule);
+    padding: 22px 0 !important;
+  }
+  .con-step:last-child { border-bottom: none; }
+}
+@media (max-width: 720px) {
+  .con-wrap { padding-left: 24px; padding-right: 24px; }
+  /* Mobile nav stacks logo above wrapped links — keep the masthead clear. */
+  .con-masthead { padding-top: 170px; }
+  .con-card { padding: 22px 20px; }
+  .con-qual { padding: 26px 22px; }
+}
