@@ -51,7 +51,7 @@ export type CtaRoute = {
 export const ctaRoutes: CtaRoute[] = [
   {
     label: "Engagements",
-    text: "Product leadership for your company — fixed scope, fixed fee, defined end.",
+    text: "Product leadership for your company — fixed scope, fixed fee, defined outcome.",
     href: "/consulting",
     cta: "Explore Consulting →",
   },

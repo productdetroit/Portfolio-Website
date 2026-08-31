@@ -12,7 +12,7 @@ export const consultingMeta = {
   /** OG/Twitter don't inherit the template, so they spell it out (spec §3). */
   fullTitle: "Consulting — Joe Ross, Product Detroit",
   description:
-    "Product leadership engagements for software companies that have outgrown running product on instinct. Fixed scope, fixed fee, defined end.",
+    "Product leadership engagements for software companies that have outgrown running product on instinct. Fixed scope, fixed fee, defined outcome.",
 } as const;
 
 export const masthead = {
@@ -89,7 +89,7 @@ export const fitQualifiers: Symptom[] = [
 ];
 
 export const fitProse = [
-  "Engagements are fixed scope and fixed fee, with a defined end. I quote a number after a discovery call, once I understand what has to be true when I'm finished. I'd rather do one thing completely than be loosely attached to five.",
+  "Engagements are fixed scope and fixed fee, with a defined outcome. I quote a number after a discovery call, once I understand what has to be true when I'm finished. I'd rather do one thing completely than be loosely attached to five.",
   "I take on a small number of clients at a time, and every engagement ends with your team running what was built. If it only works while I'm there, it didn't work.",
 ];
 
@@ -272,7 +272,7 @@ export const scopeNote =
 
 export const principles: Symptom[] = [
   {
-    lead: "Fixed scope, fixed fee, defined end.",
+    lead: "Fixed scope, fixed fee, defined outcome.",
     text: "You should know what you're buying and when it's finished.",
   },
   {
