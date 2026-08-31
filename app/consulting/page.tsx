@@ -190,7 +190,7 @@ export default function ConsultingPage() {
       </section>
 
       {/* 5.7 — Scope and method */}
-      <section className="con-section con-section-last" aria-label="Scope and method">
+      <section className="con-section" aria-label="Scope and method">
         <div className="con-wrap">
           <div className="con-two">
             <div>

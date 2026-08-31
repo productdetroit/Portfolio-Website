@@ -1003,7 +1003,7 @@ nav.nav-dark {
 
 /* Masthead — fixed nav is 72px tall; clear it like .bl-header does. */
 .con-masthead { padding: 148px 0 0; }
-.con-masthead .con-wrap { padding-bottom: 64px; border-bottom: 1px solid var(--rule); }
+.con-masthead .con-wrap { padding-bottom: 64px; }
 .con-lede {
   font-size: 21px; line-height: 1.6; color: var(--ink);
   max-width: 31em; margin: 28px 0 1.1em;
@@ -1022,11 +1022,11 @@ nav.nav-dark {
   letter-spacing: 0.05em; color: var(--muted); margin: 16px 0 0; max-width: none;
 }
 
-/* Sections: global `section` padding is overridden — rules span the 1100px
-   content column, so the border sits on the inner wrap. */
+/* Sections: global `section` padding is overridden. One rule per boundary
+   (per Joe): the sec-head's navy top rule is the only separator — no
+   trailing hairlines on the masthead or section wraps. */
 .con-section { padding: 66px 0 0; }
-.con-section .con-wrap { padding-bottom: 66px; border-bottom: 1px solid var(--rule); }
-.con-section-last .con-wrap { border-bottom: none; }
+.con-section .con-wrap { padding-bottom: 66px; }
 .con-sec-head { border-top: 1px solid var(--navy); padding-top: 16px; margin-bottom: 38px; }
 .con-sec-head .con-kicker { margin-bottom: 10px; }
 
