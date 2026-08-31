@@ -264,6 +264,31 @@ h2 {
   transition: opacity 0.2s;
 }
 .cta-strip a:hover { opacity: 0.88; }
+/* Two-audience routing (consulting-spec §8): engagement prospects to
+   /consulting, role conversations to the résumé. Hairline-ruled panels on
+   the terracotta — same no-shadow card language as the rest of the site. */
+.cta-routes {
+  display: grid; grid-template-columns: repeat(2, minmax(260px, 400px));
+  gap: 20px; justify-content: center; margin-bottom: 30px;
+}
+.cta-route {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 30px 30px 28px;
+}
+.cta-route-label {
+  font-family: var(--font-dm-mono), monospace; font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75); margin-bottom: 12px;
+}
+.cta-route p { color: rgba(255, 255, 255, 0.92); font-size: 15px; line-height: 1.7; margin-bottom: 22px; }
+.cta-strip .cta-close {
+  color: rgba(255, 255, 255, 0.75); font-size: 14px; margin-bottom: 28px;
+}
+@media (max-width: 640px) {
+  .cta-routes { grid-template-columns: 1fr; }
+  .cta-route { padding: 24px 20px; }
+}
+
 .cta-contact {
   margin-top: 24px;
   font-family: var(--font-dm-mono), monospace; font-size: 11px;

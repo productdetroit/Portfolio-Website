@@ -1,6 +1,7 @@
 import {
   career,
   careerEarlier,
+  ctaRoutes,
   pillars,
   press,
   proofStats,
@@ -147,11 +148,26 @@ export function Press() {
   );
 }
 
+/** Two-audience contact section (consulting-spec §8): engagements route to
+ *  /consulting, roles to the résumé, and both converge on the same call. */
 export function CTA() {
   return (
     <div className="cta-strip" id="contact">
       <h2 style={{ color: "white", marginBottom: 12 }}>Let&rsquo;s talk.</h2>
-      <p>{site.ctaSub}</p>
+      <div className="cta-routes">
+        {ctaRoutes.map((r) => (
+          <div className="cta-route" key={r.label}>
+            <div className="cta-route-label">{r.label}</div>
+            <p>{r.text}</p>
+            {r.resume ? (
+              <ResumeLink>{r.cta}</ResumeLink>
+            ) : (
+              <a href={r.href}>{r.cta}</a>
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="cta-close">{site.ctaClose}</p>
       <div
         style={{
           display: "flex",
@@ -163,7 +179,6 @@ export function CTA() {
         <a href={site.links.calendly} target="_blank" rel="noopener noreferrer">
           Schedule 20 Minutes →
         </a>
-        <ResumeLink>Download Résumé ↓</ResumeLink>
       </div>
       <div className="cta-contact">
         <a href={`mailto:${site.email}`}>{site.email}</a> &nbsp;·&nbsp;{" "}
