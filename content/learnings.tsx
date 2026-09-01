@@ -18,7 +18,7 @@ export interface Learning {
   slug: string;
   /** ISO 8601, e.g. "2026-08-19". Authored, never regenerated at build. */
   date: string;
-  product: "MotorAdvisor" | "TopHand" | "Portfolio";
+  product: "MotorAdvisor" | "TopHand" | "Portfolio" | "Building";
   title: string;
   /** ONE sentence, visible while collapsed — must carry the insight. */
   takeaway: string;
@@ -27,6 +27,88 @@ export interface Learning {
 }
 
 export const learnings: Learning[] = [
+  {
+    slug: "donated-vic-20",
+    date: "2026-08-31",
+    product: "Building",
+    title: "What a donated VIC-20 in 1981 taught me about AI in 2026",
+    takeaway:
+      "Almost nobody is fluent in this yet — that's not a gap to be embarrassed about, it's just what the front edge of a technology feels like, and it doesn't last long.",
+    body: (
+      <>
+        <p>
+          I grew up less than a mile from the Boys &amp; Girls Club in Royal
+          Oak, Michigan. I started going at six and spent most of my childhood
+          there. The club shaped me. The coaches, the programs, the structure,
+          the simple fact of somewhere to be. I owe a lot of who I am to that
+          incredible organization and the adults in it.
+        </p>
+        <p>
+          A couple of years after I started, a Commodore VIC-20 showed up. I
+          never knew where it came from. I&rsquo;ve always assumed it was a
+          board member who bought it out of pocket and donated it, hoping a
+          machine like that might do something good for the kids who came
+          through the door. It ran about $300 at the time, close to a thousand
+          dollars now. The staff set it up in the game room, left it turned
+          on, and let anyone who was curious sit down at it.
+        </p>
+        <p>
+          Almost no one in the country was computer literate then. Not the
+          staff, not our parents, not our teachers. There was no one to teach
+          us because there was barely anyone who knew. What the club had was
+          the instinct to put the machine where kids could reach it, and the
+          patience to let us make a mess of it.
+        </p>
+        <p>
+          So a handful of us taught ourselves, entirely by trial and error,
+          which at that age is indistinguishable from play. Ten lines of BASIC
+          to make your name scroll down the screen forever. Then we got
+          ambitious and built a choose-your-own-adventure game. Pure text,
+          if/then logic, maybe forty lines. I remember it feeling impossibly
+          sophisticated. It felt like magic, and more than that, it felt like
+          something I had made. I was eight years old and I had just become a
+          builder.
+        </p>
+        <p>I think about that room constantly right now.</p>
+        <p>
+          I&rsquo;ve spent thirty years in product. I was a political science
+          major. I have no computer science background and never wrote
+          production code in my career. And for the last stretch I&rsquo;ve
+          been building real software with Claude Code, in English, at a speed
+          that would have been a fantasy two years ago.
+        </p>
+        <p>
+          A lot of what comes back at me is still a foreign language. I
+          don&rsquo;t always know what I&rsquo;m looking at. But I&rsquo;m
+          learning exactly the way I learned on that VIC-20. Try it, break it,
+          read the error, try it again. I have not enjoyed work this much in a
+          very long time.
+        </p>
+        <p>
+          Almost nobody is fluent in this yet. That&rsquo;s not a gap to be
+          embarrassed about, it&rsquo;s just what the front edge of a
+          technology feels like, and it doesn&rsquo;t last long.
+        </p>
+        <p>
+          I don&rsquo;t know who bought that VIC-20. They couldn&rsquo;t have
+          known what it would turn into, and they almost certainly never found
+          out. They just thought it might be good for some kids in Royal Oak.
+        </p>
+        <p>
+          If you&rsquo;re waiting until you understand it before you start,
+          you have it backwards. I never understood any of it at first. I just
+          kept typing.
+        </p>
+      </>
+    ),
+    links: [
+      {
+        label: "Read the post on LinkedIn",
+        href: "https://lnkd.in/p/gNkm6NE6",
+        external: true,
+      },
+    ],
+  },
   {
     slug: "token-cost-and-quality-gating",
     date: "2026-08-19",
