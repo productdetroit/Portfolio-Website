@@ -70,6 +70,45 @@ Vercel detected no framework and had nothing to build. That is now fixed.
 Confirm afterwards that the project reports a non-null `framework` and
 `live: true`; that is the PDW-2 acceptance criterion.
 
+## Private demos (`/demos`)
+
+Invitation-only space for sharing product demos — a walkthrough video, links
+to the live app and MCP, and instructions — with named people. Not in the
+nav, `noindex`, and nothing private is in this (public) repo: demo content
+lives in the private Vercel Blob store `productdetroit-demos`.
+
+**How it works.** An invitee enters their email at `/demos`. If it's on a
+demo's access list they get a one-time sign-in link by email (Resend; 15
+minutes, single use). The link sets a 30-day HttpOnly session cookie scoped
+to `/demos`. Access is re-checked against the live manifest on every request,
+so removing an email revokes immediately. Video plays straight from Blob via
+a presigned URL that expires after four hours. Every sign-in and demo open is
+logged to Blob; owners see it at `/demos/access`.
+
+**Publishing a demo.** Make a folder *outside this repo* holding `demo.md`
+(copy `scripts/demo-template/demo.md`) and the video it names, then:
+
+```bash
+npm run demo -- publish ../demos/motor-quote     # slug = folder name
+npm run demo -- list
+npm run demo -- remove motor-quote
+```
+
+Re-running `publish` overwrites the demo and deletes leftover files. The
+frontmatter `access:` list takes full addresses or bare `@domain` rules.
+Needs `BLOB_READ_WRITE_TOKEN` in `.env.local` (`vercel env pull`).
+
+**Environment** (`lib/demos/config.ts`): `DEMO_SESSION_SECRET` (≥32 chars),
+`DEMO_OWNER_EMAILS` (comma-separated; owners see everything),
+`RESEND_API_KEY`, optional `DEMO_FROM_EMAIL` (default
+`Joe Ross <demos@productdetroit.com>` — the domain must be verified in
+Resend). In `next dev` without `RESEND_API_KEY`, the sign-in link is printed
+to the terminal instead of sent.
+
+**Code.** `lib/demos/` — `access.ts` (rules), `manifest.ts` (`demo.md`
+parser), `tokens.ts` (jose), `session.ts` (cookie → viewer), `store.ts`
+(Blob), `email.ts`, `report.ts` (access log). Pure modules have tests.
+
 ## ⚠ Before DNS cutover (PDW-10)
 
 `/messaging-terms` and `/privacy` currently render **placeholder text**. Both
