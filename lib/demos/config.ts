@@ -4,7 +4,8 @@
  *    DEMO_SESSION_SECRET   ≥32 random chars; signs sign-in links and sessions
  *    DEMO_OWNER_EMAILS     comma-separated; see every demo and /demos/access
  *    RESEND_API_KEY        sends the sign-in emails
- *    DEMO_FROM_EMAIL       optional; defaults to demos@productdetroit.com
+ *    DEMO_FROM_EMAIL       optional; sign-in links; defaults to demos@productdetroit.com
+ *    DEMO_INVITE_FROM      optional; invitations; defaults to Joe Ross <joe@productdetroit.com>
  *    BLOB_READ_WRITE_TOKEN set by Vercel when the Blob store is connected */
 // Relative, not "@/": lib/ is also imported by scripts/ and vitest, which have no alias.
 import { site } from "../../content/site";
@@ -34,8 +35,15 @@ export function ownerEmails(): string[] {
     .filter(Boolean);
 }
 
+/** Sender of the automated sign-in links — a system address. */
 export function fromEmail(): string {
   return process.env.DEMO_FROM_EMAIL ?? `Joe Ross <demos@${new URL(site.url).host}>`;
+}
+
+/** Sender of invitations — Joe himself, since the note is his. Resend
+ *  signs it with the domain's DKIM key, same as the system address. */
+export function inviteFromEmail(): string {
+  return process.env.DEMO_INVITE_FROM ?? `Joe Ross <${site.email}>`;
 }
 
 export function resendApiKey(): string {

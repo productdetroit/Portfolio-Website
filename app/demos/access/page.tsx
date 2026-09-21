@@ -161,7 +161,7 @@ function InviteForm({ demo }: { demo: Demo }) {
         <label htmlFor={id("message")}>Your message</label>
         <textarea id={id("message")} name="message" required rows={9} maxLength={MESSAGE_MAX} defaultValue={defaultMessage(demo)} />
         <p className="dm-sub">
-          Sent from demos@productdetroit.com with replies to you. The email adds an <em>Open the demo</em> button under your
+          Sent from joe@productdetroit.com. The email adds an <em>Open the demo</em> button under your
           message — a personal link that signs them in for 30 days, valid for 14 days or until you revoke it.
         </p>
         <button type="submit" className="dm-btn">
