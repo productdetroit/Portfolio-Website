@@ -14,6 +14,7 @@ const ERRORS: Record<string, string> = {
   expired: "That link has expired — they last 15 minutes. Request a fresh one.",
   used: "That link has already been used. Request a fresh one.",
   invalid: "That link isn't valid. Request a fresh one.",
+  revoked: "That invitation is no longer active. Ask Joe for a new one, or enter your email for a sign-in link.",
   send: "The email couldn't be sent just now. Try again in a minute, or reply to the invitation.",
 };
 

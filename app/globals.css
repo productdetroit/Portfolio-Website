@@ -1282,3 +1282,68 @@ nav.nav-dark {
   .demos a.dm-card { padding: 22px 20px; }
   .dm-table { display: block; overflow-x: auto; }
 }
+
+/* ── /demos/access — invitations console (demo-invites) ─────────────────── */
+.dm-banner {
+  display: inline-block; background: var(--card); border: 1px solid var(--rule);
+  border-left: 3px solid var(--navy); padding: 12px 18px; margin: 18px 0 0; max-width: none; color: var(--ink);
+}
+.dm-banner-error { border-left-color: var(--accent); color: var(--accent-text); }
+.dm-faint, .dm-pending { color: var(--muted); }
+.dm-table td strong { font-family: var(--font-lato), sans-serif; font-size: 15px; }
+.dm-actions { white-space: nowrap; }
+.dm-actions form { display: inline; margin-right: 14px; }
+.dm-link-btn {
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-family: var(--font-dm-mono), monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--navy); border-bottom: 1px solid var(--rule); transition: color 0.2s, border-color 0.2s;
+}
+.dm-link-btn:hover { color: var(--accent); border-color: var(--accent); }
+.dm-link-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.dm-link-btn.dm-danger { color: var(--accent-text); }
+
+/* Rules and the invite form fold away so the table is what you see first. */
+.dm-rules { margin-top: 22px; }
+.dm-rules summary {
+  cursor: pointer; font-family: var(--font-dm-mono), monospace; font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); list-style: none;
+}
+.dm-rules summary::before { content: "+ "; color: var(--accent-text); }
+.dm-rules[open] summary::before { content: "− "; }
+.dm-rules summary::-webkit-details-marker { display: none; }
+.dm-rules .dm-table { margin-top: 14px; }
+
+.dm-invite { margin-top: 28px; }
+.dm-invite > summary { list-style: none; cursor: pointer; }
+.dm-invite > summary::-webkit-details-marker { display: none; }
+.dm-invite[open] > summary { background: var(--accent); }
+.dm-invite-form {
+  background: var(--card); border: 1px solid var(--rule); padding: 28px 32px; margin-top: 14px; max-width: 720px;
+}
+.dm-invite-form label {
+  display: block; font-family: var(--font-dm-mono), monospace; font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px;
+}
+.dm-invite-form label:first-of-type, .dm-two label { margin-top: 0; }
+.dm-invite-form input[type="email"], .dm-invite-form input[type="text"], .dm-invite-form textarea {
+  display: block; width: 100%; font: inherit; font-size: 16px; color: var(--ink); line-height: 1.6;
+  background: var(--cream); border: 1px solid var(--rule); padding: 11px 14px; transition: border-color 0.2s;
+}
+.dm-invite-form textarea { resize: vertical; min-height: 180px; }
+.dm-invite-form input:focus, .dm-invite-form textarea:focus { outline: none; border-color: var(--navy); }
+.dm-invite-form input:focus-visible, .dm-invite-form textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dm-invite-form .dm-sub { margin: 16px 0 18px; max-width: 46em; line-height: 1.7; }
+.dm-invite-form .dm-sub em { color: var(--ink); font-style: normal; }
+.dm-two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.demos code {
+  font-family: var(--font-dm-mono), monospace; font-size: 0.88em;
+  background: var(--card); border: 1px solid var(--rule); padding: 1px 6px; color: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .dm-two { grid-template-columns: 1fr; }
+  .dm-two label { margin-top: 18px; }
+  .dm-two > div:first-child label { margin-top: 0; }
+  .dm-invite-form { padding: 22px 20px; }
+  .dm-actions form { display: block; margin: 0 0 8px; }
+}

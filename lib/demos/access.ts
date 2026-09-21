@@ -40,12 +40,13 @@ export function isOwner(email: string, owners: readonly string[]): boolean {
 }
 
 /** True when this address is allowed to request a sign-in link at all —
- *  an owner, or on at least one demo's list. The sign-in form never reveals
- *  which, so a stranger can't probe the allowlist. */
+ *  an owner, on at least one demo's list, or holding an invitation. The
+ *  sign-in form never reveals which, so a stranger can't probe the list. */
 export function mayRequestLink(
   email: string,
   owners: readonly string[],
   demos: readonly { access: readonly string[] }[],
+  invites: readonly { email: string }[] = [],
 ): boolean {
-  return isOwner(email, owners) || demos.some((d) => canView(email, d.access));
+  return isOwner(email, owners) || demos.some((d) => canView(email, d.access)) || invites.some((i) => i.email === email);
 }

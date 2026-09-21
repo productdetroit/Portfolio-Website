@@ -11,9 +11,9 @@ export default function DemoBar({ viewer, current }: { viewer: Viewer; current: 
         {current === "index" ? <span aria-current="page">All demos</span> : <Link href="/demos">All demos</Link>}
         {viewer.owner ? (
           current === "access" ? (
-            <span aria-current="page">Access log</span>
+            <span aria-current="page">Invitations</span>
           ) : (
-            <Link href="/demos/access">Access log</Link>
+            <Link href="/demos/access">Invitations</Link>
           )
         ) : null}
       </div>

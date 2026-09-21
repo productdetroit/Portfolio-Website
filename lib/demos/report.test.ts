@@ -26,7 +26,7 @@ describe("buildReport", () => {
     { email: "ana@motor.com", slug: "other", at: d(3) },
     { email: "joe@productdetroit.com", slug: "motor", at: d(4) },
   ];
-  const report = buildReport(demos, signIns, views);
+  const report = buildReport(demos, [], signIns, views);
 
   it("counts sign-ins per invited email and views per demo", () => {
     const [motor] = report.perDemo;
