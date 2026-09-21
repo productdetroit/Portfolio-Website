@@ -45,12 +45,18 @@ export default async function EditDemoPage({
       </header>
       <section className="dm-section" aria-label={creating ? "New demo" : "Edit demo"}>
         <div className="dm-wrap">
+          {/* Keyed on the save stamp: a successful save redirects back to this
+              same route, which would otherwise keep the mounted editor — stale
+              busy state, stale field values — instead of showing what was
+              actually stored. Error redirects keep the key so typed values
+              survive a validation bounce. */}
           <DemoEditor
+            key={sp.saved ? `saved-${sp.saved}` : "edit"}
             mode={creating ? "create" : "edit"}
             slug={creating ? "" : slug}
             fields={fieldsFromDemo(demo ?? undefined)}
             error={sp.error}
-            saved={sp.saved === "1"}
+            saved={Boolean(sp.saved)}
           />
         </div>
       </section>
