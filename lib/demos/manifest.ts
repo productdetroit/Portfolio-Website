@@ -88,6 +88,40 @@ export function parseDemo(slug: string, markdown: string): Demo {
   };
 }
 
+/** The inverse of parseDemo: what the editor writes back to `demo.md`.
+ *  Keys are emitted in the order the template shows them; empty fields are
+ *  left out so a hand-authored file and an editor-saved one look alike. */
+export function serializeDemo(demo: Omit<Demo, "slug">): string {
+  const data: Record<string, unknown> = { title: demo.title };
+  if (demo.summary) data.summary = demo.summary;
+  if (demo.updated) data.updated = demo.updated;
+  if (demo.video) data.video = demo.video;
+  if (demo.access.length) data.access = demo.access;
+  if (demo.links.length) data.links = demo.links.map((l) => ({ label: l.label, href: l.href }));
+  return matter.stringify(demo.body ? `\n${demo.body}\n` : "", data);
+}
+
+/** What the editor accepts as a video filename: the browser's name, made
+ *  safe for a URL path. `My Demo (final).MOV` → `my-demo-final.mov`. */
+export function safeVideoName(original: string): string | null {
+  const dot = original.lastIndexOf(".");
+  if (dot <= 0) return null;
+  const ext = original.slice(dot + 1).toLowerCase();
+  if (!VIDEO_EXTENSIONS.has(ext)) return null;
+  const stem = original
+    .slice(0, dot)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+  return `${stem || "video"}.${ext}`;
+}
+
+export const VIDEO_EXTENSIONS = new Set(["mp4", "mov", "webm", "m4v"]);
+export const VIDEO_CONTENT_TYPES = ["video/mp4", "video/quicktime", "video/webm", "video/x-m4v"];
+/** Vercel Blob's multipart ceiling is far higher; this is a sanity cap. */
+export const VIDEO_MAX_BYTES = 4 * 1024 * 1024 * 1024;
+
 /** The pathname prefix for one demo's folder, and the well-known file names. */
 export const DEMOS_PREFIX = "demos/";
 export const MANIFEST_FILE = "demo.md";

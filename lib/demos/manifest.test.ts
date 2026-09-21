@@ -48,3 +48,33 @@ describe("slugFromManifestPath", () => {
     expect(slugFromManifestPath("demos/Bad_Slug/demo.md")).toBeNull();
   });
 });
+
+describe("serializeDemo", () => {
+  it("round-trips through parseDemo, quoting @domain rules", async () => {
+    const { serializeDemo } = await import("./manifest");
+    const demo = parseDemo("x", readFileSync("scripts/demo-template/demo.md", "utf8"));
+    const md = serializeDemo(demo);
+    expect(md).toMatch(/^---\ntitle: /);
+    expect(md).toContain("'@example.com'");
+    expect(parseDemo("x", md)).toEqual(demo);
+  });
+  it("omits empty fields and handles no body", async () => {
+    const { serializeDemo } = await import("./manifest");
+    const md = serializeDemo({ title: "T", summary: "", access: [], links: [], body: "" });
+    expect(md).toBe("---\ntitle: T\n---\n\n");
+  });
+});
+
+describe("safeVideoName", () => {
+  it("slugs the stem and keeps a known extension", async () => {
+    const { safeVideoName } = await import("./manifest");
+    expect(safeVideoName("My Demo (final).MOV")).toBe("my-demo-final.mov");
+    expect(safeVideoName("walkthrough.mp4")).toBe("walkthrough.mp4");
+    expect(safeVideoName("...mp4")).toBe("video.mp4");
+  });
+  it("rejects unknown types", async () => {
+    const { safeVideoName } = await import("./manifest");
+    expect(safeVideoName("notes.txt")).toBeNull();
+    expect(safeVideoName("noext")).toBeNull();
+  });
+});

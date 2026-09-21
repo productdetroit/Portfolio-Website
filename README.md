@@ -97,8 +97,18 @@ Access is re-checked against the live manifest and invites on every request.
 Video plays straight from Blob via a presigned URL that expires after four
 hours. Every sign-in (with how: link or invite) and demo open is logged.
 
-**Publishing a demo.** Make a folder *outside this repo* holding `demo.md`
-(copy `scripts/demo-template/demo.md`) and the video it names, then:
+**Publishing a demo.** Owners open `/demos/manage` → **New demo**: URL name,
+title, summary, links, the write-up in markdown, optional access rules, and
+the video. The video uploads from the browser straight to the private Blob
+store (multipart, with a progress bar — a Vercel function only accepts
+~4.5 MB, so it never passes through one); the token route at
+`/demos/manage/upload` hands out an upload token only to owners and only
+for `demos/<slug>/<safe-name>`. Saving writes `demo.md` and prunes any
+replaced video. Edit and Delete live on the same page.
+
+The CLI still works on the same layout — a folder *outside this repo*
+holding `demo.md` (copy `scripts/demo-template/demo.md`) and the video it
+names:
 
 ```bash
 npm run demo -- publish ../demos/motor-quote     # slug = folder name
