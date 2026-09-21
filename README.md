@@ -79,7 +79,7 @@ lives in the private Vercel Blob store `productdetroit-demos`.
 
 **Inviting people.** Owners open `/demos/access`, pick a demo, and send an
 invitation: email, name, subject and a personal message. The email goes out
-from `demos@productdetroit.com` (replies to Joe) with the message verbatim
+from `joe@productdetroit.com` (Joe himself; sign-in links use `demos@`) with the message verbatim
 and an *Open the demo* button — a personal link, valid 14 days, that signs
 them in for 30 days. The same page shows who's been invited, whether they've
 signed in and opened the demo, with **Resend** and **Revoke**. Invites are
@@ -122,7 +122,7 @@ Needs `BLOB_READ_WRITE_TOKEN` in `.env.local` (`vercel env pull`).
 
 **Environment** (`lib/demos/config.ts`): `DEMO_SESSION_SECRET` (≥32 chars),
 `DEMO_OWNER_EMAILS` (comma-separated; owners see everything),
-`RESEND_API_KEY`, optional `DEMO_FROM_EMAIL` (default
+`RESEND_API_KEY`, optional `DEMO_INVITE_FROM` (invitations; default Joe Ross <joe@productdetroit.com>) and `DEMO_FROM_EMAIL` (sign-in links; default
 `Joe Ross <demos@productdetroit.com>` — the domain must be verified in
 Resend). In `next dev` without `RESEND_API_KEY`, the sign-in link is printed
 to the terminal instead of sent.
