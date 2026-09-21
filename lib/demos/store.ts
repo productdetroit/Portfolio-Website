@@ -94,6 +94,36 @@ export async function videoUrl(demo: Demo): Promise<string | null> {
   return presignedUrl;
 }
 
+/** The editor's save. Writes demo.md, then removes anything else in the
+ *  folder that isn't the current video — a replaced or dropped video
+ *  doesn't linger. The video itself was uploaded by the browser (see
+ *  app/demos/manage/upload) before this runs. */
+export async function saveDemoManifest(slug: string, markdown: string, keepVideo?: string): Promise<void> {
+  if (!isSlug(slug)) throw new Error(`bad slug ${slug}`);
+  const folder = demoFolder(slug);
+  await put(folder + MANIFEST_FILE, markdown, { ...PRIVATE, contentType: "text/markdown", addRandomSuffix: false, allowOverwrite: true });
+  const keep = new Set([folder + MANIFEST_FILE, ...(keepVideo ? [folder + keepVideo] : [])]);
+  const stale = (await listAll(folder)).filter((b) => !keep.has(b.pathname)).map((b) => b.pathname);
+  if (stale.length) await del(stale);
+}
+
+export async function deleteDemo(slug: string): Promise<void> {
+  if (!isSlug(slug)) throw new Error(`bad slug ${slug}`);
+  const files = (await listAll(demoFolder(slug))).map((b) => b.pathname);
+  if (files.length) await del(files);
+}
+
+/** True when the named video is actually in the folder — the save action
+ *  checks this so a manifest never points at a file that isn't there. */
+export async function demoFileExists(slug: string, file: string): Promise<boolean> {
+  try {
+    await head(demoFolder(slug) + file);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /* ── Sign-in links ─────────────────────────────────────────────────────── */
 
 export async function issueLinkToken(jti: string, email: string): Promise<void> {
