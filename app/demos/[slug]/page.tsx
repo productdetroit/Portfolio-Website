@@ -41,8 +41,10 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
       {src ? (
         <section className="dm-section" aria-label="Walkthrough">
           <div className="dm-wrap">
-            {/* The URL is signed and expires in a few hours — reload the page for a fresh one. */}
-            <video className="dm-video" controls preload="metadata" playsInline src={src} />
+            {/* The URL is signed and expires in a few hours — reload the page for a fresh one.
+               #t=0.8 makes the browser show the title card instead of the black first
+               frame of the fade-in (media fragment; the fragment never reaches the server). */}
+            <video className="dm-video" controls preload="metadata" playsInline src={`${src}#t=0.8`} />
           </div>
         </section>
       ) : null}
