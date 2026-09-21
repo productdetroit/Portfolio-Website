@@ -57,6 +57,10 @@ export default function DemoEditor({ mode, slug: initialSlug, fields, error, sav
       setVideo(name);
       if (videoRef.current) videoRef.current.value = name;
       if (fileRef.current) fileRef.current.value = ""; // don't post the file to the action
+      /* Re-enable before the auto-save: the action's redirect can land back on
+         this same mounted component (validation error), and a busy flag left
+         true would dead-lock the Save button for every edit after it. */
+      setBusy(false);
       formRef.current?.requestSubmit();
     } catch (err) {
       setBusy(false);

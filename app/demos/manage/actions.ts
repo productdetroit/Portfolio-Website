@@ -42,7 +42,9 @@ export async function saveDemo(formData: FormData): Promise<void> {
   }
   revalidatePath("/demos");
   revalidatePath("/demos/manage");
-  redirect(`/demos/manage/${slug}?saved=1`);
+  /* Unique per save: the edit page keys the editor on it, so a fresh editor
+     mounts after every successful save (state reset, fields re-read). */
+  redirect(`/demos/manage/${slug}?saved=${Date.now()}`);
 }
 
 /** Removes the folder — manifest and video. Invitations for it are left in
