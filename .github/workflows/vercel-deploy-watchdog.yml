@@ -1,0 +1,55 @@
+name: Vercel deploy watchdog
+
+# Vercel's git integration occasionally drops a push event during bursts of
+# team activity (87c6a53 and 7424ea8 never got deployments; each needed a
+# manual empty retrigger commit). This job waits for Vercel to register a
+# deployment for the pushed commit and, if none appears, triggers a Deploy
+# Hook — which bypasses the git-event path entirely and builds the latest
+# commit on main.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: read
+
+concurrency:
+  group: vercel-deploy-watchdog
+  cancel-in-progress: true
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for a Vercel deployment of this commit
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Vercel normally creates the GitHub deployment object within ~30s
+          # of the push. Poll for up to 5 minutes before declaring it dropped.
+          for i in $(seq 1 10); do
+            count=$(gh api "repos/${{ github.repository }}/deployments?sha=${{ github.sha }}" --jq 'length')
+            if [ "$count" -gt 0 ]; then
+              echo "Vercel deployment found for ${{ github.sha }}."
+              echo "found=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "found=false" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger the Vercel deploy hook fallback
+        if: steps.check.outputs.found == 'false'
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_HOOK_URL" ]; then
+            echo "::error::Vercel never picked up ${{ github.sha }} and the VERCEL_DEPLOY_HOOK_URL secret is not set. Set it to the project's deploy-watchdog-main hook URL (Vercel: portfolio-website → Settings → Git → Deploy Hooks)."
+            exit 1
+          fi
+          curl -sf -X POST "$DEPLOY_HOOK_URL" > /dev/null
+          echo "::warning::Vercel dropped the push event for ${{ github.sha }}; the deploy hook fallback was triggered and will build the latest commit on main."
