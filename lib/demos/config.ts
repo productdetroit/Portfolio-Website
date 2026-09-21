@@ -11,6 +11,9 @@ import { site } from "../../content/site";
 
 export const LINK_TTL_SECONDS = 15 * 60;
 export const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
+/** An invitation link. Long enough to be opened next week; the invite
+ *  record in Blob is the real gate, so revoking kills the link early. */
+export const INVITE_TTL_SECONDS = 14 * 24 * 60 * 60;
 /** How long a freshly minted video URL stays playable. Long enough for a
  *  session, short enough that a forwarded URL goes dead the same afternoon. */
 export const VIDEO_URL_TTL_MS = 4 * 60 * 60 * 1000;

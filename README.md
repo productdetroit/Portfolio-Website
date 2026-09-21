@@ -77,13 +77,25 @@ to the live app and MCP, and instructions — with named people. Not in the
 nav, `noindex`, and nothing private is in this (public) repo: demo content
 lives in the private Vercel Blob store `productdetroit-demos`.
 
-**How it works.** An invitee enters their email at `/demos`. If it's on a
-demo's access list they get a one-time sign-in link by email (Resend; 15
-minutes, single use). The link sets a 30-day HttpOnly session cookie scoped
-to `/demos`. Access is re-checked against the live manifest on every request,
-so removing an email revokes immediately. Video plays straight from Blob via
-a presigned URL that expires after four hours. Every sign-in and demo open is
-logged to Blob; owners see it at `/demos/access`.
+**Inviting people.** Owners open `/demos/access`, pick a demo, and send an
+invitation: email, name, subject and a personal message. The email goes out
+from `demos@productdetroit.com` (replies to Joe) with the message verbatim
+and an *Open the demo* button — a personal link, valid 14 days, that signs
+them in for 30 days. The same page shows who's been invited, whether they've
+signed in and opened the demo, with **Resend** and **Revoke**. Invites are
+one file each in Blob (`demos/_invites/<demo>/<email>.json`); revoking
+deletes the file, which kills the link and drops the demo from any live
+session on its next page load. A demo's `access:` list in `demo.md` still
+works for rules like `@motor.com`.
+
+**Signing in later.** Anyone invited (or on a rule) can enter their email at
+`/demos` for a one-time sign-in link (15 minutes, single use). Both kinds of
+link land on a page with a **Continue** button rather than signing in on the
+GET — corporate mail gateways pre-fetch every link in an email, and would
+otherwise spend it. Sessions are 30-day HttpOnly cookies scoped to `/demos`.
+Access is re-checked against the live manifest and invites on every request.
+Video plays straight from Blob via a presigned URL that expires after four
+hours. Every sign-in (with how: link or invite) and demo open is logged.
 
 **Publishing a demo.** Make a folder *outside this repo* holding `demo.md`
 (copy `scripts/demo-template/demo.md`) and the video it names, then:
@@ -105,8 +117,9 @@ Needs `BLOB_READ_WRITE_TOKEN` in `.env.local` (`vercel env pull`).
 Resend). In `next dev` without `RESEND_API_KEY`, the sign-in link is printed
 to the terminal instead of sent.
 
-**Code.** `lib/demos/` — `access.ts` (rules), `manifest.ts` (`demo.md`
-parser), `tokens.ts` (jose), `session.ts` (cookie → viewer), `store.ts`
+**Code.** `lib/demos/` — `access.ts` (rules), `invites.ts` (invite shape,
+defaults, email rendering), `manifest.ts` (`demo.md` parser), `tokens.ts`
+(jose: link / invite / session), `session.ts` (cookie → viewer), `store.ts`
 (Blob), `email.ts`, `report.ts` (access log). Pure modules have tests.
 
 ## ⚠ Before DNS cutover (PDW-10)

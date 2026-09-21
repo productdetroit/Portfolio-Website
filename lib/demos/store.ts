@@ -5,6 +5,7 @@
  *    demos/<slug>/demo.md                     manifest + body (manifest.ts)
  *    demos/<slug>/<video>                     served via short-lived signed URL
  *    demos/_tokens/<jti>                      one file per unused sign-in link
+ *    demos/_invites/<slug>/<email>.json       one file per invitation (invites.ts)
  *    demos/_log/signin/<email>/<ms>.json      one file per sign-in
  *    demos/_log/view/<email>/<ms>-<slug>.json one file per demo page open
  *
@@ -14,6 +15,7 @@
 import { del, get, head, issueSignedToken, list, presignUrl, put } from "@vercel/blob";
 import { cache } from "react";
 import { blobConfigured, VIDEO_URL_TTL_MS } from "./config";
+import type { Invite } from "./invites";
 import {
   DEMOS_PREFIX,
   MANIFEST_FILE,
@@ -26,7 +28,9 @@ import {
 
 const PRIVATE = { access: "private" } as const;
 const TOKENS_PREFIX = `${DEMOS_PREFIX}_tokens/`;
+const INVITES_PREFIX = `${DEMOS_PREFIX}_invites/`;
 const LOG_PREFIX = `${DEMOS_PREFIX}_log/`;
+const JSON_PUT = { ...PRIVATE, contentType: "application/json", addRandomSuffix: false } as const;
 
 async function readText(pathname: string): Promise<string | null> {
   const r = await get(pathname, { ...PRIVATE, useCache: false });
@@ -93,11 +97,7 @@ export async function videoUrl(demo: Demo): Promise<string | null> {
 /* ── Sign-in links ─────────────────────────────────────────────────────── */
 
 export async function issueLinkToken(jti: string, email: string): Promise<void> {
-  await put(`${TOKENS_PREFIX}${jti}`, JSON.stringify({ email, issuedAt: new Date().toISOString() }), {
-    ...PRIVATE,
-    contentType: "application/json",
-    addRandomSuffix: false,
-  });
+  await put(`${TOKENS_PREFIX}${jti}`, JSON.stringify({ email, issuedAt: new Date().toISOString() }), JSON_PUT);
 }
 
 /** Burn the token. True exactly once per jti; a second click on the same
@@ -113,29 +113,62 @@ export async function consumeLinkToken(jti: string): Promise<boolean> {
   return true;
 }
 
+/* ── Invitations ───────────────────────────────────────────────────────── */
+
+function invitePath(slug: string, email: string) {
+  return `${INVITES_PREFIX}${slug}/${email}.json`;
+}
+
+/** Every invitation, cached per request like the demos. Access checks,
+ *  the sign-in form and the owner page all read this once. */
+export const listInvites = cache(async (): Promise<Invite[]> => {
+  if (!blobConfigured()) return [];
+  const blobs = await listAll(INVITES_PREFIX);
+  const invites = await Promise.all(
+    blobs.map(async (b) => {
+      try {
+        const json = await readText(b.pathname);
+        return json ? (JSON.parse(json) as Invite) : null;
+      } catch (err) {
+        console.error(`[demos] bad invite ${b.pathname}:`, err instanceof Error ? err.message : err);
+        return null;
+      }
+    }),
+  );
+  return invites.filter((i): i is Invite => Boolean(i && isSlug(i.slug) && i.email));
+});
+
+export async function getInvite(slug: string, email: string): Promise<Invite | null> {
+  return (await listInvites()).find((i) => i.slug === slug && i.email === email) ?? null;
+}
+
+/** Create or overwrite — a resend keeps the same file. */
+export async function saveInvite(invite: Invite): Promise<void> {
+  await put(invitePath(invite.slug, invite.email), JSON.stringify(invite), { ...JSON_PUT, allowOverwrite: true });
+}
+
+/** Revoke. The invite link's token is still signed, but the sign-in page
+ *  checks for this file, so the link is dead from here on. */
+export async function deleteInvite(slug: string, email: string): Promise<void> {
+  await del(invitePath(slug, email));
+}
+
 /* ── Access log ────────────────────────────────────────────────────────── */
 
 export type SignInEvent = { email: string; at: Date };
 export type ViewEvent = { email: string; slug: string; at: Date };
+export type SignInVia = "link" | "invite";
 
 function logPath(kind: "signin" | "view", email: string, suffix = "") {
   return `${LOG_PREFIX}${kind}/${email}/${Date.now()}${suffix}.json`;
 }
 
-export async function recordSignIn(email: string, userAgent: string | null): Promise<void> {
-  await put(logPath("signin", email), JSON.stringify({ email, at: new Date().toISOString(), userAgent }), {
-    ...PRIVATE,
-    contentType: "application/json",
-    addRandomSuffix: false,
-  });
+export async function recordSignIn(email: string, userAgent: string | null, via: SignInVia): Promise<void> {
+  await put(logPath("signin", email), JSON.stringify({ email, at: new Date().toISOString(), userAgent, via }), JSON_PUT);
 }
 
 export async function recordView(email: string, slug: string): Promise<void> {
-  await put(logPath("view", email, `-${slug}`), JSON.stringify({ email, slug, at: new Date().toISOString() }), {
-    ...PRIVATE,
-    contentType: "application/json",
-    addRandomSuffix: false,
-  });
+  await put(logPath("view", email, `-${slug}`), JSON.stringify({ email, slug, at: new Date().toISOString() }), JSON_PUT);
 }
 
 /** The whole log, parsed from pathnames. Bounded by how many people Joe
