@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { notFound, redirect } from "next/navigation";
+import CopyInviteLink from "@/components/CopyInviteLink";
 import DemoBar from "@/components/DemoBar";
 import { MESSAGE_MAX, NAME_MAX, SUBJECT_MAX, defaultMessage, defaultSubject } from "@/lib/demos/invites";
 import type { Demo } from "@/lib/demos/manifest";
@@ -81,6 +82,7 @@ function DemoBlock({ report }: { report: DemoReport }) {
                       <input type="hidden" name="email" value={invite.email} />
                       <button type="submit" className="dm-link-btn">Resend</button>
                     </form>
+                    <CopyInviteLink slug={demo.slug} email={invite.email} />
                     <form action={revokeInvite}>
                       <input type="hidden" name="slug" value={demo.slug} />
                       <input type="hidden" name="email" value={invite.email} />
@@ -163,6 +165,8 @@ function InviteForm({ demo }: { demo: Demo }) {
         <p className="dm-sub">
           Sent from joe@productdetroit.com. The email adds an <em>Open the demo</em> button under your
           message — a personal link that signs them in for 30 days, valid for 14 days or until you revoke it.
+          If it isn&rsquo;t getting through, <em>Copy link</em> on their row gives you that same link to paste
+          into an email of your own.
         </p>
         <button type="submit" className="dm-btn">
           Send invitation
