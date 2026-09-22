@@ -29,14 +29,16 @@ export async function generateMetadata({
   const product = productBySlug(slug);
   if (!product) return {};
 
-  const title = `${product.name} — Building`;
+  /* Product name only: the layout's template makes that
+     "TopHand — Joe Ross, Product Detroit", which is what OG and Twitter
+     spell out below. "— Building" in between was a third dash for nothing. */
   const fullTitle = `${product.name} — Joe Ross, Product Detroit`;
   /* A file-based opengraph-image.png doesn't cascade into a nested segment,
      so /building's card is named explicitly here — without it these pages
      share with no image at all. */
   const image = `${site.url}/building/opengraph-image.png`;
   return {
-    title,
+    title: product.name,
     description: product.description,
     openGraph: {
       title: fullTitle,
