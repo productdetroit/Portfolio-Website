@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { site } from "@/content/site";
 import {
   consultingMeta,
@@ -129,9 +130,9 @@ export default function ConsultingPage() {
                 <p key={p.slice(0, 24)}>{p}</p>
               ))}
               <p className="con-fit-links">
-                <a href="/#career">The commercial record</a> and{" "}
-                <a href="/building">what I&rsquo;m building now</a> are on the
-                main site.
+                <Link href="/#career">The commercial record</Link> and{" "}
+                <Link href="/building">what I&rsquo;m building now</Link> are on
+                the main site.
               </p>
             </div>
           </div>
