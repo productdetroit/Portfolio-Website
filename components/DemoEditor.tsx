@@ -1,6 +1,7 @@
 "use client";
 
 import { upload } from "@vercel/blob/client";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import type { EditorFields } from "@/lib/demos/editor";
 import { safeVideoName } from "@/lib/demos/video";
@@ -75,7 +76,8 @@ export default function DemoEditor({ mode, slug: initialSlug, fields, error, sav
 
       {saved ? (
         <p className="dm-banner" role="status">
-          Saved. <a href={`/demos/${slug}`}>View the demo</a> or <a href="/demos/access">invite someone</a>.
+          Saved. <Link href={`/demos/${slug}`}>View the demo</Link> or{" "}
+          <Link href="/demos/access">invite someone</Link>.
         </p>
       ) : null}
       {error ? (
@@ -164,7 +166,9 @@ export default function DemoEditor({ mode, slug: initialSlug, fields, error, sav
       <label htmlFor="ed-access">Also allow by rule (optional)</label>
       <textarea id="ed-access" name="access" rows={2} defaultValue={fields.access} placeholder={"@motor.com\nsomeone@example.com"} />
       <p className="dm-hint">
-        One per line. Invitations from the <a href="/demos/access">Invitations</a> page are the usual way in; rules are for whole companies.
+        One per line. Invitations from the{" "}
+        <Link href="/demos/access">Invitations</Link> page are the usual way in;
+        rules are for whole companies.
       </p>
 
       <div className="dm-editor-actions">

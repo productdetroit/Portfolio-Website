@@ -3,8 +3,6 @@ import { medianMs, toDuration } from "./compute";
 import { ProviderError, type JiraMetrics } from "./types";
 import { ATLASSIAN_HOST, type ProductConfig } from "./products";
 
-const HOST = "https://productdetroit.atlassian.net";
-
 type JiraIssue = {
   fields: {
     issuetype?: { name?: string };
