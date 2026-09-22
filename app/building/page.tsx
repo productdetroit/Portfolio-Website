@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import Scoreboard from "@/components/Scoreboard";
 import BrandMark from "@/components/BrandMark";
@@ -69,13 +70,17 @@ const GATES = [
   },
 ];
 
+/** A highlight's detail is a node, not a string: two MotorAdvisor entries
+ *  link out to the public MCP developer docs. */
+type Highlight = [name: string, detail: ReactNode];
+
 /** Technical highlights per product card. The commercial narrative says what
  *  each product is worth; these say what it took to build — the objective is
  *  to make the engineering legible, not to list every dependency.
  *
  *  Per §10 the two licensed upstream data providers are named by category
  *  only. Everything else here is an owned stack choice, so it is named. */
-const TOPHAND_HIGHLIGHTS: Array<[string, string]> = [
+const TOPHAND_HIGHLIGHTS: Highlight[] = [
   [
     "Installable PWA",
     "Next.js, React, TypeScript and Tailwind, with a Serwist service worker so it keeps working in a field with no signal.",
@@ -115,7 +120,7 @@ const TOPHAND_HIGHLIGHTS: Array<[string, string]> = [
   ["1,078 tests", "Across 89 files, run on every branch."],
 ];
 
-const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
+const MOTORADVISOR_HIGHLIGHTS: Highlight[] = [
   [
     "Responsive, installable web app",
     "Next.js, React and TypeScript end to end — no second language anywhere in the stack — shipped as a standalone home-screen app with a phone-first work order.",
@@ -138,7 +143,21 @@ const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
   ],
   [
     "Custom remote MCP server, two credential types",
-    "Stateless streamable HTTP with OAuth 2.1, PKCE and dynamic client registration for connector journeys, plus API keys for developers who paste one into a client — sixteen tools, the same ones the app uses.",
+    <>
+      Stateless streamable HTTP with OAuth 2.1, PKCE and dynamic client
+      registration for connector journeys, plus API keys for developers who
+      paste one into a client &mdash; sixteen tools, the same ones the app
+      uses. The reference is public, the endpoint isn&rsquo;t:{" "}
+      <a
+        href="https://motoradvisor.app/dev"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        motoradvisor.app/dev <span aria-hidden="true">&#8599;</span>
+      </a>{" "}
+      documents every tool with a worked request and response; calling one
+      takes a credential.
+    </>,
   ],
   [
     "Self-serve developer portal with paid plans",
@@ -146,7 +165,17 @@ const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
   ],
   [
     "Developer docs that stay current",
-    "motoradvisor.app/dev rebuilds automatically as the platform changes, so a builder wiring up the MCP server is always reading live documentation, not a stale wiki.",
+    <>
+      <a
+        href="https://motoradvisor.app/dev"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        motoradvisor.app/dev <span aria-hidden="true">&#8599;</span>
+      </a>{" "}
+      rebuilds automatically as the platform changes, so a builder wiring up
+      the MCP server is always reading live documentation, not a stale wiki.
+    </>,
   ],
   [
     "Two licensed data-as-a-service integrations",
