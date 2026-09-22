@@ -70,8 +70,8 @@ const GATES = [
   },
 ];
 
-/** A highlight's detail is a node, not a string: one MotorAdvisor entry
- *  links out to the public MCP developer docs. */
+/** A highlight's detail is a node, not a string: two MotorAdvisor entries
+ *  link out to the public MCP developer docs. */
 type Highlight = [name: string, detail: ReactNode];
 
 /** Technical highlights per product card. The commercial narrative says what
@@ -165,7 +165,17 @@ const MOTORADVISOR_HIGHLIGHTS: Highlight[] = [
   ],
   [
     "Developer docs that stay current",
-    "motoradvisor.app/dev rebuilds automatically as the platform changes, so a builder wiring up the MCP server is always reading live documentation, not a stale wiki.",
+    <>
+      <a
+        href="https://motoradvisor.app/dev"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        motoradvisor.app/dev <span aria-hidden="true">&#8599;</span>
+      </a>{" "}
+      rebuilds automatically as the platform changes, so a builder wiring up
+      the MCP server is always reading live documentation, not a stale wiki.
+    </>,
   ],
   [
     "Two licensed data-as-a-service integrations",
