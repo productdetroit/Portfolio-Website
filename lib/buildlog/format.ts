@@ -1,4 +1,4 @@
-import type { BuildLog } from "./types";
+import type { BuildLog, Duration } from "./types";
 
 const ET = "America/Detroit";
 
@@ -101,4 +101,10 @@ export function shippedStamp(
   if (lastShipped.daysAgo === 0) return `today · ${timeET(lastShipped.at)} ET`;
   if (lastShipped.daysAgo === 1) return "yesterday";
   return `${lastShipped.daysAgo} days ago`;
+}
+
+/** A duration compressed for a card stat, where "6 days" has no room to
+ *  breathe: 6d, 17h. The full unit stays on the register tiles. */
+export function shortDuration(d: Duration): string {
+  return `${d.value}${d.unit === "hours" ? "h" : "d"}`;
 }
