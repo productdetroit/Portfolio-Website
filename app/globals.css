@@ -823,6 +823,7 @@ body > nav.nav-dark {
 
 /* Product logo above each card's headline. */
 .bl-product-logo { margin: 14px 0 22px; }
+.bl-detail .bl-product-logo { margin: 4px 0 18px; }
 .bl-product-logo img { display: block; height: 46px; width: auto; }
 
 /* Product screenshots. Captured from each product's seeded demo tenant — never
@@ -1453,6 +1454,10 @@ body > nav.nav-dark {
   gap: 24px;
 }
 .bl-portfolio-totals { margin-top: 56px; }
+/* PortfolioTotals' own wrapper is a <section>, so without this it takes the
+   global 100px 48px and lands 156px below the grid, indented past the cards
+   instead of squared up with them. */
+.bl-portfolio-totals .tot-section { padding: 0; }
 
 .bl-card {
   display: flex; flex-direction: column;
@@ -1534,12 +1539,15 @@ body > nav.nav-dark {
 }
 
 /* ── Product detail: /building/[slug] ──────────────────────────────────── */
-.bl-detail { padding: 148px 0 0; }
+/* 104px, not /building's 148px: that figure gives a full-bleed H1 its
+   runway off a landing. This page opens on a back link, and the same gap
+   just reads as a hole under the nav. */
+.bl-detail { padding: 104px 0 0; }
 .bl-back {
   display: inline-flex; align-items: center; gap: 10px;
   font-family: var(--font-dm-mono), monospace; font-size: 11px;
   letter-spacing: 0.15em; text-transform: uppercase;
-  color: #e8a58c; text-decoration: none; margin-bottom: 48px;
+  color: #e8a58c; text-decoration: none; margin-bottom: 30px;
 }
 .bl-back:hover, .bl-pager a:hover { color: var(--cream); }
 .bl-back:focus-visible, .bl-pager a:focus-visible {
@@ -1556,25 +1564,35 @@ body > nav.nav-dark {
 .bl-detail-story {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-  gap: 48px 64px; align-items: start;
+  gap: 40px 64px; align-items: start;
 }
 .bl-detail-story.full-figure { grid-template-columns: 1fr; }
 .bl-detail-story .bl-shot { margin: 0; }
 .bl-detail-story .bl-tophand-cta { align-self: flex-start; }
 
+/* The global `section` rule pads every section 100px 48px — meant for the
+   full-width bands on the home page. These two sit inside .bl-detail's own
+   column, so they take their spacing from their margins instead; left as-is
+   they carried 200px of dead height each and sat 48px narrower than the
+   story above them. */
+.bl-detail-highlights, .bl-detail-register { padding: 0; }
+/* Scoreboard's own wrapper is a <section> as well, so it picks the same
+   100px 48px up a second time inside .bl-detail-register. */
+.bl-detail .reg-section { padding: 0; }
+
 /* Expanded, not a <details> — this page is the detail. */
-.bl-detail-highlights { margin-top: 72px; }
+.bl-detail-highlights { margin-top: 56px; }
 .bl-detail-highlights .section-label { margin-bottom: 18px; }
 .bl-detail-highlights ul {
   margin-top: 0;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
 }
 
-.bl-detail-register { margin-top: 72px; }
+.bl-detail-register { margin-top: 56px; }
 .bl-detail-register .reg-section { padding-bottom: 0; }
 
 .bl-pager {
-  margin-top: 72px; padding-top: 28px;
+  margin-top: 56px; padding-top: 24px;
   border-top: 1px solid rgba(249, 246, 240, 0.18);
   display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
   font-family: var(--font-dm-mono), monospace; font-size: 11px;
@@ -1582,8 +1600,12 @@ body > nav.nav-dark {
 }
 .bl-pager a { color: #e8a58c; text-decoration: none; }
 
+/* The contact band closes a product page straight after the pager, so it
+   doesn't need the 96px /building uses to separate it from a long spine. */
+.bl-detail + .bl-contact { margin-top: 68px; }
+
 @media (max-width: 720px) {
-  /* Clears the stacked mobile nav, same as .bl-header. */
-  .bl-detail { padding-top: 170px; }
+  /* Clears the stacked mobile nav (~135px tall). */
+  .bl-detail { padding-top: 150px; }
   .bl-card-body { padding: 24px; }
 }
