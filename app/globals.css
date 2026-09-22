@@ -22,7 +22,10 @@ body {
 }
 
 /* NAV */
-nav {
+/* The site header only (Nav.tsx, a direct child of <body>) — a bare `nav`
+   selector would also capture in-page navs like the /building/[slug] pager
+   and pin them to the top of the window. */
+body > nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: rgba(249,246,240,0.95);
   backdrop-filter: blur(8px);
@@ -318,7 +321,7 @@ footer a:hover { color: var(--accent); }
 .footer-brand img { display: block; height: 32px; width: auto; }
 
 @media (max-width: 640px) {
-  nav {
+  body > nav {
     padding: 14px 24px;
     height: auto;
     flex-direction: column;
@@ -489,16 +492,13 @@ footer a:hover { color: var(--accent); }
   padding-left: 26px; margin: 8px 0 34px;
 }
 
-/* TopHand card */
-.bl-tophand-section { padding: 88px 0 0; }
-.bl-tophand { background: var(--card); border: 1px solid var(--rule); padding: 44px 48px 46px; }
-.bl-tophand-h { margin-bottom: 10px; }
+/* Portfolio section, and the pieces the product detail page reuses. */
+.bl-portfolio-section { padding: 88px 0 0; }
 .bl-tophand-meta {
   font-family: var(--font-dm-mono), monospace; font-size: 10.5px;
   letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
   padding-bottom: 26px; border-bottom: 1px solid var(--rule); margin-bottom: 28px;
 }
-.bl-tophand .bl-prose p { font-size: 16px; }
 .bl-tophand-cta {
   display: inline-flex; align-items: center; gap: 12px;
   background: var(--navy); color: #fff; padding: 15px 30px;
@@ -596,7 +596,7 @@ footer a:hover { color: var(--accent); }
 body:has(.building) { background: var(--ink); }
 .building { background: var(--ink); }
 
-nav.nav-dark {
+body > nav.nav-dark {
   background: rgba(26, 26, 26, 0.95);
   border-bottom-color: rgba(249, 246, 240, 0.18);
 }
@@ -659,16 +659,10 @@ nav.nav-dark {
 /* Portfolio section: same headed-section rhythm as the operating model —
    hairline top rule, kicker, h2 — so product cards read as a register
    that grows (per Joe, more products coming). */
-.bl-tophand-section {
+.bl-portfolio-section {
   border-top: 1px solid rgba(249, 246, 240, 0.18);
   margin-top: 88px;
   padding-top: 84px;
-}
-
-/* TopHand card on dark */
-.bl-tophand {
-  background: rgba(249, 246, 240, 0.05);
-  border-color: rgba(249, 246, 240, 0.18);
 }
 .bl-tophand-meta {
   color: rgba(249, 246, 240, 0.65);
@@ -684,8 +678,7 @@ nav.nav-dark {
 .bl-contact p { color: rgba(255, 255, 255, 0.95); }
 .bl-contact a.bl-contact-email { color: rgba(255, 255, 255, 0.95); }
 
-/* Spine sections 4 & 5 */
-.bl-register-section { padding-top: 88px; }
+/* Spine section 5 */
 .bl-sowhat {
   padding: 84px 0 0;
   border-top: 1px solid rgba(249, 246, 240, 0.18);
@@ -700,18 +693,12 @@ nav.nav-dark {
   .reg-grid { grid-template-columns: 1fr 1fr; }
   .bl-gates { grid-template-columns: 1fr; }
   .bl-contact { margin-left: -24px; margin-right: -24px; padding: 60px 24px; }
-  .bl-tophand { padding: 32px 24px; }
   .teaser-section { padding: 0 24px 20px; }
   .teaser-strip { grid-template-columns: 1fr; gap: 20px; }
   .teaser-metrics { gap: 28px 40px; }
 }
 
 /* ── §8: per-product registers and the portfolio total ─────────────────── */
-
-/* A register nested inside a product card — sits under the product it
-   describes, so the two registers read as a comparison rather than a total. */
-.bl-product-register { margin-top: 44px; }
-.bl-product-register .reg-section { margin: 0; }
 
 /* Spec §7: MotorAdvisor's medians measure the day its backlog was reconciled.
    Shown with this caveat rather than suppressed — a missing tile reads as a
@@ -1450,4 +1437,153 @@ nav.nav-dark {
   .dm-editor .dm-two label { margin-top: 22px; }
   .dm-editor .dm-two > div:first-child label { margin-top: 0; }
   .dm-card-static { padding: 22px 20px; }
+}
+
+/* ── Portfolio index: one card per product ─────────────────────────────────
+   /building lists products and links out to /building/[slug]; the story,
+   the highlights and the per-product register live there. These rules render
+   only on the dark route, so they carry the dark values directly (same
+   convention as .bl-learnings above).
+
+   auto-fill rather than auto-fit: with an odd number of products the last
+   cell stays empty instead of one card stretching the full width. */
+.bl-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+  gap: 24px;
+}
+.bl-portfolio-totals { margin-top: 56px; }
+
+.bl-card {
+  display: flex; flex-direction: column;
+  background: rgba(249, 246, 240, 0.05);
+  border: 1px solid rgba(249, 246, 240, 0.18);
+  color: var(--cream); text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.bl-card:hover, .bl-card:focus-visible {
+  border-color: rgba(232, 165, 140, 0.6);
+  background: rgba(249, 246, 240, 0.08);
+}
+.bl-card:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* A 16:9 crop of the product's existing shot — object-position picks the
+   part of it that survives the crop. Dedicated card art would be better. */
+.bl-card-shot {
+  aspect-ratio: 16 / 9; overflow: hidden;
+  border-bottom: 1px solid rgba(249, 246, 240, 0.18);
+  background: rgba(249, 246, 240, 0.03);
+}
+.bl-card-shot img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; border: 0; border-radius: 0;
+}
+
+.bl-card-body {
+  padding: 30px 32px 32px;
+  display: flex; flex-direction: column; gap: 12px; flex: 1;
+}
+.bl-card-top {
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  font-family: var(--font-dm-mono), monospace; font-size: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+}
+.bl-card-index { color: #e8a58c; }
+.bl-card-status { color: rgba(249, 246, 240, 0.65); }
+.bl-card-title {
+  font-family: var(--font-dm-serif), serif; font-weight: 400;
+  font-size: 30px; line-height: 1.15; color: var(--cream);
+  text-wrap: balance; margin: 0;
+}
+.bl-card-meta {
+  font-family: var(--font-dm-mono), monospace; font-size: 10.5px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(249, 246, 240, 0.65);
+  padding-bottom: 16px; border-bottom: 1px solid rgba(249, 246, 240, 0.18);
+}
+.bl-card-summary {
+  font-size: 15px; line-height: 1.7;
+  color: rgba(249, 246, 240, 0.78); text-wrap: pretty;
+}
+/* Pinned to the bottom of the body so the stat rows line up across a row of
+   cards whose summaries differ in length. Columns are generated from however
+   many stats survive the never-render-a-zero rule. */
+.bl-card-stats {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+  gap: 16px; margin: auto 0 0; padding-top: 18px;
+}
+/* dt comes first in the DOM, as a description list requires; `order`
+   puts the value on top without column-reverse, which would let a
+   two-line label push its value out of line with its neighbours. */
+.bl-card-stat { display: flex; flex-direction: column; gap: 8px; }
+.bl-card-value {
+  font-family: var(--font-dm-mono), monospace; font-weight: 500;
+  font-size: 24px; line-height: 1; letter-spacing: -0.02em;
+  color: var(--cream); margin: 0;
+}
+.bl-card-label {
+  order: 2;
+  font-family: var(--font-dm-mono), monospace; font-size: 9px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(249, 246, 240, 0.65);
+}
+.bl-card-cta {
+  margin-top: 14px;
+  font-family: var(--font-dm-mono), monospace; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase; color: #e8a58c;
+}
+
+/* ── Product detail: /building/[slug] ──────────────────────────────────── */
+.bl-detail { padding: 148px 0 0; }
+.bl-back {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-dm-mono), monospace; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: #e8a58c; text-decoration: none; margin-bottom: 48px;
+}
+.bl-back:hover, .bl-pager a:hover { color: var(--cream); }
+.bl-back:focus-visible, .bl-pager a:focus-visible {
+  outline: 2px solid #fff; outline-offset: 3px;
+}
+.building .bl-detail-h1 {
+  font-size: clamp(36px, 5vw, 60px); line-height: 1.08;
+  max-width: 18em; text-wrap: balance; margin-bottom: 14px;
+}
+.bl-detail-meta { margin-bottom: 36px; }
+
+/* Story beside the figure, stacking below ~810px. MotorAdvisor's three-phone
+   strip is unreadable in half a column, so it drops full width instead. */
+.bl-detail-story {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 48px 64px; align-items: start;
+}
+.bl-detail-story.full-figure { grid-template-columns: 1fr; }
+.bl-detail-story .bl-shot { margin: 0; }
+.bl-detail-story .bl-tophand-cta { align-self: flex-start; }
+
+/* Expanded, not a <details> — this page is the detail. */
+.bl-detail-highlights { margin-top: 72px; }
+.bl-detail-highlights .section-label { margin-bottom: 18px; }
+.bl-detail-highlights ul {
+  margin-top: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+}
+
+.bl-detail-register { margin-top: 72px; }
+.bl-detail-register .reg-section { padding-bottom: 0; }
+
+.bl-pager {
+  margin-top: 72px; padding-top: 28px;
+  border-top: 1px solid rgba(249, 246, 240, 0.18);
+  display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  font-family: var(--font-dm-mono), monospace; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+}
+.bl-pager a { color: #e8a58c; text-decoration: none; }
+
+@media (max-width: 720px) {
+  /* Clears the stacked mobile nav, same as .bl-header. */
+  .bl-detail { padding-top: 170px; }
+  .bl-card-body { padding: 24px; }
 }

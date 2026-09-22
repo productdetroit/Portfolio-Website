@@ -6,6 +6,7 @@ import {
   isStaleView,
   shippedStamp,
   shippingPhrase,
+  shortDuration,
   staleSummary,
 } from "./format";
 
@@ -90,5 +91,12 @@ describe("asOfLine", () => {
     expect(asOfLine({ asOf: new Date().toISOString(), stale: false })).toMatch(
       /updated \d{1,2}:\d{2} (AM|PM) ET$/,
     );
+  });
+});
+
+describe("shortDuration", () => {
+  it("compresses a duration for a card stat", () => {
+    expect(shortDuration({ value: 6, unit: "days" })).toBe("6d");
+    expect(shortDuration({ value: 17, unit: "hours" })).toBe("17h");
   });
 });

@@ -31,7 +31,8 @@ export default function PortfolioTotals({ log }: { log: PortfolioBuildLog }) {
           Across the portfolio
         </h2>
         <p className="tot-sub">
-          {log.products.length} products, one operating model. Totals only
+          {log.products.length}{" "}
+          products, one operating model. Totals only
           &mdash; cycle times live on each product&rsquo;s register, where they
           describe a single thing.
         </p>
