@@ -9,7 +9,7 @@ export default function ScoreboardTeaser({ log }: { log: PortfolioBuildLog }) {
   const metrics: Array<{ label: string; value: number; unit?: string } | null> = [
     { label: "Days building", value: log.daysBuilding },
     // Portfolio totals — additive only. The median that used to sit here is
-    // gone deliberately: with two products there is no honest way to pool one,
+    // gone deliberately: across several products there is no honest way to pool one,
     // and each product's register carries its own where it means something.
     { label: "Work items delivered", value: log.totals.featuresLive },
     { label: "Pull requests merged", value: log.totals.pullRequests },

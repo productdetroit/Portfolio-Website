@@ -1,3 +1,5 @@
+import type { ProductId } from "./products";
+
 /** Payload contract from the /building spec (section 7.2). Design and the
  *  aggregator both depend on this exact shape. */
 export type Duration = { value: number; unit: "hours" | "days" };
@@ -34,7 +36,7 @@ export type BuildLog = {
 
 /** One product's register. */
 export type ProductBuildLog = BuildLog & {
-  productId: "tophand" | "motoradvisor";
+  productId: ProductId;
   productName: string;
   /** Day one for this product's elapsed-days tile. */
   startDate: string;

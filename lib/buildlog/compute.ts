@@ -42,6 +42,11 @@ export function cleanCommitSubject(
   }
   return firstLine
     .replace(new RegExp(`^${prefix}-[0-9]+\\s*[:\\-–—]?\\s*`, "i"), "")
+    /* Squash merges put the pull request number on the end — "Ship the thing
+       (#50)". Same plumbing leak as the merge-commit case above, arriving
+       from the other side: the Onward and Book Events repos squash, so this
+       is what their register line was rendering verbatim. */
+    .replace(/\s*\(#\d+\)\s*$/, "")
     .trim();
 }
 

@@ -1,9 +1,12 @@
 # Product screenshots — provenance and constraints
 
-Every image here is captured from each product's **seeded demo tenant**, never a
-live one. TopHand's first customer is a working dairy-goat farm in Michigan;
-its records have no business on a public page. MotorAdvisor's shop data is
-seeded too (Motor City Auto Care, William Hearst and the rest are fictional).
+No image here shows a live tenant. TopHand and MotorAdvisor are captured from
+their **seeded demo tenants**: TopHand's first customer is a working dairy-goat
+farm in Michigan and its records have no business on a public page, and
+MotorAdvisor's shop data is seeded too (Motor City Auto Care, William Hearst
+and the rest are fictional). Onward, Write Home and Book Events are captured
+from their **public marketing pages**, which have no tenant data in them at all
+— see the section below.
 
 | File | What it shows | Source |
 |---|---|---|
@@ -11,6 +14,36 @@ seeded too (Motor City Auto Care, William Hearst and the rest are fictional).
 | `motoradvisor-phone-ask.webp` | Chat on the phone: the owner's complaint in plain language, the advisor naming the four A/C bulletins to start from | Demo video v2, frame at 0:38 |
 | `motoradvisor-phone-verdict.webp` | The work order's repair-or-replace card: a $285 repair against a $1,095–$2,320 trade-in value, "worth repairing" | Demo video v2, frame at 1:34 |
 | `motoradvisor-phone-approve.webp` | The shop-branded estimate page on the customer's phone, $1,315.35 total, Approve / Decline | Demo video v2, frame at 1:46 |
+| `onward.webp` | Onward's public homepage hero — "Legacies move forward" and the two entry points | Live `onwardlegacy.com`, 22 Sep 2026 |
+| `writehome.webp` | Write Home's public homepage hero — the promise line, the note and its stamped envelope | Live `writehome.ink`, 22 Sep 2026 |
+| `bookevents.webp` | Book Events' public homepage hero — the occurrence card with seats and kitchen staff as separate pools | Live `www.bookevents.app`, 22 Sep 2026 |
+
+## Onward, Write Home, Book Events: public pages, not tenants
+
+Unlike the two products above, these three are captures of each product's **own
+public marketing page** — no signed-in surface, no tenant record, nothing that
+isn't already served to anyone who visits. That is the whole reason they were
+chosen: Onward's app holds sellers' financials and Book Events' holds merchants'
+attendee lists, and neither belongs on a portfolio page.
+
+```
+# A viewport, then a 16:9 crop that drops the nav and any cookie banner
+chrome --headless=new --hide-scrollbars --virtual-time-budget=8000 \
+  --window-size=1280,720 --screenshot=out.png <url>   # 1440,810 for bookevents
+ffmpeg -i out.png -vf "crop=1067:600:56:85" -c:v libwebp -quality 90 onward.webp
+```
+
+Nothing in these three is altered. Two things to know if you recapture:
+
+- **Write Home's hero photograph** shows a note and envelope addressed to a
+  family member at a legible street address. It is Joe's own published
+  marketing image and it renders about 5px tall on a card, but it is a real
+  address on a third domain — if that stops being acceptable, crop to
+  `700:394:80:15` (headline and buttons, no envelope) or change the photograph
+  on `writehome.ink` itself.
+- **Book Events** puts a cookie consent bar across the bottom of the viewport;
+  the crop’s 82px top offset and 610px height clear it. Check it after any
+  layout change to that page.
 
 ## MotorAdvisor: where the phone shots come from
 

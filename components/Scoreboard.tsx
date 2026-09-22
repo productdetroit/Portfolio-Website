@@ -178,7 +178,7 @@ export default function Scoreboard({ log }: { log: ProductBuildLog }) {
         ) : null}
         <div
           className="reg-sec-item"
-          title="Every merged pull request on the TopHand repo was reviewed by Joe."
+          title={`Every merged pull request on ${log.productName}'s repositories was reviewed by Joe.`}
         >
           <dt>Reviewed by me</dt>
           <dd>100%</dd>

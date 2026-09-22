@@ -71,6 +71,19 @@ describe("cleanCommitSubject", () => {
       "Ship the maple engine",
     );
   });
+  it("drops the pull request number a squash merge appends", () => {
+    expect(cleanCommitSubject("Sourced corrections to the live pieces (#50)")).toBe(
+      "Sourced corrections to the live pieces",
+    );
+    expect(cleanCommitSubject("ONWARD-201: the seller timeline (#7)", "ONWARD")).toBe(
+      "the seller timeline",
+    );
+  });
+  it("keeps an issue reference that is part of the subject", () => {
+    expect(cleanCommitSubject("Close out (#50) and reopen it")).toBe(
+      "Close out (#50) and reopen it",
+    );
+  });
 });
 
 describe("daysBetween", () => {

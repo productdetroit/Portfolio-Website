@@ -1,12 +1,22 @@
 /** Per-product configuration for the build log (spec §8).
  *
- *  The page's thesis is "one operating model, run at two scales." Two registers
- *  side by side are that claim instantiated; one merged register erases it. So
+ *  The page's thesis is "one operating model, run at every scale." A register
+ *  per product is that claim instantiated; one merged register erases it. So
  *  every provider is parameterised by product rather than hardcoded to TopHand.
  */
 
+/** Every product with a register. The single source of this union — the page
+ *  content (content/products.tsx) and the payload contract (types.ts) both
+ *  key off it, so a product can never be half-added. */
+export type ProductId =
+  | "tophand"
+  | "motoradvisor"
+  | "onward"
+  | "writehome"
+  | "bookevents";
+
 export type ProductConfig = {
-  id: "tophand" | "motoradvisor";
+  id: ProductId;
   name: string;
   /** Jira project key — one per product. */
   jiraProject: string;
@@ -77,6 +87,54 @@ export const PRODUCTS: readonly ProductConfig[] = [
      *  Counts, epics complete and deploys are unaffected and honest. */
     medianCaveat:
       "Backlog reconciled 17 Aug 2026; these medians measure that cleanup, not cycle time. Honest from work completed after that date.",
+  },
+  {
+    id: "onward",
+    name: "Onward",
+    jiraProject: "ONWARD",
+    ticketPrefix: "ONWARD",
+    /** "Lecacy" is the space key; every URL renders the alias /spaces/Onward.
+     *  CQL matches on the key, so the typo is what goes here — the same kind
+     *  of dead-name-kept-deliberately as TopHand's MFS. */
+    confluenceSpace: "Lecacy",
+    githubRepos: ["productdetroit/onward"],
+    vercelProjectIds: [
+      "prj_cocjRrfmQKbtIjZBMRKQ8HMFsV1a", // onward — onwardlegacy.com
+      "prj_AZnUzYDtIFEYofQVemUghCfoAuFR", // onward-app — app.onwardlegacy.com
+    ],
+    /** First commit, 29 Aug 2026 — the landing page out of Claude Design.
+     *  Pinned for the same reason as the two above: Vercel prunes. */
+    startDate: "2026-08-29",
+  },
+  {
+    id: "writehome",
+    name: "Write Home",
+    jiraProject: "WH",
+    ticketPrefix: "WH",
+    confluenceSpace: "WH",
+    githubRepos: ["productdetroit/writehome"],
+    vercelProjectIds: [
+      "prj_mjzOgmtqQ4DEjXzpvnADWw7hrIxA", // writehome — writehome.ink
+    ],
+    startDate: "2026-09-07",
+  },
+  {
+    id: "bookevents",
+    name: "Book Events",
+    jiraProject: "BE",
+    ticketPrefix: "BE",
+    confluenceSpace: "Bookevents",
+    /** Two repos for the same reason TopHand has two: the embedded Shopify
+     *  app and the marketing site ship separately. */
+    githubRepos: [
+      "productdetroit/bookevents-app",
+      "productdetroit/bookevents",
+    ],
+    vercelProjectIds: [
+      "prj_Bp6x9ASDhrBX9E5sRAJdYzDs4ttJ", // bookevents-app
+      "prj_bTEvXybHKH7PZYy6fzMWJyWQsgdw", // bookevents — bookevents.app
+    ],
+    startDate: "2026-09-01",
   },
 ] as const;
 
