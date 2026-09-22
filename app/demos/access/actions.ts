@@ -31,12 +31,38 @@ function fail(slug: string, error: string): never {
 
 const str = (f: FormData, k: string) => (typeof f.get(k) === "string" ? (f.get(k) as string) : "");
 
+/** The personal link an invitation carries: a 14-day token for this email
+ *  and demo. Stateless — minting another never invalidates one already sent;
+ *  the invite record in Blob is what /demos/verify checks. */
+async function inviteUrl(slug: string, email: string): Promise<string> {
+  const token = await signInviteToken(email, slug, sessionSecret());
+  return `${await baseUrl()}/demos/verify?token=${encodeURIComponent(token)}`;
+}
+
 async function deliver(invite: Invite): Promise<void> {
   const demo = await getDemo(invite.slug);
   if (!demo) throw new Error(`no demo ${invite.slug}`);
-  const token = await signInviteToken(invite.email, invite.slug, sessionSecret());
-  const link = `${await baseUrl()}/demos/verify?token=${encodeURIComponent(token)}`;
-  await sendInviteEmail(invite, demo, link);
+  await sendInviteEmail(invite, demo, await inviteUrl(invite.slug, invite.email));
+}
+
+export type InviteLinkResult = { ok: true; link: string } | { ok: false; error: string };
+
+/** The same link the email carries, for pasting into a note Joe sends by
+ *  hand when the invitation itself isn't getting through. Read-only: the
+ *  invite record is checked, never written, so the Sent time stays put and
+ *  the emailed link keeps working. Returned to the caller, not redirected
+ *  to, so the token never lands in a URL bar or a request log. */
+export async function inviteLink(slug: string, email: string): Promise<InviteLinkResult> {
+  await requireOwner();
+  const to = normalizeEmail(email);
+  if (!isSlug(slug) || !to) return { ok: false, error: "That invitation doesn't look right." };
+  if (!(await getInvite(slug, to))) return { ok: false, error: "That invitation no longer exists." };
+  try {
+    return { ok: true, link: await inviteUrl(slug, to) };
+  } catch (err) {
+    console.error("[demos] invite link failed:", err instanceof Error ? err.message : err);
+    return { ok: false, error: "Couldn't make the link just now. Try again." };
+  }
 }
 
 /** New invitation, or a fresh note to someone already invited (keeps their
