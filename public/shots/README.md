@@ -17,25 +17,36 @@ seeded too (Motor City Auto Care, William Hearst and the rest are fictional).
 `G:\My Drive\MotorAdvisor\Demo\MotorAdvisor-demo-full-1080p-v2.mp4` (21 Sep
 2026) is a 1920×1080 walkthrough in which every scene is the installed
 home-screen app inside an iPhone frame on the left and a caption on the right.
-Each shot is one frame from it, cropped to the phone's screen below the status
-bar:
+Each shot is one frame from it, cropped to the whole device — bezel, status
+bar and screen — at 470×976, with everything outside the bezel's rounded
+outline made transparent so the phone sits on the dark route without a
+rectangle of the video's blue behind it. The caption panel to the right of the
+phone carries the `SHOP INTELLIGENCE POWERED BY MOTOR.COM` lockup, which the
+vendor-naming rule below forbids on a public page; the crop excludes it.
 
 ```
-ffmpeg -ss <t> -i <video> -frames:v 1 -vf "crop=432:862:206:130" out.png
-ffmpeg -i out.png -c:v libwebp -quality 88 out.webp      # ~5× smaller than PNG
+# frame → device crop, alpha mask on a 68px-radius rounded rect,
+# recording pill → Dynamic Island (see below)
+ffmpeg -ss <t> -i <video> -frames:v 1 frame.png
+ffmpeg -i frame.png -vf "crop=470:976:187:50,format=rgba,geq=..." device.png
+ffmpeg -i device.png -c:v libwebp -quality 88 out.webp    # ~5× smaller than PNG
 ```
 
-The crop starts at the app bar on purpose. The status bar above it carries the
-iOS screen-recording indicator (red pill), and the caption panel to the right
-of the phone carries the `SHOP INTELLIGENCE POWERED BY MOTOR.COM` lockup,
-which the vendor-naming rule below forbids on a public page.
+**Two edits to the pixels, disclosed here.**
 
-**One redaction, disclosed here.** The approval frame shows the seeded
-customer's email, `bob@gmail.com`, under "Prepared for". That is a seed value
-that could be a real person's address, so the one line is painted over with
-the card's own background colour (`#F8F7FC`, sampled from the frame). Nothing
-else in any shot is altered. The right fix is a seed email on `example.com`
-in `apps/web/lib/demoSeed.ts` in the motor repo, then a recapture.
+1. The status bar in every frame shows the iOS screen-recording indicator: a
+   wide black pill with a red dot where the Dynamic Island sits. It is painted
+   out (white, the status bar's own colour) and a standard-width Dynamic
+   Island drawn in its place (138×36 at the screen's centre). Time, signal,
+   Wi-Fi and battery are the frame's own.
+2. The approval frame shows the seeded customer's email, `bob@gmail.com`,
+   under "Prepared for". That is a seed value that could be a real person's
+   address, so the one line is painted over with the card's own background
+   colour (`#F8F7FC`, sampled from the frame). The right fix is a seed email
+   on `example.com` in `apps/web/lib/demoSeed.ts` in the motor repo, then a
+   recapture.
+
+Nothing else in any shot is altered.
 
 Four iPhone screenshots of the Jobs board from 18 Sep (`IMG_2931`–`2934`,
 1320×2868) exist in Downloads; only 2931 is clean. The others were taken while

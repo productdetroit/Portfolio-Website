@@ -842,13 +842,14 @@ nav.nav-dark {
 .building .bl-shot img { border-color: rgba(249, 246, 240, 0.18); }
 .building .bl-shot figcaption { color: rgba(249, 246, 240, 0.65); }
 
-/* Phone shots: three portrait screens side by side on desktop. Below 640px
-   three columns would be ~100px each and unreadable, so the row becomes a
-   horizontal scroll-snap strip showing one screen and the edge of the next —
-   the same gesture the app itself uses. Each screen is 432×862, so the
-   rounded corners are the screenshot's own; the border is ours. */
+/* Phone shots: three iPhones side by side on desktop. Below 640px three
+   columns would be ~100px each and unreadable, so the row becomes a
+   horizontal scroll-snap strip showing one phone and the edge of the next —
+   the same gesture the app itself uses. Each image is the device itself
+   (470×976, transparent outside the bezel), so no border or radius of ours:
+   the phone's own outline does that job on either ground. */
 .bl-phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.bl-phones img { border-radius: 14px; }
+.bl-phones img, .building .bl-phones img { border: 0; border-radius: 0; }
 @media (max-width: 640px) {
   .bl-phones {
     display: flex; gap: 12px;

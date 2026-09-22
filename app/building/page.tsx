@@ -487,9 +487,9 @@ export default async function BuildingPage() {
                 job moves: the question, the verdict, the customer's decision.
                 Provenance and the vendor-naming rule: public/shots/README.md */}
             <div className="bl-phones">
-              <img src="/shots/motoradvisor-phone-ask.webp" alt="MotorAdvisor chat on a phone: the owner's complaint in plain language, and the advisor's reply naming the four A/C bulletins to start from" width={432} height={862} loading="lazy" />
-              <img src="/shots/motoradvisor-phone-verdict.webp" alt="MotorAdvisor work order on a phone: the repair-or-replace card, a $285 repair against a $1,095 to $2,320 trade-in value, marked worth repairing" width={432} height={862} loading="lazy" />
-              <img src="/shots/motoradvisor-phone-approve.webp" alt="The shop-branded estimate page on the customer's phone: labor, parts, a $1,315.35 total, and an Approve this estimate button" width={432} height={862} loading="lazy" />
+              <img src="/shots/motoradvisor-phone-ask.webp" alt="MotorAdvisor chat on a phone: the owner's complaint in plain language, and the advisor's reply naming the four A/C bulletins to start from" width={470} height={976} loading="lazy" />
+              <img src="/shots/motoradvisor-phone-verdict.webp" alt="MotorAdvisor work order on a phone: the repair-or-replace card, a $285 repair against a $1,095 to $2,320 trade-in value, marked worth repairing" width={470} height={976} loading="lazy" />
+              <img src="/shots/motoradvisor-phone-approve.webp" alt="The shop-branded estimate page on the customer's phone: labor, parts, a $1,315.35 total, and an Approve this estimate button" width={470} height={976} loading="lazy" />
             </div>
             <figcaption>MotorAdvisor on the phone it actually runs on &mdash; one job in the demo shop. The complaint goes in as the customer said it; the estimate is weighed against what the car is worth; and the customer approves it on their own phone, in the shop&rsquo;s name.</figcaption>
           </figure>
