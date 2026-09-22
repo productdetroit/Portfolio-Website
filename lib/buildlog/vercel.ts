@@ -74,8 +74,8 @@ async function fetchProjectDeploys(
 /** Spec 6.2: production deploy count plus the newest deploy's commit subject,
  *  summed across every Vercel project the product deploys to.
  *
- *  MotorAdvisor has three surfaces (web app, MCP server, Editorial Studio) and
- *  TopHand has two (app, marketing site). All of them are the product shipping,
+ *  MotorAdvisor has two surfaces (web app, MCP server) and TopHand has two
+ *  (app, marketing site). All of them are the product shipping,
  *  so all of them count. Filters on target/state client-side in case v6
  *  ignores the params. */
 export async function getVercelMetrics(

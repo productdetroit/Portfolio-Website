@@ -117,8 +117,8 @@ const TOPHAND_HIGHLIGHTS: Array<[string, string]> = [
 
 const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
   [
-    "Responsive web app",
-    "Next.js, React and TypeScript end to end — no second language anywhere in the stack.",
+    "Responsive, installable web app",
+    "Next.js, React and TypeScript end to end — no second language anywhere in the stack — shipped as a standalone home-screen app with a phone-first work order.",
   ],
   [
     "Conversational AI layer",
@@ -129,8 +129,20 @@ const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
     "Model choice is deterministic app code — a tested router sends mechanical turns to a cheaper model — then the Vercel AI Gateway picks the best-cost provider serving that model, with automatic failover. The app decides what; the gateway decides who.",
   ],
   [
-    "Custom remote MCP server",
-    "Stateless streamable HTTP with OAuth 2.1, PKCE and dynamic client registration — an external agent gets the same tools the app uses.",
+    "Vision at the counter",
+    "A photo of the VIN plate or the odometer cluster is read by Claude and lands in the vehicle field or the valuation’s mileage field — no retyping a 17-character VIN off a door jamb.",
+  ],
+  [
+    "Vehicle telemetry over Bluetooth OBD-II",
+    "Raw adapter exchanges captured from the browser with Web Bluetooth and parsed server-side by a leaf package, behind a read-only command allowlist — nothing on the bus can change vehicle state.",
+  ],
+  [
+    "Custom remote MCP server, two credential types",
+    "Stateless streamable HTTP with OAuth 2.1, PKCE and dynamic client registration for connector journeys, plus API keys for developers who paste one into a client — sixteen tools, the same ones the app uses.",
+  ],
+  [
+    "Self-serve developer portal with paid plans",
+    "Sign-up to API key in one flow, Stripe subscription checkout on every tier, and two independent meters — because a deterministic lookup and a synthesized repair plan differ in cost by orders of magnitude, one rate either loses money or prices lookups out of the market.",
   ],
   [
     "Developer docs that stay current",
@@ -141,6 +153,10 @@ const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
     "Repair data and vehicle valuation, HMAC-signed, and deliberately blind to each other in code so one vendor’s failure modes never reach the other.",
   ],
   [
+    "Attested answers",
+    "Every output carries a provenance record naming the MOTOR citations behind it and when they were observed — grounding you can inspect, stated plainly as provenance rather than a signature.",
+  ],
+  [
     "Multi-tenant by shop",
     "Each shop carries its own labor, tax and supplies rates, its own branding, and its own connected payment account.",
   ],
@@ -149,20 +165,16 @@ const MOTORADVISOR_HIGHLIGHTS: Array<[string, string]> = [
     "Stripe Connect: the shop is merchant of record, a platform fee rides each invoice, and the customer pays on a shop-branded page via Stripe Elements.",
   ],
   [
-    "Editorial Studio",
-    "A third deployed surface that extracts PDFs into structured records with per-field provenance.",
-  ],
-  [
     "Documents that leave the building",
     "Printable and emailable PDF quotes, and QR-coded pay links.",
   ],
   [
     "Architecture enforced by the build",
-    "Six framework-free packages whose module boundaries are policed by dependency-cruiser with negative controls — a rule that isn’t proven to fail when violated isn’t a rule.",
+    "Ten framework-free packages whose module boundaries are policed by sixteen dependency-cruiser rules with negative controls — a rule that isn’t proven to fail when violated isn’t a rule.",
   ],
   [
-    "916 tests, offline fixture replay",
-    "The whole suite runs with no network at all.",
+    "1,824 tests, offline fixture replay",
+    "Across 157 files. The whole suite runs with no network at all.",
   ],
 ];
 

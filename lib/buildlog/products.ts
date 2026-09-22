@@ -23,8 +23,9 @@ export type ProductConfig = {
    *  because the reconciliation only read the app repo. Anything that reads one
    *  under-reports the product. */
   githubRepos: string[];
-  /** Every Vercel project the product deploys to. MotorAdvisor has three
-   *  surfaces (web app, MCP server, Editorial Studio); TopHand has two (app and
+  /** Every Vercel project the product deploys to. MotorAdvisor has two
+   *  surfaces (web app, MCP server — the Editorial Studio was retired and its
+   *  Vercel project deleted on 18 Sep 2026, MOT-346); TopHand has two (app and
    *  marketing site). Deploys sum across all of them. */
   vercelProjectIds: string[];
   /** Day one for this product's "days building" tile.
@@ -67,7 +68,6 @@ export const PRODUCTS: readonly ProductConfig[] = [
     vercelProjectIds: [
       "prj_ighLLDZ0WOnHMjJpeQObOHvFejsR", // motor-web
       "prj_e0DsYKSSXFWSUHoohFHuQYIORuKU", // motor-mcp
-      "prj_zOKvKn7FKR2bxs0nIzEi1w62kk7z", // motor-studio
     ],
     startDate: "2026-08-09",
     /** Spec §7. 106 issues were transitioned to Done in one reconciliation on
