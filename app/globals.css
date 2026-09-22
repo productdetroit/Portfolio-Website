@@ -823,6 +823,16 @@ nav.nav-dark {
 .building .bl-highlights li { color: rgba(249, 246, 240, 0.7); }
 .building .bl-highlights li strong { color: var(--cream); }
 .building .hl-toggle::before, .building .hl-toggle::after { background: #e8a58c; }
+/* Inline link inside a highlight cell (the MCP entry points at the public
+   developer docs). Same shape as the .consulting/.demos prose link —
+   no underline, a rule underneath — carried onto the dark ground. */
+.building .bl-highlights li a {
+  color: var(--cream); text-decoration: none;
+  border-bottom: 1px solid rgba(249, 246, 240, 0.35);
+  transition: color 0.2s, border-color 0.2s;
+}
+.building .bl-highlights li a:hover { color: #e8a58c; border-color: #e8a58c; }
+.building .bl-highlights li a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 
 /* Product logo above each card's headline. */
 .bl-product-logo { margin: 14px 0 22px; }
