@@ -842,6 +842,26 @@ nav.nav-dark {
 .building .bl-shot img { border-color: rgba(249, 246, 240, 0.18); }
 .building .bl-shot figcaption { color: rgba(249, 246, 240, 0.65); }
 
+/* Phone shots: three iPhones side by side on desktop. Below 640px three
+   columns would be ~100px each and unreadable, so the row becomes a
+   horizontal scroll-snap strip showing one phone and the edge of the next —
+   the same gesture the app itself uses. Each image is the device itself
+   (470×976, transparent outside the bezel), so no border or radius of ours:
+   the phone's own outline does that job on either ground. */
+.bl-phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.bl-phones img, .building .bl-phones img { border: 0; border-radius: 0; }
+@media (max-width: 640px) {
+  .bl-phones {
+    display: flex; gap: 12px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px; padding: 0 16px 6px;
+    scrollbar-width: none;
+  }
+  .bl-phones::-webkit-scrollbar { display: none; }
+  .bl-phones img { flex: 0 0 min(300px, 76vw); scroll-snap-align: start; }
+}
+
 /* ── Learnings — authored, editorial ───────────────────────────────────────
    Deliberately the opposite of the register tiles: serif titles, a prose
    column, date bylines, hairline rules — no grids of numbers, no "live from
