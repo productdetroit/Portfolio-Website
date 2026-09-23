@@ -1,9 +1,13 @@
 import { fetchJson, requireEnv } from "./http";
 import { medianMs, toDuration } from "./compute";
-import { ProviderError, type JiraMetrics } from "./types";
+import { ProviderError, type Duration, type JiraMetrics } from "./types";
 import { ATLASSIAN_HOST, type ProductConfig } from "./products";
 
-type JiraIssue = {
+/** A median with nothing to measure. Zero is how the register spells absent —
+ *  every renderer drops a zero-valued stat (spec §6.3). */
+const ABSENT: Duration = { value: 0, unit: "days" };
+
+export type JiraIssue = {
   fields: {
     issuetype?: { name?: string };
     status?: { name?: string; statusCategory?: { key?: string } };
@@ -60,10 +64,19 @@ export async function getJiraMetrics(
     nextPageToken = data.nextPageToken;
   }
 
+  return metricsFromIssues(issues, product.jiraProject);
+}
+
+/** The metrics themselves, separated from fetching them so the rules are
+ *  testable without a credential — the same split as vercel.ts. */
+export function metricsFromIssues(
+  issues: JiraIssue[],
+  projectKey: string,
+): JiraMetrics {
   if (issues.length === 0) {
     throw new ProviderError(
       "jira",
-      `search returned no issues for ${product.jiraProject}`,
+      `search returned no issues for ${projectKey}`,
     );
   }
 
@@ -99,15 +112,21 @@ export async function getJiraMetrics(
     .filter((v): v is number => v !== null);
   const epicMedian = medianMs(epicSamples);
 
-  if (cycleMedian === null || epicMedian === null) {
-    throw new ProviderError("jira", "no resolved issues to compute medians");
-  }
-
+  /* A median that cannot be computed is reported as zero rather than thrown.
+   *
+   *  Throwing takes the whole product down to its committed snapshot — every
+   *  Jira metric, not just the median — which is how a young product ends up
+   *  rendering numbers nobody measured. Book Events had 165 issues and 65 of
+   *  them delivered on 22 Sep 2026, and not one of its 25 epics had closed, so
+   *  there was no epic lifetime to take a median of. Those counts are true and
+   *  the median is simply absent, and zero is exactly how this codebase spells
+   *  absent: Scoreboard and ProductCard both drop a zero-valued stat and
+   *  reflow (spec §6.3, "never render a zero"). */
   return {
     backlogItems: issues.length,
     featuresLive,
-    cycleTime: toDuration(cycleMedian),
-    specToShipped: toDuration(epicMedian),
+    cycleTime: cycleMedian === null ? ABSENT : toDuration(cycleMedian),
+    specToShipped: epicMedian === null ? ABSENT : toDuration(epicMedian),
     epics: {
       done: epicsAll.filter(isDone).length,
       total: epicsAll.length,
