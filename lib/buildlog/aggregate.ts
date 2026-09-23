@@ -1,3 +1,4 @@
+import { LINE_COUNT_TIMEOUT_MS, PROVIDER_TIMEOUT_MS } from "./http";
 import { snapshotFor } from "./snapshot";
 import { PRODUCTS, portfolioStartDate, type ProductConfig } from "./products";
 import type {
@@ -9,8 +10,17 @@ import type {
 } from "./types";
 
 const DETROIT_TZ = "America/Detroit";
-/** Spec 7.4: 3-second budget per provider before snapshot fallback. */
-const PROVIDER_TIMEOUT_MS = 3000;
+
+/** How long each provider slot may take before it falls back to snapshot.
+ *  Every slot gets the spec's 3 seconds except the line count, which cannot
+ *  answer inside that (see LINE_COUNT_TIMEOUT_MS). A provider that fails or
+ *  runs past its budget still falls back exactly as before. */
+export type ProviderBudgets = { default: number; githubLoc: number };
+
+const PROVIDER_BUDGETS: ProviderBudgets = {
+  default: PROVIDER_TIMEOUT_MS,
+  githubLoc: LINE_COUNT_TIMEOUT_MS,
+};
 
 /** Day one of the portfolio — the earliest product's start (spec 6.1 metric 1). */
 export const START_DATE = portfolioStartDate();
@@ -20,7 +30,8 @@ export type Providers = {
   confluence: (p: ProductConfig) => Promise<number>;
   github: (p: ProductConfig) => Promise<number>;
   /** Separate slot from `github` (same host, different endpoint) so a slow
-   *  stats computation never drags the PR count down to snapshot with it. */
+   *  line count never drags the PR count down to snapshot with it, and so it
+   *  can have the longer budget it needs without lending it to the PR count. */
   githubLoc: (p: ProductConfig) => Promise<number>;
   vercel: (p: ProductConfig) => Promise<VercelMetrics>;
 };
@@ -101,9 +112,10 @@ export async function aggregateProduct(
   product: ProductConfig,
   providers: Providers,
   now: Date = new Date(),
-  timeoutMs: number = PROVIDER_TIMEOUT_MS,
+  budgets: ProviderBudgets = PROVIDER_BUDGETS,
 ): Promise<ProductBuildLog> {
   const snapshot = snapshotFor(product.id);
+  const timeoutMs = budgets.default;
 
   const [jira, confluence, github, githubLoc, vercel] = await Promise.all([
     attempt(`${product.id}/jira`, () => providers.jira(product), timeoutMs),
@@ -116,7 +128,7 @@ export async function aggregateProduct(
     attempt(
       `${product.id}/github-loc`,
       () => providers.githubLoc(product),
-      timeoutMs,
+      budgets.githubLoc,
     ),
     attempt(`${product.id}/vercel`, () => providers.vercel(product), timeoutMs),
   ]);
@@ -175,10 +187,10 @@ export async function aggregateProduct(
 export async function aggregate(
   providers: Providers,
   now: Date = new Date(),
-  timeoutMs: number = PROVIDER_TIMEOUT_MS,
+  budgets: ProviderBudgets = PROVIDER_BUDGETS,
 ): Promise<PortfolioBuildLog> {
   const products = await Promise.all(
-    PRODUCTS.map((p) => aggregateProduct(p, providers, now, timeoutMs)),
+    PRODUCTS.map((p) => aggregateProduct(p, providers, now, budgets)),
   );
 
   const sum = (pick: (p: ProductBuildLog) => number) =>

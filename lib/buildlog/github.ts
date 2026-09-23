@@ -1,4 +1,4 @@
-import { fetchJson, requireEnv } from "./http";
+import { fetchJson, LINE_COUNT_TIMEOUT_MS, requireEnv } from "./http";
 import { ProviderError } from "./types";
 import type { ProductConfig } from "./products";
 
@@ -40,17 +40,50 @@ export async function getPullRequestsMerged(
   return count;
 }
 
+/** One window of a repo's merged PRs, carrying only the fields asked for. */
+type PullRequestWindow = {
+  pageInfo?: { hasNextPage: boolean; endCursor: string | null };
+  nodes?: Array<{ additions: number; deletions: number }>;
+};
+
 type PullRequestPage = {
-  data?: {
-    repository?: {
-      pullRequests?: {
-        pageInfo: { hasNextPage: boolean; endCursor: string | null };
-        nodes: Array<{ additions: number; deletions: number }>;
-      };
-    };
-  };
+  data?: { repository?: { pullRequests?: PullRequestWindow } };
   errors?: Array<{ message?: string }>;
 };
+
+/** The 100 merged PRs after `cursor`, selecting `fields` from the connection. */
+async function mergedWindow(
+  repo: string,
+  token: string,
+  cursor: string | null,
+  fields: string,
+): Promise<PullRequestWindow> {
+  const [owner, name] = repo.split("/");
+  const query = `query($owner: String!, $name: String!, $cursor: String) {
+    repository(owner: $owner, name: $name) {
+      pullRequests(states: MERGED, first: 100, after: $cursor) { ${fields} }
+    }
+  }`;
+  const body: PullRequestPage = await fetchJson(
+    "github",
+    "https://api.github.com/graphql",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query, variables: { owner, name, cursor } }),
+    },
+    LINE_COUNT_TIMEOUT_MS,
+  );
+  const prs = body.data?.repository?.pullRequests;
+  if (!prs) {
+    const reason = body.errors?.[0]?.message ?? "no repository in response";
+    throw new ProviderError("github", `${reason} (${repo})`);
+  }
+  return prs;
+}
 
 /** Net lines merged into one repo across all of its merged PRs.
  *
@@ -59,44 +92,45 @@ type PullRequestPage = {
  *  minutes at a stretch), which on a 3-second budget means a stat frozen on
  *  its snapshot. PR diffs are exact, always available, and measure the same
  *  thing the register already claims — everything ships through a reviewed
- *  pull request. */
+ *  pull request.
+ *
+ *  The diffstats are the expensive part — GitHub computes them per PR, 2–3s
+ *  for a window of 100 — while walking the cursors alone takes ~0.3s a window.
+ *  So the walk runs ahead and each window's diffstats are fetched the moment
+ *  its cursor is known, all in parallel. The whole read then costs one window
+ *  plus 0.3s per extra window, instead of 2–3s per window in sequence, and the
+ *  line count's budget keeps holding as the repos grow. */
 async function netLinesMerged(repo: string, token: string): Promise<number> {
-  const [owner, name] = repo.split("/");
-  let net = 0;
+  const windows: Promise<number>[] = [];
   let cursor: string | null = null;
-  // 100 PRs per page; the ceiling is a runaway guard, not an expected limit.
+  // 100 PRs per window; the ceiling is a runaway guard, not an expected limit.
   for (let page = 0; page < 20; page++) {
-    const query = `query($owner: String!, $name: String!, $cursor: String) {
-      repository(owner: $owner, name: $name) {
-        pullRequests(states: MERGED, first: 100, after: $cursor) {
-          pageInfo { hasNextPage endCursor }
-          nodes { additions deletions }
-        }
-      }
-    }`;
-    const body: PullRequestPage = await fetchJson(
-      "github",
-      "https://api.github.com/graphql",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query,
-          variables: { owner, name, cursor },
-        }),
-      },
+    const window = mergedWindow(
+      repo,
+      token,
+      cursor,
+      "nodes { additions deletions }",
+    ).then(({ nodes }) => {
+      if (!nodes) throw new ProviderError("github", `no PRs in window (${repo})`);
+      return nodes.reduce((n, pr) => n + pr.additions - pr.deletions, 0);
+    });
+    // Promise.all below observes every window; this only stops a window that
+    // fails while the walk is still running from surfacing as unhandled.
+    window.catch(() => {});
+    windows.push(window);
+
+    const { pageInfo } = await mergedWindow(
+      repo,
+      token,
+      cursor,
+      "pageInfo { hasNextPage endCursor }",
     );
-    const prs = body.data?.repository?.pullRequests;
-    if (!prs) {
-      const reason = body.errors?.[0]?.message ?? "no repository in response";
-      throw new ProviderError("github", `${reason} (${repo})`);
+    if (!pageInfo) throw new ProviderError("github", `no pageInfo (${repo})`);
+    if (!pageInfo.hasNextPage) {
+      const nets = await Promise.all(windows);
+      return nets.reduce((n, lines) => n + lines, 0);
     }
-    for (const pr of prs.nodes) net += pr.additions - pr.deletions;
-    if (!prs.pageInfo.hasNextPage) return net;
-    cursor = prs.pageInfo.endCursor;
+    cursor = pageInfo.endCursor;
   }
   throw new ProviderError("github", `pagination never terminated (${repo})`);
 }
