@@ -213,12 +213,51 @@ describe("provider timeouts", () => {
         confluence: () => new Promise<number>(() => {}),
       }),
       NOW,
-      50,
+      { default: 50, githubLoc: 50 },
     );
     await vi.advanceTimersByTimeAsync(60);
     const log = await slow;
     vi.useRealTimers();
     expect(log.stale).toBe(true);
     expect(log.specsWritten).toBe(snapshotFor("tophand").specsWritten);
+  });
+
+  // GitHub takes 2–3s per window of 100 diffstats, so on the shared budget the
+  // line count fell back to snapshot on every render. It gets its own.
+  const after = (ms: number, value: number) => () =>
+    new Promise<number>((resolve) => setTimeout(() => resolve(value), ms));
+
+  it("gives the line count its own longer budget, and only the line count", async () => {
+    vi.useFakeTimers();
+    const pending = aggregateProduct(
+      tophand,
+      liveProviders({
+        githubLoc: after(200, 83_555),
+        github: after(200, 93),
+      }),
+      NOW,
+      { default: 50, githubLoc: 500 },
+    );
+    await vi.advanceTimersByTimeAsync(250);
+    const log = await pending;
+    vi.useRealTimers();
+    expect(log.linesOfCode).toBe(83_555);
+    // The same delay still sends the PR count to snapshot.
+    expect(log.pullRequests).toBe(snapshotFor("tophand").pullRequests);
+  });
+
+  it("still falls back when the line count runs past its own budget", async () => {
+    vi.useFakeTimers();
+    const pending = aggregateProduct(
+      tophand,
+      liveProviders({ githubLoc: after(600, 83_555) }),
+      NOW,
+      { default: 50, githubLoc: 500 },
+    );
+    await vi.advanceTimersByTimeAsync(510);
+    const log = await pending;
+    vi.useRealTimers();
+    expect(log.stale).toBe(true);
+    expect(log.linesOfCode).toBe(snapshotFor("tophand").linesOfCode);
   });
 });
