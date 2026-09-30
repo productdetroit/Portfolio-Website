@@ -44,12 +44,20 @@ export function demoFromFields(raw: Record<string, unknown>, slug: string): { ok
   };
 }
 
-/** What to put in the form for an existing demo (or a blank one). */
-export function fieldsFromDemo(demo?: Demo): EditorFields {
+/** Today as YYYY-MM-DD in Detroit, not UTC — the server runs in UTC, which
+ *  is already tomorrow on a Detroit evening. */
+export function today(now = new Date()): string {
+  return now.toLocaleDateString("en-CA", { timeZone: "America/Detroit" });
+}
+
+/** What to put in the form for an existing demo (or a blank one). Updated
+ *  always starts at today: saving an edit is an update, and the date field
+ *  is still there to backdate it. */
+export function fieldsFromDemo(demo?: Demo, now = new Date()): EditorFields {
   return {
     title: demo?.title ?? "",
     summary: demo?.summary ?? "",
-    updated: demo?.updated ?? new Date().toISOString().slice(0, 10),
+    updated: today(now),
     video: demo?.video ?? "",
     access: (demo?.access ?? []).join("\n"),
     links: (demo?.links ?? []).map((l) => `${l.label} | ${l.href}`).join("\n"),
