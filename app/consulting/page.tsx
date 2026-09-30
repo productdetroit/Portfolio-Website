@@ -7,6 +7,7 @@ import {
   symptoms,
   fitQualifiers,
   fitProse,
+  framework,
   engagementGroups,
   aiLayer,
   processSteps,
@@ -136,6 +137,57 @@ export default function ConsultingPage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* 5.3a — Method: the Effort to Outcome framework */}
+      <section className="con-section" aria-labelledby="framework-h">
+        <div className="con-wrap">
+          <SectionHead kicker={framework.kicker} heading={framework.heading} id="framework-h" />
+          <p
+            className="con-thesis"
+            /* Authored content from content/consulting.ts, not user input. */
+            dangerouslySetInnerHTML={{ __html: framework.thesisHtml }}
+          />
+          <ol className="con-loop">
+            {framework.stages.map((s, i) => (
+              <li key={s.name} className="con-stage">
+                <span className="con-step-label">{String(i + 1).padStart(2, "0")}</span>
+                <h4>{s.name}</h4>
+                <p>{s.text}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="con-loop-note">
+            Measure and learn feeds Intake. That return path is the point.
+          </p>
+          <div className="con-two con-framework-detail">
+            <div className="con-qual">
+              <div className="con-kicker">Every outcome definition</div>
+              <ul>
+                {framework.outcomeFields.map((f) => (
+                  <li key={f.lead}>
+                    <strong>{f.lead}</strong> {f.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              {framework.pointsHtml.map((html) => (
+                <p
+                  key={html.slice(0, 32)}
+                  /* Authored content from content/consulting.ts, not user input. */
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
+              ))}
+            </div>
+          </div>
+          <p className="con-bridge">{framework.bridge}</p>
+          <p
+            className="con-proof"
+            /* Authored content from content/consulting.ts, not user input. */
+            dangerouslySetInnerHTML={{ __html: framework.exampleHtml }}
+          />
         </div>
       </section>
 

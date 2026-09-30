@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PortfolioTotals from "@/components/PortfolioTotals";
 import ProductCard from "@/components/ProductCard";
 import Learnings from "@/components/Learnings";
@@ -15,7 +16,7 @@ export const revalidate = 3600;
 const TITLE = "Building";
 const FULL_TITLE = "Building — Joe Ross, Product Detroit";
 const DESCRIPTION =
-  "One operating model at two scales: the AI-native SDLC designed at BS&A, run solo end to end. A live build log straight from Jira, GitHub and Vercel.";
+  "Effort to Outcome, one operating model at two scales: the AI-native SDLC designed at BS&A, run solo end to end. A live build log straight from Jira, GitHub and Vercel.";
 
 /** Explicit per-route OG/Twitter tags — without these the root layout's
  *  homepage values leak through (update-spec §5.1). */
@@ -44,27 +45,27 @@ const GATES = [
   },
   {
     name: "Prototype",
-    desc: "Claude Design. High-fidelity, cheap, in front of users before code.",
+    desc: "Claude Code, with Claude Design in support. A working V0 in front of real users before full development.",
     gate: "Human gate",
   },
   {
     name: "Backlog",
-    desc: "Jira epic and linked stories, written by both of us.",
+    desc: "Jira. Epic, linked stories and acceptance criteria, written by both of us.",
     gate: "Shared",
   },
   {
     name: "Build / Test",
-    desc: "Claude Code. Stories in parallel; tests written and run with every branch.",
+    desc: "Claude Code, with Jira and Confluence in context. Stories in parallel; automated tests run with every branch.",
     gate: "Automated",
   },
   {
     name: "Review",
-    desc: "Pull request. Nothing merges without my read.",
+    desc: "GitHub pull request. A human review gate on every change; nothing merges without my read.",
     gate: "Human gate",
   },
   {
     name: "Production",
-    desc: "Merge triggers the build; Vercel deploys.",
+    desc: "Vercel. Merge triggers an automated build and deploy.",
     gate: "Automated",
   },
   {
@@ -102,7 +103,9 @@ export default async function BuildingPage() {
 
       <section className="bl-lede" aria-label="Introduction">
         <p className="bl-lede-lead">
-          Effort to Outcome: one operating model, run at two scales. At BS&amp;A I designed an
+          Effort to Outcome: judge every product investment by the business
+          outcome it was meant to move, not the engineering activity behind
+          it. One operating model, run at two scales. At BS&amp;A I designed an
           AI-native software development lifecycle in partnership with my CTO
           and took AI tool adoption across seven engineering teams from 19% to
           58% in three months &mdash; a 49% velocity gain on a large, aging
@@ -136,6 +139,16 @@ export default async function BuildingPage() {
           An AI-native SDLC, run by one person.
         </h2>
 
+        <div className="bl-prose">
+          <p>
+            Effort to Outcome is a six-stage loop: intake, outcome definition,
+            validate and prioritize, decision and sign-off, build and launch,
+            measure and learn. Run by one person, it becomes seven gates from
+            spec to measurement. The human gates are where the product
+            decisions live.
+          </p>
+        </div>
+
         <div className="bl-gates">
           {GATES.map((g, i) => (
             <div key={g.name} className="bl-gate">
@@ -154,7 +167,7 @@ export default async function BuildingPage() {
           {/* Eighth cell of the four-column grid: beside Measure on desktop
               and tablet, directly under it on phones. */}
           <p className="bl-gate-example">
-            Example:{" "}
+            Example, a margin outcome:{" "}
             <a href={MEASURE_EXAMPLE_HREF}>cost per AI conversation</a>,
             measured after every change: $0.715 to $0.168, down 76%, with zero
             measured quality loss.
@@ -169,10 +182,11 @@ export default async function BuildingPage() {
           <p>
             Every feature starts as a spec in Confluence &mdash; the problem,
             the outcome metric, the data model, the architecture decision and
-            why it&rsquo;s reversible. The spec becomes a high-fidelity Claude Design
-            prototype &mdash; quick and cheap enough to put in front of real
-            users and validate before any code is written &mdash; then an epic
-            and linked stories in Jira. Claude Code works stories in parallel,
+            why it&rsquo;s reversible. The spec becomes a working V0, built in
+            Claude Code with Claude Design supporting the design &mdash; quick
+            and cheap enough to put in front of real users, who do real work in
+            it, before full development starts &mdash; then an epic, linked stories and
+            acceptance criteria in Jira. Claude Code works stories in parallel,
             each on its own branch. Merges trigger builds and deploy to
             production through Vercel, continuously.
           </p>
@@ -190,12 +204,23 @@ export default async function BuildingPage() {
             &mdash; every one of them reviewed by me.
           </p>
           <p>
+            Same gates, not the same governance. Inside a company, Effort to
+            Outcome runs on an annual plan, a product-led quarterly review and
+            a scoring method, because a team has to reach a decision together.
+            Alone, the owner and the sign-off are the same person. What stays
+            is the part that matters: an outcome named before the work starts,
+            a measurement after it ships, and the discipline to stop or pivot
+            when it misses.{" "}
+            <Link href="/consulting">The full framework</Link> is on the
+            consulting page.
+          </p>
+          <p>
             What&rsquo;s new is that Claude writes to Jira and Confluence
             directly. The backlog isn&rsquo;t documentation I keep up after the
             fact; it&rsquo;s the live system of record my AI collaborator and I
             both operate from. Ideation, research and architecture happen in
-            conversation. Design prototypes come out of Claude Design. Code
-            lands as a branch and a pull request. Nothing skips the spec, and
+            conversation. Claude Design shapes the V0; users validate it as
+            working software. Code lands as a branch and a pull request. Nothing skips the spec, and
             nothing merges without review.
           </p>
           <p className="bl-ink">

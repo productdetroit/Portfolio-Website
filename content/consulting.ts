@@ -93,6 +93,66 @@ export const fitProse = [
   "I take on a small number of clients at a time, and every engagement ends with your team running what was built. If it only works while I'm there, it didn't work.",
 ];
 
+/** §5.3a — the method behind the engagements, from the Effort to Outcome
+ *  framework. Generic by design: no client, firm or career statistics (§1).
+ *  The worked example links to /building rather than restating its numbers. */
+export type FrameworkStage = { name: string; text: string };
+
+export const framework = {
+  kicker: "Framework",
+  heading: "Effort to Outcome",
+  thesisHtml:
+    "Most product organizations can show what they built. Fewer can show what it returned. <strong>Effort to Outcome judges every product investment by the business result it was meant to move, not by the engineering activity behind it</strong> — and runs every idea through the same loop, so results can be compared and the next decision gets better than the last.",
+  stages: [
+    {
+      name: "Intake",
+      text: "Ideas enter with evidence from any source — customers, churn and win/loss, usage data, the strategy plan — as a one-page brief: the problem, who has it, the evidence, and an outcome hypothesis.",
+    },
+    {
+      name: "Outcome definition",
+      text: "Each idea names the result it should move before work starts: its type, one primary metric with a baseline, how it will be measured, and when we check.",
+    },
+    {
+      name: "Validate and prioritize",
+      text: "Build to learn, then score. Working software in front of real users turns a low-confidence guess into evidence before engineering capacity is committed.",
+    },
+    {
+      name: "Decision and sign-off",
+      text: "Named owners commit, defer or kill. Miss the threshold agreed before work started, and the default is stop or pivot.",
+    },
+    {
+      name: "Build and launch",
+      text: "AI-native delivery with a human review gate on every change, launched with the go-to-market it needs to land.",
+    },
+    {
+      name: "Measure and learn",
+      text: "The outcome is checked at the agreed horizon and recorded as a hit, a partial or a miss. The results recalibrate the next round of scoring.",
+    },
+  ] satisfies FrameworkStage[],
+  /** Outcome definition — the four fields every idea fills in. */
+  outcomeFields: [
+    {
+      lead: "Type.",
+      text: "Revenue growth, retention, margin or cost, risk and compliance, or strategic option value.",
+    },
+    { lead: "Metric.", text: "One primary metric, with its baseline." },
+    { lead: "Method.", text: "How it's measured, by whom, and from which data source." },
+    { lead: "Horizon.", text: "When we check — agreed before work starts." },
+  ] satisfies Symptom[],
+  /** Two short points that carry the deck's stage-3 argument. HTML allowed. */
+  pointsHtml: [
+    "<strong>Prototypes are working software now.</strong> In the last era, users reacted to clickable pictures of a product, and anything real waited for engineering. Product can now build working software quickly and cheaply, independent of the development team, so users do real work in it and the learning happens before the full development cycle starts.",
+    "<strong>The scoring method fits the company, not the other way around.</strong> A founder-led company needs something light — ICE, or value against effort. Several teams need RICE, which forces honest estimates of reach and confidence. A multi-team platform needs cost of delay against size, weighted to the strategy. At any size, capacity is split across growth, retention, efficiency and technical debt before anything is scored. AI can draft the scores and gather the evidence; people still make the call.",
+    "<strong>A cadence holds it together.</strong> An annual plan sets the priorities, a product-led quarterly review is where decisions get made, and monthly time with sales and marketing feeds the field back into intake. Installing that cadence is its own engagement, below.",
+    "<strong>Rigor scales with the company.</strong> Diagnose first, install the minimum, and add discipline as the company grows. The goal is to equip your product leader, not replace them — and not to flatten a founder's culture on the way.",
+  ],
+  /** Ties the method to the engagement cards that follow. */
+  bridge:
+    "Each engagement below installs part of this loop. The diagnostic finds the stage that's broken. Investment governance installs the decision and the cadence. Instrumentation installs intake and measurement. A product function build installs all six.",
+  exampleHtml:
+    'I run the same loop on my own products, with the governance a team of one doesn&rsquo;t need stripped out. <a href="/building">The build log</a> shows it working, including an AI cost per conversation cut 76% with no measured loss in quality.',
+} as const;
+
 export type Engagement = {
   title: string;
   /** DM Mono, terracotta, uppercase — durations do the filtering work that
