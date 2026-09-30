@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_BODY, demoFromFields, fieldsFromDemo } from "./editor";
+import { DEFAULT_BODY, demoFromFields, fieldsFromDemo, today } from "./editor";
 
 const base = { title: "T", summary: "", updated: "", video: "", access: "", links: "", body: "" };
 
@@ -34,5 +34,15 @@ describe("demoFromFields", () => {
     if (!r.ok) throw new Error(r.error);
     expect(fieldsFromDemo(r.demo)).toEqual({ title: "T", summary: "", updated: expect.any(String), video: "w.mp4", access: "@m.com", links: "A | https://a.example", body: "hi" });
     expect(fieldsFromDemo().body).toBe(DEFAULT_BODY);
+  });
+
+  it("starts Updated at today in Detroit, even when editing an older demo", () => {
+    const r = demoFromFields({ ...base, updated: "2026-09-21" }, "s");
+    if (!r.ok) throw new Error(r.error);
+    // 01:30 UTC on the 30th is still the evening of the 29th in Detroit.
+    const now = new Date("2026-09-30T01:30:00Z");
+    expect(fieldsFromDemo(r.demo, now).updated).toBe("2026-09-29");
+    expect(fieldsFromDemo(undefined, now).updated).toBe("2026-09-29");
+    expect(today(new Date("2026-09-29T14:00:00Z"))).toBe("2026-09-29");
   });
 });
