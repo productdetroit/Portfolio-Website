@@ -8,6 +8,7 @@
  *    demos/_invites/<slug>/<email>.json       one file per invitation (invites.ts)
  *    demos/_log/signin/<email>/<ms>.json      one file per sign-in
  *    demos/_log/view/<email>/<ms>-<slug>.json one file per demo page open
+ *    demos/_notified/<slug>/<email>.json      Joe was told this invitee opened it
  *
  *  The log is append-only, one blob per event — no read-modify-write, so
  *  two events in the same instant can't clobber each other. The owner page
@@ -30,6 +31,7 @@ const PRIVATE = { access: "private" } as const;
 const TOKENS_PREFIX = `${DEMOS_PREFIX}_tokens/`;
 const INVITES_PREFIX = `${DEMOS_PREFIX}_invites/`;
 const LOG_PREFIX = `${DEMOS_PREFIX}_log/`;
+const NOTIFIED_PREFIX = `${DEMOS_PREFIX}_notified/`;
 const JSON_PUT = { ...PRIVATE, contentType: "application/json", addRandomSuffix: false } as const;
 
 async function readText(pathname: string): Promise<string | null> {
@@ -178,9 +180,10 @@ export async function saveInvite(invite: Invite): Promise<void> {
 }
 
 /** Revoke. The invite link's token is still signed, but the sign-in page
- *  checks for this file, so the link is dead from here on. */
+ *  checks for this file, so the link is dead from here on. The first-open
+ *  marker goes too, so a later re-invite notifies again. */
 export async function deleteInvite(slug: string, email: string): Promise<void> {
-  await del(invitePath(slug, email));
+  await del([invitePath(slug, email), notifiedPath(slug, email)]);
 }
 
 /* ── Access log ────────────────────────────────────────────────────────── */
@@ -199,6 +202,50 @@ export async function recordSignIn(email: string, userAgent: string | null, via:
 
 export async function recordView(email: string, slug: string): Promise<void> {
   await put(logPath("view", email, `-${slug}`), JSON.stringify({ email, slug, at: new Date().toISOString() }), JSON_PUT);
+}
+
+/** True when this person opened this demo before `beforeMs` — lets the
+ *  first-open notice stay quiet for invitees who were already in the log
+ *  when it shipped. One person's folder, so a small list. */
+export async function viewedBefore(email: string, slug: string, beforeMs: number): Promise<boolean> {
+  const suffix = `-${slug}.json`;
+  return (await listAll(`${LOG_PREFIX}view/${email}/`)).some((b) => {
+    if (!b.pathname.endsWith(suffix)) return false;
+    const ms = Number(b.pathname.slice(b.pathname.lastIndexOf("/") + 1, -suffix.length));
+    return ms < beforeMs;
+  });
+}
+
+/* ── First-open notices ────────────────────────────────────────────────── */
+
+function notifiedPath(slug: string, email: string) {
+  return `${NOTIFIED_PREFIX}${slug}/${email}.json`;
+}
+
+export async function wasNotified(slug: string, email: string): Promise<boolean> {
+  try {
+    await head(notifiedPath(slug, email));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Write the marker only if it isn't there. True for exactly one caller,
+ *  so two tabs opening at once send one email, not two. Any failure reads
+ *  as "someone else has it" — a missed notice beats a duplicate. */
+export async function claimNotice(slug: string, email: string): Promise<boolean> {
+  try {
+    await put(notifiedPath(slug, email), JSON.stringify({ slug, email, at: new Date().toISOString() }), JSON_PUT);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Give the claim back when the email didn't go out, so the next open retries. */
+export async function releaseNotice(slug: string, email: string): Promise<void> {
+  await del(notifiedPath(slug, email));
 }
 
 /** The whole log, parsed from pathnames. Bounded by how many people Joe

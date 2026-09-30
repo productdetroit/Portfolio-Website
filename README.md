@@ -88,6 +88,15 @@ deletes the file, which kills the link and drops the demo from any live
 session on its next page load. A demo's `access:` list in `demo.md` still
 works for rules like `@motor.com`.
 
+**Knowing when they look.** The first time an invitee opens the demo they
+were invited to, every owner gets an email (from `demos@`): who, which demo,
+when (Detroit time), how long after the invite, and their browser, with a
+link to the access log. Once per invite — a marker file
+(`demos/_notified/<demo>/<email>.json`) records it went out; if the send
+fails the marker is removed so the next open retries. It runs after the page
+renders, so it never slows the viewer. People admitted only by an `access:`
+rule, and owners, don't trigger it.
+
 **Signing in later.** Anyone invited (or on a rule) can enter their email at
 `/demos` for a one-time sign-in link (15 minutes, single use). Both kinds of
 link land on a page with a **Continue** button rather than signing in on the
@@ -130,7 +139,8 @@ to the terminal instead of sent.
 **Code.** `lib/demos/` — `access.ts` (rules), `invites.ts` (invite shape,
 defaults, email rendering), `manifest.ts` (`demo.md` parser), `tokens.ts`
 (jose: link / invite / session), `session.ts` (cookie → viewer), `store.ts`
-(Blob), `email.ts`, `report.ts` (access log). Pure modules have tests.
+(Blob), `email.ts`, `report.ts` (access log), `notify.ts` + `first-open.ts`
+(first-open email). Pure modules have tests.
 
 ## ⚠ Before DNS cutover (PDW-10)
 

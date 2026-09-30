@@ -1,9 +1,13 @@
+import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
+import { after } from "next/server";
 import DemoBar from "@/components/DemoBar";
 import DemoMarkdown from "@/components/DemoMarkdown";
+import { notifyFirstOpen } from "@/lib/demos/first-open";
 import { isSlug } from "@/lib/demos/manifest";
 import { getViewer } from "@/lib/demos/session";
 import { recordView, videoUrl } from "@/lib/demos/store";
+import { baseUrl } from "@/lib/demos/url";
 
 export const dynamic = "force-dynamic";
 
@@ -19,12 +23,24 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   const demo = viewer.demos.find((d) => d.slug === slug);
   if (!demo) notFound();
 
+  const openedAt = new Date();
   const [src] = await Promise.all([
     videoUrl(demo),
     recordView(viewer.email, demo.slug).catch((err: unknown) =>
       console.error("[demos] view log failed:", err instanceof Error ? err.message : err),
     ),
   ]);
+
+  if (!viewer.owner) {
+    // Request data has to be read here — headers() isn't available inside after().
+    const userAgent = (await headers()).get("user-agent");
+    const accessUrl = `${await baseUrl()}/demos/access`;
+    after(() =>
+      notifyFirstOpen(viewer.email, demo, openedAt, userAgent, accessUrl).catch((err: unknown) =>
+        console.error("[demos] first-open notice failed:", err instanceof Error ? err.message : err),
+      ),
+    );
+  }
 
   return (
     <>
