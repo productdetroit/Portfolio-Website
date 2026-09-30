@@ -21,13 +21,6 @@ export default function ProductCard({
     log && log.featuresLive > 0
       ? { label: "Work items", value: String(log.featuresLive) }
       : null,
-    /* TODO(Joe): Onward renders "2 hours" here beside ~101 work items, which a
-       skeptical reader will question. The value is the median epic lifetime
-       (created → resolved) from lib/buildlog/jira.ts, with the fallback in
-       lib/buildlog/snapshot.json (onward.specToShipped). Number stays as is;
-       decide whether to relabel (e.g. "2 hours to first deploy") or add
-       context. The same label and value also appear on the Scoreboard on
-       /building/onward. */
     log && log.specToShipped.value > 0
       ? { label: "Spec → shipped", value: shortDuration(log.specToShipped) }
       : null,

@@ -168,8 +168,8 @@ export default async function BuildingPage() {
           </p>
           <p>
             Every feature starts as a spec in Confluence &mdash; the problem,
-            the data model, the architecture decision and why it&rsquo;s
-            reversible. The spec becomes a high-fidelity Claude Design
+            the outcome metric, the data model, the architecture decision and
+            why it&rsquo;s reversible. The spec becomes a high-fidelity Claude Design
             prototype &mdash; quick and cheap enough to put in front of real
             users and validate before any code is written &mdash; then an epic
             and linked stories in Jira. Claude Code works stories in parallel,
