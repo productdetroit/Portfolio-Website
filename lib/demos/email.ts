@@ -26,6 +26,11 @@ export async function sendInviteEmail(invite: Invite, demo: Demo, link: string):
   await send({ from: inviteFromEmail(), to: invite.email, subject: invite.subject, text, html }, "invitation");
 }
 
+/** To the owners, from the system address — it's a notice, not a note. */
+export async function sendOpenedNotice(to: string[], notice: { subject: string; text: string; html: string }): Promise<void> {
+  for (const addr of to) await send({ from: fromEmail(), to: addr, ...notice }, "first-open notice");
+}
+
 export async function sendSignInLink(to: string, link: string): Promise<void> {
   const text = [
     `Here's your sign-in link for the ${site.name} demo space:`,
