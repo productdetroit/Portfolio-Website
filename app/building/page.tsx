@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 const GATES = [
   {
     name: "Spec",
-    desc: "Confluence. Problem, data model, reversible decision.",
+    desc: "Confluence. Problem, outcome metric, data model, reversible decision.",
     gate: "Human gate",
   },
   {
@@ -67,7 +67,16 @@ const GATES = [
     desc: "Merge triggers the build; Vercel deploys.",
     gate: "Automated",
   },
+  {
+    name: "Measure",
+    desc: "Production metrics. Outcome checked against baseline; result recorded as hit, partial or miss; feeds the next spec.",
+    gate: "Human gate",
+  },
 ];
+
+/** The Measure stage's worked example: the Learnings entry further down,
+ *  by the anchor components/Learnings.tsx gives it (`learning-${slug}`). */
+const MEASURE_EXAMPLE_HREF = "#learning-token-cost-and-quality-gating";
 
 /** Page spine per change-spec §4: the claim (one model, two scales) → the
  *  model itself → the portfolio (one card per product, each linking to its
@@ -93,7 +102,7 @@ export default async function BuildingPage() {
 
       <section className="bl-lede" aria-label="Introduction">
         <p className="bl-lede-lead">
-          One operating model, run at two scales. At BS&amp;A I designed an
+          Effort to Outcome: one operating model, run at two scales. At BS&amp;A I designed an
           AI-native software development lifecycle in partnership with my CTO
           and took AI tool adoption across seven engineering teams from 19% to
           58% in three months &mdash; a 49% velocity gain on a large, aging
@@ -142,6 +151,14 @@ export default async function BuildingPage() {
               </div>
             </div>
           ))}
+          {/* Eighth cell of the four-column grid: beside Measure on desktop
+              and tablet, directly under it on phones. */}
+          <p className="bl-gate-example">
+            Example:{" "}
+            <a href={MEASURE_EXAMPLE_HREF}>cost per AI conversation</a>,
+            measured after every change: $0.715 to $0.168, down 76%, with zero
+            measured quality loss.
+          </p>
         </div>
 
         <div className="bl-prose">
@@ -151,8 +168,8 @@ export default async function BuildingPage() {
           </p>
           <p>
             Every feature starts as a spec in Confluence &mdash; the problem,
-            the data model, the architecture decision and why it&rsquo;s
-            reversible. The spec becomes a high-fidelity Claude Design
+            the outcome metric, the data model, the architecture decision and
+            why it&rsquo;s reversible. The spec becomes a high-fidelity Claude Design
             prototype &mdash; quick and cheap enough to put in front of real
             users and validate before any code is written &mdash; then an epic
             and linked stories in Jira. Claude Code works stories in parallel,

@@ -460,13 +460,15 @@ footer a:hover { color: var(--accent); }
 /* Operating model */
 .bl-sdlc { padding: 84px 0 0; border-top: 1px solid var(--rule); margin-top: 72px; }
 .bl-gates {
-  display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
   background: var(--rule); border: 1px solid var(--rule); margin-bottom: 52px;
 }
-/* Six gates get cramped below ~1100px — two rows of three, then the
-   existing single column under 720px. */
+/* Seven stages plus the Measure example make eight cells: two rows of four,
+   four rows of two below 1024px, then the single column under 720px. Every
+   breakpoint fills its last row, and the example always sits beside or
+   under Measure. */
 @media (max-width: 1024px) {
-  .bl-gates { grid-template-columns: repeat(3, 1fr); }
+  .bl-gates { grid-template-columns: repeat(2, 1fr); }
 }
 .bl-gate { background: var(--cream); padding: 20px 18px 18px; display: flex; flex-direction: column; gap: 8px; min-height: 118px; }
 .bl-gate-index { font-family: var(--font-dm-mono), monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--muted); }
@@ -481,6 +483,14 @@ footer a:hover { color: var(--accent); }
   border-top: 1px solid var(--rule); padding-top: 8px;
 }
 .bl-gate-kind.human { color: var(--accent-text); border-top-color: rgba(200, 82, 42, 0.35); }
+.bl-gate-example {
+  background: var(--cream); padding: 20px 18px 18px; margin: 0;
+  font-size: 12px; color: var(--muted); line-height: 1.55;
+}
+.bl-gate-example a {
+  color: var(--accent-text); text-decoration: none;
+  border-bottom: 1px solid rgba(200, 82, 42, 0.35);
+}
 .bl-prose { max-width: 660px; }
 .bl-prose p { font-size: 16.5px; color: var(--muted); line-height: 1.85; margin-bottom: 22px; }
 .bl-ink { color: var(--ink); }
@@ -630,6 +640,10 @@ body > nav.nav-dark {
 .bl-gate-kind.human {
   color: #e8a58c; border-top-color: rgba(232, 165, 140, 0.35);
 }
+.bl-gate-example { background: var(--ink); color: rgba(249, 246, 240, 0.7); }
+.bl-gate-example a { color: #e8a58c; border-bottom-color: rgba(232, 165, 140, 0.4); }
+.bl-gate-example a:hover { color: var(--cream); }
+.bl-gate-example a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 
 /* Register on dark */
 .reg-head { border-bottom-color: rgba(249, 246, 240, 0.5); }
@@ -875,7 +889,7 @@ body > nav.nav-dark {
   font-size: 17px; line-height: 1.6; color: #e8a58c;
   margin: -22px 0 18px; max-width: 56ch;
 }
-.lrn-entry { border-top: 1px solid rgba(249, 246, 240, 0.18); }
+.lrn-entry { border-top: 1px solid rgba(249, 246, 240, 0.18); scroll-margin-top: 96px; }
 .lrn-entry:last-child { border-bottom: 1px solid rgba(249, 246, 240, 0.18); }
 
 .lrn-summary {
@@ -981,6 +995,8 @@ body > nav.nav-dark {
 
 @media (max-width: 720px) {
   .lrn-summary { padding-right: 32px; }
+  /* Anchor jumps (the Measure example links here) clear the stacked nav. */
+  .lrn-entry { scroll-margin-top: 160px; }
   .lrn-toggle { top: 32px; }
 }
 
