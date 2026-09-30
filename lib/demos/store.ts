@@ -180,9 +180,10 @@ export async function saveInvite(invite: Invite): Promise<void> {
 }
 
 /** Revoke. The invite link's token is still signed, but the sign-in page
- *  checks for this file, so the link is dead from here on. */
+ *  checks for this file, so the link is dead from here on. The first-open
+ *  marker goes too, so a later re-invite notifies again. */
 export async function deleteInvite(slug: string, email: string): Promise<void> {
-  await del(invitePath(slug, email));
+  await del([invitePath(slug, email), notifiedPath(slug, email)]);
 }
 
 /* ── Access log ────────────────────────────────────────────────────────── */
