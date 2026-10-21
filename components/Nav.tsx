@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navLinks, site } from "@/content/site";
 
-export default function Nav() {
+export default function Nav({ owner = false }: { owner?: boolean }) {
   const pathname = usePathname();
   /* /building is the site's single dark route (change-spec §4) — the nav
      goes near-black there and swaps in the reversed lockup. */
@@ -24,7 +24,7 @@ export default function Nav() {
         />
       </Link>
       <div className="nav-links">
-        {navLinks.map((l) => (
+        {navLinks.filter((l) => owner || !l.ownerOnly).map((l) => (
           <a
             key={l.href}
             href={l.href}

@@ -4,6 +4,7 @@ import { DM_Serif_Display, DM_Mono, Lato } from "next/font/google";
 import { site } from "@/content/site";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import { isOwnerRequest } from "@/lib/demos/owner";
 import "./globals.css";
 
 const dmSerif = DM_Serif_Display({
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -57,7 +58,7 @@ export default function RootLayout({
       className={`${dmSerif.variable} ${dmMono.variable} ${lato.variable}`}
     >
       <body>
-        <Nav />
+        <Nav owner={await isOwnerRequest()} />
         <main>{children}</main>
         <Footer />
         <Script
