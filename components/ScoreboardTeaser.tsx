@@ -5,7 +5,14 @@ import type { PortfolioBuildLog } from "@/lib/buildlog/types";
 
 /** Home-page teaser strip — three metrics and the link to /building
  *  (spec §4, PDW-8). Proof without a click; the full page one click deeper. */
-export default function ScoreboardTeaser({ log }: { log: PortfolioBuildLog }) {
+export default function ScoreboardTeaser({
+  log,
+  owner = false,
+}: {
+  log: PortfolioBuildLog;
+  /** /building is owner-only; the public sees the metrics without the link. */
+  owner?: boolean;
+}) {
   const metrics: Array<{ label: string; value: number; unit?: string } | null> = [
     { label: "Days building", value: log.daysBuilding },
     // Portfolio totals — additive only. The median that used to sit here is
@@ -47,9 +54,11 @@ export default function ScoreboardTeaser({ log }: { log: PortfolioBuildLog }) {
               and Vercel.
             </div>
           </div>
-          <Link className="teaser-link" href="/building">
-            See the build log →
-          </Link>
+          {owner ? (
+            <Link className="teaser-link" href="/building">
+              See the build log →
+            </Link>
+          ) : null}
         </div>
       </div>
     </section>

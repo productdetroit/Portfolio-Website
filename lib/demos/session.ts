@@ -42,15 +42,16 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
 });
 
 /** Cookie attributes shared by sign-in (set) and sign-out (clear).
- *  Scoped to /demos so the rest of the site never even sees it. */
-export function sessionCookie(value: string) {
+ *  Site-wide so an owner's session also unlocks the owner-only pages
+ *  (lib/demos/owner.ts); an invitee's opens nothing outside /demos. */
+export function sessionCookie(value: string, path = "/") {
   return {
     name: SESSION_COOKIE,
     value,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax" as const,
-    path: "/demos",
+    path,
     maxAge: value ? SESSION_TTL_SECONDS : 0,
   };
 }

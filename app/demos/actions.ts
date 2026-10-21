@@ -75,5 +75,7 @@ export async function completeSignIn(formData: FormData): Promise<void> {
 export async function signOut(): Promise<void> {
   const jar = await cookies();
   jar.set(sessionCookie(""));
+  // Sessions issued before the cookie went site-wide live at /demos.
+  jar.set(sessionCookie("", "/demos"));
   redirect("/demos");
 }

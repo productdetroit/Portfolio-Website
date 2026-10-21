@@ -7,7 +7,7 @@ import Link from "next/link";
  *  per Joe (28 Jul 2026, then 18 Aug 2026: generic, no product names).
  *  Ends with the §2.3 bridge line separating commercial proof (the career
  *  stats above) from capability proof (the ribbon below). */
-export default function BuilderBand() {
+export default function BuilderBand({ owner = false }: { owner?: boolean }) {
   return (
     <section className="builder-band" aria-labelledby="builder-h">
       <div className="section-inner">
@@ -48,7 +48,7 @@ export default function BuilderBand() {
                 product names here (per Joe, 18 Aug 2026) — the portfolio
                 outgrew a single product, so /building carries the roster.
                 Supersedes change-spec §2.2a and its verbatim-copy rule. */}
-            <Link href="/building">What I&rsquo;m building</Link>{" "}
+            {owner ? <Link href="/building">What I&rsquo;m building</Link> : "What I\u2019m building"}{" "}
             is where I&rsquo;m testing that. These are real products, not
             demos &mdash; built for two reasons: to leverage AI assisted
             design, agentic coding and deployment tools firsthand to fuel my

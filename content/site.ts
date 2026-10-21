@@ -26,14 +26,15 @@ export const site = {
   },
 } as const;
 
-/** Root-relative so they work from /building as well as the home page. */
+/** Root-relative so they work from /building as well as the home page.
+ *  `ownerOnly` links show only to a signed-in owner (lib/demos/owner.ts). */
 export const navLinks = [
   { href: "/#about", label: "About" },
   { href: "/#career", label: "Career" },
   { href: "/#press", label: "Press" },
-  { href: "/building", label: "Building" },
-  { href: "/consulting", label: "Consulting" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/building", label: "Building", ownerOnly: true },
+  { href: "/consulting", label: "Consulting", ownerOnly: true },
+  { href: "/#contact", label: "Contact", ownerOnly: true },
 ];
 
 /** Contact-section routing (consulting-spec §8): once Consulting is in the
